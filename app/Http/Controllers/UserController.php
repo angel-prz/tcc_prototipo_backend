@@ -75,10 +75,10 @@ class UserController extends Controller
         return view('users.remove', ['user' => User::findOrFail($id)]);
     }
 
-   public function remove($id)
-   {
+    public function remove($id)
+    {
         if(User::destroy($id))
             return redirect('/users');
         else dd("Erro ao remover usuario!!");
-   }
+    }
 }

@@ -21,7 +21,7 @@
     @else
         <p>Usuario não encontrado! </p>
     @endif
-    <form action="{{route('remove', $user->id)}}" method="post">
+    <form action="{{route('user.remove', $user->id)}}" method="post">
         @csrf
         <h1>DESEJA CONFIRMAR EXCLUSÃO DO USUARIO {{$user->nome}} </h1>
         <input type="submit" value="Excluir"/>
