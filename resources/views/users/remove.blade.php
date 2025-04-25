@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,9 +6,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Usuarios</title>
+    <title>Usuario</title>
 </head>
 <body>
+    
     @if ($user)
         <h1>{{ $user->nome }}</h1>
         <ul>
@@ -19,6 +21,11 @@
     @else
         <p>Usuario não encontrado! </p>
     @endif
-    <a href="/usuarios">&#9664;Voltar</a>
+    <form action="{{route('remove', $user->id)}}" method="post">
+        @csrf
+        <h1>DESEJA CONFIRMAR EXCLUSÃO DO USUARIO {{$user->nome}} </h1>
+        <input type="submit" value="Excluir"/>
+    </form>
+    <a href="/users">&#9664;Cancelar</a>
 </body>
 </html>

@@ -17,10 +17,12 @@ Route::get('/users/{id}', [UserController::class,'show']);
 //CRUD
 Route::get('/user', [UserController::class,'create']);
 Route::post('/user', [UserController::class,'store']);
+
 Route::get('/user/edit/{id}',[UserController::class,'edit'])->name('user.edit');
 Route::post('/user/update/{id}',[UserController::class,'update'])->name('user.update');
-Route::get('/user/delete/{id}',[UserController::class,'delete'])->name('user.delete');
 
+Route::get('/user/delete/{id}',[UserController::class,'delete'])->name('user.delete');
+Route::post('/user/remove/{id}',[UserController::class,'delete'])->name('user.remove');
 
 //profissionais
 Route::get('/profissionais', [ProfissionalController::class,'index']);
