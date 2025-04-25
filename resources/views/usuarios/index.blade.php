@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <h1>Usuario:</h1>
+    <h1>Usuarios:</h1>
     <table>
         @if ($usuariosList->count() > 0)
             <table>
