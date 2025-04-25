@@ -12,7 +12,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
         $listUser = User::all();
         //return view('pacientes.index', compact($listPacientes));
         return view('users.index', ['usersList'=> $listUser]);
@@ -28,16 +27,21 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $newUser = $request->all();
+        //dd($newUser);
+
+        if(User::create($newUser))
+            return redirect('/users');
+        else dd("Erro ao inserir usuario!!");
     }
 
     /**
-     * Display the specified resource.
+     * Criar
      */
-    /* public function show(Usuario $usuario)
+    public function create()
     {
-        //
-    } */
+        return view('users.create');
+    }
 
     /**
      * Show the form for editing the specified resource.

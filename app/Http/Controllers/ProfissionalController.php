@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+
 use App\Models\Profissional;
 use Illuminate\Http\Request;
 
-class ProfissionalController extends User
+class ProfissionalController extends Controller
 {
     /**
      * Display a listing of the resource.

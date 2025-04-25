@@ -9,6 +9,9 @@
 
 <body>
     <h1>Usuario:</h1>
+    <a href="/user">
+        <button>Novo Usuario</button>
+    </a>
     <table>
         @if ($usersList->count() > 0)
             <table>
@@ -16,6 +19,7 @@
                     <tr>
                         <th>Id</th>
                         <th>Nome</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,7 +31,17 @@
                                 </a>
                             </td>
                             <td>{{ $user->name }}</td>
+                            <td>
+                                <a href="{{ route('user.edit',$user->id) }}">
+                                    ATUALIZAR
+                                </a>
+                                |
+                                <a href="{{ route('user.delete',$user->id) }}">
+                                    DELETAR
+                                </a>
+                            </td>
                         </tr>
+                        
                     @endforeach
                 </tbody>
             </table>

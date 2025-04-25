@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+
 use App\Models\Paciente;
 use Illuminate\Http\Request;
 
-class PacienteController extends User
+class PacienteController extends Controller
 {
     /**
      * Display a listing of the resource.
