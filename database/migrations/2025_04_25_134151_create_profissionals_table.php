@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('profissionals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id')->constrained()->onUpdate('cascade')->nullOnDelete;
+            $table->foreign('id')->references('id')->on('users')->onUpdate('cascade')->nullOnDelete();
             $table->enum('tipo_profissional', ['medico','odontologista', 'enfermeiro', 'tecnico_enfermeiro', 'bolsista'])->default('medico');
             $table->timestamps();
         });
