@@ -14,7 +14,7 @@ Route::get('/', function () {
 Route::get('/users',[UserController::class,'index']);
 Route::get('/users/{id}', [UserController::class,'show']);
 
-//CRUD
+//CRUD - USER
 Route::get('/user', [UserController::class,'create']);
 Route::post('/user', [UserController::class,'store']);
 
