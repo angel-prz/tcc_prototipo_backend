@@ -22,7 +22,7 @@ Route::get('/user/edit/{id}',[UserController::class,'edit'])->name('user.edit');
 Route::post('/user/update/{id}',[UserController::class,'update'])->name('user.update');
 
 Route::get('/user/delete/{id}',[UserController::class,'delete'])->name('user.delete');
-Route::post('/user/remove/{id}',[UserController::class,'delete'])->name('user.remove');
+Route::post('/user/remove/{id}',[UserController::class,'remove'])->name('user.remove');
 
 //profissionais
 Route::get('/profissionais', [ProfissionalController::class,'index']);
