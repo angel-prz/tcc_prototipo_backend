@@ -2,66 +2,62 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\Profissional;
 use Illuminate\Http\Request;
 
 class ProfissionalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $profissionals = Profissional::all();
+        return view('profissionals.index', compact('profissionals'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('profissionals.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+            'specialization' => 'required|string|max:255',
+            'license_number' => 'required|string|max:255',
+        ]);
+
+        Profissional::create($request->all());
+        return redirect()->route('profissionals.index')->with('success', 'Profissional criado com sucesso!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Profissional $profissional)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Profissional $profissional)
     {
-        //
+        return view('profissionals.edit', compact('profissional'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    /* public function update(Request $request, Profissional $profissional)
+    public function update(Request $request, Profissional $profissional)
     {
-        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $profissional->id,
+            'specialization' => 'required|string|max:255',
+            'license_number' => 'required|string|max:255',
+        ]);
+
+        $profissional->update($request->all());
+        return redirect()->route('profissionals.index')->with('success', 'Profissional atualizado com sucesso!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    /*
     public function destroy(Profissional $profissional)
     {
-        
-    } */
+        $profissional->delete();
+        return redirect()->route('profissionals.index')->with('success', 'Profissional excluído com sucesso!');
+    }
 }

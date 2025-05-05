@@ -36,7 +36,7 @@
             </tr>
             <tr>
                 <td>Telefone:</td>
-                <td><input type="texxt" name="numero_telefone"/></td>
+                <td><input type="text" name="numero_telefone"/></td>
             </tr>
             <tr>
                 <td>Tipo de Usuario:</td>

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreign('id')->references('id')->on('users')->onUpdate('cascade')->nullOnDelete();
             $table->enum('tipo_profissional', ['medico','odontologista', 'enfermeiro', 'tecnico_enfermeiro', 'bolsista'])->default('medico');
+            $table->string('n_conselho')->notnull();
             $table->timestamps();
         });
     }

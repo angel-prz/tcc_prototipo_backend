@@ -7,59 +7,53 @@ use Illuminate\Http\Request;
 
 class ConsultaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $consultas = Consulta::all();
+        return view('consultas.index', compact('consultas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('consultas.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function show($id)
+    {
+        $consulta = Consulta::find($id);
+        return view('consultas.show', compact('consulta'));
+    }
+
     public function store(Request $request)
     {
-        //
+        $newConsulta = $request->all();
+        //dd($newConsulta);
+
+        if(Consulta::create($newConsulta))
+            return redirect('/consultas');
+        else dd("Erro ao agendar consulta!!");
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Consulta $consulta)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Consulta $consulta)
     {
-        //
+        return view('consultas.edit', compact('consulta'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Consulta $consulta)
     {
-        //
+        $request->validate([
+            'paciente_id' => 'required|exists:pacientes,id',
+            'profissional_id' => 'required|exists:profissionals,id',
+            'data_hora' => 'required|date',
+        ]);
+
+        $consulta->update($request->all());
+        return redirect()->route('consultas.index')->with('success', 'Consulta atualizada com sucesso!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Consulta $consulta)
     {
-        //
+        $consulta->delete();
+        return redirect()->route('consultas.index')->with('success', 'Consulta excluída com sucesso!');
     }
 }

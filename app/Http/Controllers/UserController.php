@@ -28,7 +28,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $newUser = $request->all();
-        dd($newUser);
+        //dd($newUser);
 
         if(User::create($newUser))
             return redirect('/users');
