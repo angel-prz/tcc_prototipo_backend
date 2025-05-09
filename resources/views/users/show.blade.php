@@ -19,6 +19,6 @@
     @else
         <p>Usuario não encontrado! </p>
     @endif
-    <a href="/usuarios">&#9664;Voltar</a>
+    <a href="/users">&#9664;Voltar</a>
 </body>
 </html>
