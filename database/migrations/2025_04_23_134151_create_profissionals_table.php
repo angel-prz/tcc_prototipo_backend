@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('profissionals', function (Blueprint $table) {
             $table->id();
-            $table->foreign('id')->references('id')->on('users')->onUpdate('cascade')->nullOnDelete();
+            /* $table->foreign('id')->references('id')->on('users')->onUpdate('cascade')->nullOnDelete(); */
             $table->enum('tipo_profissional', ['medico','odontologista', 'enfermeiro', 'tecnico_enfermeiro', 'bolsista'])->default('medico');
-            $table->string('n_conselho')->notnull();
+            $table->enum('sigla_conselho', ['CRM', 'COREN', 'CRO'])->nullable();
+            $table->string('uf_conselho')->nullable();
+            $table->string('numero_conselho')->nullable();
             $table->timestamps();
         });
     }

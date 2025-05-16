@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
@@ -15,18 +16,33 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+    protected static ?string $password;
+
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'data_nascimento' => $this->faker->date('Y-m-d', '2005-01-01'),
-            'sexo' => $this->faker->randomElement(['masculino', 'feminino', 'outro']),
-            'numero_telefone' => $this->faker->phoneNumber(),
-            'tipo_usuario' => $this->faker->randomElement(['paciente', 'profissionalSaude']),
-            'remember_token' => Str::random(10),
+            'password' => static::$password ??= Hash::make('password'), 
+            'data_nascimento' => fake()->date(),
+            'sexo' => fake()->randomElement(['M', 'F']),
+            'endereco' => fake()->address(),
+            'naturalidade' => fake()->city(),
+            'fone_celular' => fake()->cellphoneNumber(),
+            'fone_fixo' => fake()->phoneNumber(),
+            'tipo_usuario' => fake()->randomElement(['administrador', 'paciente', 'profissionalSaude']),
         ];
+    }
+
+    /**
+     * Indicate that the model's email address should be unverified.
+     */
+    public function unverified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'email_verified_at' => null,
+        ]);
     }
 }

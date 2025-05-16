@@ -18,12 +18,15 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
+        'name',
         'data_nascimento',
         'sexo',
-        'numero_telefone',
+        'endereco',
+        'naturalidade',
+        'fone_celular',
+        'fone_fixo',
         'tipo_usuario',
     ];
 
@@ -49,4 +52,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    //depois
+    //RELAÇÔES  1 para 1 ? FILHOS/CHILD
+    /* public function paciente()
+    {
+        return $this->hasOne(Paciente::class);
+    }
+    public function profissional()
+    {
+        return $this->hasOne(Profissional::class);
+    } */
 }
