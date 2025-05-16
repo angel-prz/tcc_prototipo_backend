@@ -15,9 +15,5 @@ class Profissional extends User
         'years_of_experience'
     ];
 
-    // Example of a method specific to Profissional
-    public function getProfessionalDetails()
-    {
-        return "{$this->specialization} - License: {$this->license_number}";
-    }
+    //RELAÇÔES DB TERMINAR DEPOIS
 }
