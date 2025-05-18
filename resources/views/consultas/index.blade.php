@@ -29,7 +29,7 @@
                     <td>{{ $consulta->data_hora }}</td>
                     <td>
                         <a href="{{ route('consultas.edit', $consulta->id) }}">Editar</a>
-                        <form action="{{ route('consultas.destroy', $consulta->id) }}" method="POST" style="display:inline;">
+                        <form action="{{ route('consultas.delete', $consulta->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit">Excluir</button>

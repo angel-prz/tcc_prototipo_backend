@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Agendar Consulta</title>
 </head>
 
 <body>
@@ -14,16 +14,34 @@
     <form action="/consulta" method="POST">
         @csrf
         {{-- <input type="hidden" name="_token" value="{{csrf_token()}}"/> --}}
-        <table>
-            <!--   Fazer consulta no db e mostrar os pacientes cadastrados com um select *A FAZER-->                  
+        <table>             
             <tr> 
-                <td>ID Paciente:</td>
-                <td><input type="text" name="id_paciente"/></td>
+                <!-- <td>ID Paciente:</td>
+                <td><input type="text" name="id_paciente"/></td> -->
+                <label for="id_paciente">Paciente:</label>
+                <select name="id_paciente" id="id_paciente" required>
+                    <!-- <option value="">Selecione um paciente</option> -->
+                    @foreach ($pacientes as $paciente)
+                        <option value="{{ $paciente->id }}">
+                            {{ $paciente->name }}
+                        </option>
+                    @endforeach
+                </select>
             </tr>
             
             <tr> 
-                <td>ID Profissional:</td>
-                <td><input type="text" name="id_profissional"/></td>
+                <!-- <td>ID Profissional:</td> -->
+                <!-- <td><input type="text" name="id_profissional"/></td> -->
+                <label for="id_profissional">Profissional de Saúde:</label>
+                <select name="id_profissional" id="id_profissional" required>
+                    <!-- <option value="">Selecione um profissional</option> -->
+                    @foreach ($profissionais as $profissional)
+                        <option value="{{ $profissional->id }}">
+                            {{ $profissional->name }}
+                        </option>
+                    @endforeach
+                </select>
+
             </tr>
 
             <tr>
@@ -35,7 +53,7 @@
                 <td colspan="2"><input type="submit" value="Criar"/></td>
             </tr>
             <tr align="center">
-                <td colspan="2"><a href="/users" style="display: inline">&#9664;&nbsp;Voltar</a></td>
+                <td colspan="2"><a href="/consultas" style="display: inline">&#9664;&nbsp;Voltar</a></td>
             </tr>
             
         </table>

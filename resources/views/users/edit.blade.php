@@ -41,10 +41,10 @@
             <tr>
                 <td>Tipo de Usuario:</td>
                 <td>
-                    <input type="radio" name ="paciente" id="paciente" valor="paciente">
+                    <input type="radio" name ="paciente" id="paciente" value="paciente">
                     <label for="paciente">Paciente</label><br>
 
-                    <input type="radio" name ="profissionalSaude" id="profissionalSaude" valor="profissionalSaude">
+                    <input type="radio" name ="profissionalSaude" id="profissionalSaude" value="profissionalSaude">
                     <label for="profissionalSaude">Profissional da Saude</label><br>
                 </td>
             </tr>
