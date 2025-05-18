@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             /* $table->id_paciente();
             $table->id_profissional(); */
-            $table->foreignId('id_profissional')->references('id')->on('profissionals')->onUpdate('cascade')->nullOnDelete();
-            $table->foreignId('id_paciente')->references('id')->on('pacientes')->onUpdate('cascade')->nullOnDelete();
+            $table->foreignId('id_profissional')->references('id')->on('users')->onUpdate('cascade')->nullOnDelete();
+            $table->foreignId('id_paciente')->references('id')->on('users')->onUpdate('cascade')->nullOnDelete();
             //$table->enum('tipo_consulta', ['presencial','teleconsulta'])->default('presencial');
             $table->enum('status', ['agendada','realizada', 'cancelada'])->default('agendada');
             $table->string('observacao')->nullable();
-            $table->date('data_consulta');
+            $table->dateTime('data_hora');
             $table->timestamps();
             /* $table->string('sintomas')->nullable();
             $table->string('diagnostico')->nullable();

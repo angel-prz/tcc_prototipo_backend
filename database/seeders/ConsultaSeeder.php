@@ -3,19 +3,17 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\Consulta;
+use App\Models\User;
 
-class DatabaseSeeder extends Seeder
+class ConsultaSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      */
     public function run(): void
     {
-        // Cria 30 usuários aleatórios com os dados definidos na UserFactory
-        User::factory()->count(30)->create();
-        //consultas
+        //
         $profissionais = User::factory()->count(5)->create();
         $pacientes = User::factory()->count(10)->create();
 
