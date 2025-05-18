@@ -20,10 +20,10 @@ class Paciente extends Model
     } */
 
     //RELAÇÔES 1 PARA MUITOS (1toN)
-    /* public function consultas()
+    public function consultas()
     {
         return $this->hasMany(Consulta::class);
-    } */
+    }
 
     /* public function dispenca_ef()
     {

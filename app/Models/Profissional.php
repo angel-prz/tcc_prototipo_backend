@@ -16,4 +16,8 @@ class Profissional extends User
     ];
 
     //RELAÇÔES DB TERMINAR DEPOIS
+    public function consultas()
+    {
+        return $this->hasMany(Consulta::class);
+    }
 }
