@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\User;
 
 use App\Models\Consulta;
 use Illuminate\Http\Request;
@@ -15,13 +16,15 @@ class ConsultaController extends Controller
 
     public function create()
     {
-        return view('consultas.create');
+        $profissionais = User::where('tipo_usuario', 'profissionalSaude')->get();
+        $pacientes = User::where('tipo_usuario', 'paciente')->get();
+        return view('consultas.create', compact('profissionais', 'pacientes'));
+        //return view('consultas.create');
     }
 
     public function show($id)
     {
-        $consulta = Consulta::find($id);
-        return view('consultas.show', compact('consulta'));
+        return view('consultas.show', ['consulta' => Consulta::find($id)]);
     }
 
     public function store(Request $request)
@@ -34,26 +37,31 @@ class ConsultaController extends Controller
         else dd("Erro ao agendar consulta!!");
     }
 
-    public function edit(Consulta $consulta)
+    public function edit($id) 
     {
-        return view('consultas.edit', compact('consulta'));
+        $consulta = Consulta::find($id);
+        return view('consultas.edit',compact('consulta'));
     }
 
-    public function update(Request $request, Consulta $consulta)
-    {
-        $request->validate([
-            'paciente_id' => 'required|exists:pacientes,id',
-            'profissional_id' => 'required|exists:profissionals,id',
-            'data_hora' => 'required|date',
-        ]);
 
-        $consulta->update($request->all());
-        return redirect()->route('consultas.index')->with('success', 'Consulta atualizada com sucesso!');
+    public function update(Request $request, $id)
+    {
+        $novaConsulta = $request->all();
+        //dd($novaConsulta);
+        if(Consulta::findOrFail($id)->update($novaConsulta))
+            return redirect('/consultas');
+        else dd("Erro ao atualizar consulta!!");
     }
 
-    public function destroy(Consulta $consulta)
+    public function delete($id) 
     {
-        $consulta->delete();
-        return redirect()->route('consultas.index')->with('success', 'Consulta excluída com sucesso!');
+        return view('consultas.remove', ['consulta' => Consulta::findOrFail($id)]);
+    }
+
+    public function remove($id)
+    {
+        if(Consulta::destroy($id))
+            return redirect('/consultas');
+        else dd("Erro ao remover consulta!!");
     }
 }
