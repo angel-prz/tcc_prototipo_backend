@@ -32,8 +32,8 @@
             <tr> 
                 <!-- <td>ID Profissional:</td> -->
                 <!-- <td><input type="text" name="id_profissional"/></td> -->
-                <label for="id_profissional">Profissional de Saúde:</label>
-                <select name="id_profissional" id="id_profissional" required>
+                <label for="profissional_id">Profissional de Saúde:</label>
+                <select name="profissional_id" id="profissional_id" required>
                     <!-- <option value="">Selecione um profissional</option> -->
                     @foreach ($profissionais as $profissional)
                         <option value="{{ $profissional->id }}">

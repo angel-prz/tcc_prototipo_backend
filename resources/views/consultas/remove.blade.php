@@ -13,8 +13,8 @@
     @if ($consulta)
         <h1>{{ $consulta->id }}</h1>
         <ul>
-            <li>Paciente: {{ $consulta->id_paciente }}</li>
-            <li>Profissional: {{ $consulta->id_profissional }} </li>
+            <li>Paciente: {{ $consulta->paciente_id }}</li>
+            <li>Profissional: {{ $consulta->profissional_id }} </li>
             <li>Status: {{ $consulta->status}} </li>
             <li>Observação: {{ $consulta->obersavacao}} </li>
             <li>Data e hora: {{ $consulta->data_hora}} </li>
