@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('profissionals', function (Blueprint $table) {
-            $table->id();
-            /* $table->foreign('id')->references('id')->on('users')->onUpdate('cascade')->nullOnDelete(); */
+        Schema::create('profissionais', function (Blueprint $table) {
+            $table->unsignedBigInteger('id')->primary();
+            $table->foreign('id')->references('id')->on('users')->constrained()->cascadeOnDelete();
             $table->enum('tipo_profissional', ['medico','odontologista', 'enfermeiro', 'tecnico_enfermeiro', 'bolsista'])->default('medico');
             $table->enum('sigla_conselho', ['CRM', 'COREN', 'CRO'])->nullable();
             $table->string('uf_conselho')->nullable();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('profissionals');
+        Schema::dropIfExists('profissionais');
     }
 };

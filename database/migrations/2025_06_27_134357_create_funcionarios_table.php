@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pacientes', function (Blueprint $table) {
+        Schema::create('funcionarios', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
-            $table->foreign('id')->references('id')->on('users')->constrained()->cascadeOnDelete();
-            $table->enum('tipo_paciente', ['aluno','terceirizado', 'servidor'])->default('aluno');
+            $table->foreign('id')->references('id')->on('pacientes')->constrained()->cascadeOnDelete();
+            $table->enum('tipo_funcionario', ['terceirizado','docente', 'tecnico_administrativo'])->default('docente');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pacientes');
+        Schema::dropIfExists('funcionarios');
     }
 };
