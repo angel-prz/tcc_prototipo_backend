@@ -7,9 +7,9 @@ use App\Models\User;
 
 class Profissional extends User
 {
-    // Additional attributes specific to Profissional
+  
+    protected $table = 'profissionais';
     protected $fillable = [
-        // ...existing User attributes...
         'specialization', 
         'license_number', 
         'years_of_experience'
@@ -20,4 +20,6 @@ class Profissional extends User
     {
         return $this->hasMany(Consulta::class);
     }
+
+    
 }
