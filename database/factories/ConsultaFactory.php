@@ -17,8 +17,8 @@ class ConsultaFactory extends Factory
     public function definition(): array
     {
         return [
-            'id_profissional' => User::factory(), // Ou use um ID válido
-            'id_paciente' => User::factory(),
+            'profissional_id' => User::factory(), 
+            'paciente_id' => User::factory(),
             'status' => $this->faker->randomElement(['agendada', 'realizada', 'cancelada']),
             'observacao' => $this->faker->optional()->sentence(),
             'data_hora' => $this->faker->dateTimeBetween('now', '+1 month'),
