@@ -14,10 +14,10 @@ class Paciente extends Model
 
     //RELAÇÔES TERMINAR DEPOIS
     //EXTENDS USER
-   /*  public function user()
+    public function user()
     {
         return $this->belongsTo(User::class);
-    } */
+    }
 
     //RELAÇÔES 1 PARA MUITOS (1toN)
     public function consultas()
@@ -25,10 +25,11 @@ class Paciente extends Model
         return $this->hasMany(Consulta::class);
     }
 
-    /* public function dispenca_ef()
+    //mas apenas uma dispensa por semestre(?)
+    public function dispenca_educacao_fisica()
     {
-        return $this->hasOne(DispencaEf::class);
-    } */
+        return $this->hasMany(DispensaEducacaoFisica::class);
+    }
 
     
 
