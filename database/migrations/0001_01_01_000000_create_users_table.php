@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('naturalidade')->nullable();
             $table->string('fone_celular')->nullable();
             $table->string('fone_fixo')->nullable();
-            $table->enum('tipo_usuario', ['administrador', 'paciente', 'profissionalSaude'])->default('paciente');
+            $table->enum('tipo_usuario', ['administrador', 'paciente', 'profissional'])->default('paciente');
             $table->rememberToken();
             $table->timestamps();
         });

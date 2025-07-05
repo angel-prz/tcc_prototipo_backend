@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pacientes', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
             $table->foreign('id')->references('id')->on('users')->constrained()->cascadeOnDelete();
-            $table->enum('tipo_paciente', ['aluno','terceirizado', 'servidor'])->default('aluno');
+            $table->enum('tipo_paciente', ['aluno','funcionario'])->default('aluno');
             $table->timestamps();
         });
     }
