@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Paciente extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'tipo_paciente',
     ];
@@ -19,6 +22,15 @@ class Paciente extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function aluno()
+    {
+        return $this->hasOne(Aluno::class);
+    }
+
+    public function funcionario()
+    {
+        return $this->hasOne(Funcionario::class);
+    }
     //RELAÇÔES 1 PARA MUITOS (1toN)
     public function consultas()
     {
@@ -31,6 +43,6 @@ class Paciente extends Model
         return $this->hasMany(DispensaEducacaoFisica::class);
     }
 
-    
 
-}   
+
+}

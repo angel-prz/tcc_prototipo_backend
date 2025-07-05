@@ -17,8 +17,8 @@ class Funcionario extends Model
         'turno',
     ];
 
-    function user()
+    function paciente()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(PAciente::class);
     }
 }
