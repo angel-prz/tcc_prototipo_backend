@@ -16,8 +16,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Cria 30 usuários aleatórios com os dados definidos na UserFactory
-        User::factory()->count(30)->create();
+        //user
+        $seedUser = new UserSeeder();
+        $seedUser->run();
         
         //profissional
         //horarios
