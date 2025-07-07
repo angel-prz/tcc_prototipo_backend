@@ -5,6 +5,9 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Consulta;
+use App\Models\Aluno;
+use App\Models\DispensaEducacaoFisica;
+use Database\Factories\DispensaEducacaoFisicaFactory;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,18 +16,38 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Cria 30 usuários aleatórios com os dados definidos na UserFactory
-        User::factory()->count(30)->create();
-        //consultas
-        $profissionais = User::factory()->count(5)->create();
-        $pacientes = User::factory()->count(10)->create();
+        //user
+        $seedUser = new UserSeeder();
+        $seedUser->run();
 
-        // Cria 20 consultas aleatórias
-        foreach (range(1, 20) as $i) {
-            Consulta::factory()->create([
-                'id_profissional' => $profissionais->random()->id,
-                'id_paciente' => $pacientes->random()->id,
-            ]);
-        }
+        //profissional
+        $seedProfissional = new ProfissionalSeeder();
+        $seedProfissional->run();
+        //horarios
+        $seedHorarios = new HorariosProfissionalSeeder();
+        $seedHorarios->run();
+
+
+        //paciente
+        $seedPaciente = new PacienteSeeder();
+        $seedPaciente->run();
+
+        //aluno
+        $seedAluno = new AlunoSeeder();
+        $seedAluno->run();
+
+
+        //funcionario
+        $seedFuncionario = new FuncionarioSeeder();
+        $seedFuncionario->run();
+
+        //consulta
+        $seedConsulta = new ConsultaSeeder();
+        $seedConsulta->run();
+
+        //dispensa
+        $seedAlunoDispensa = new DispensaEducacaoFisicaSeeder();
+        $seedAlunoDispensa->run();
+
     }
 }

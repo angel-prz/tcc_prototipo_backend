@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pacientes', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary();
-            $table->foreign('id')->references('id')->on('users')->constrained()->cascadeOnDelete();
-            $table->enum('tipo_paciente', ['aluno','funcionario'])->default('aluno');
+        Schema::create('horarios_profissionais', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('profissional_id')->references('id')->on('profissionais')->cascadeOnDelete();;
+            $table->string('dia_semana');
+            $table->time('entrada');
+            $table->time('saida');
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pacientes');
+        Schema::dropIfExists('horarios_profissionais');
     }
 };

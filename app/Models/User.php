@@ -55,12 +55,25 @@ class User extends Authenticatable
 
     //depois
     //RELAÇÔES  1 para 1 ? FILHOS/CHILD
-    /* public function paciente()
+    public function paciente()
     {
         return $this->hasOne(Paciente::class);
     }
     public function profissional()
     {
         return $this->hasOne(Profissional::class);
-    } */
+    }
+
+    public function aluno()
+    {
+        return $this->hasOneThrough(
+            Aluno::class, 
+            Paciente::class, 
+            'user_id', 
+            'paciente_id', 
+            'id', 
+            'id'
+        );
+    }
+
 }

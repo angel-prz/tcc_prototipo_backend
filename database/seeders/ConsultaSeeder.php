@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Consulta;
+use App\Models\Profissional;
+use App\Models\Paciente;
 use App\Models\User;
 
 class ConsultaSeeder extends Seeder
@@ -13,16 +15,17 @@ class ConsultaSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        $profissionais = User::factory()->count(5)->create();
-        $pacientes = User::factory()->count(10)->create();
+        //consultas
+        $profissionais = User::where('tipo_usuario', 'profissional')->get();
+        $pacientes = User::where('tipo_usuario', 'paciente')->get();
 
-        // Cria 20 consultas aleatórias
-        foreach (range(1, 20) as $i) {
+        // Cria 50 consultas aleatórias
+        foreach (range(1, 50) as $i) {
             Consulta::factory()->create([
-                'id_profissional' => $profissionais->random()->id,
-                'id_paciente' => $pacientes->random()->id,
+                'profissional_id' => $profissionais->random()->id,
+                'paciente_id' => $pacientes->random()->id,
             ]);
         }
     }
 }
+

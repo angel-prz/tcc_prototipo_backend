@@ -13,23 +13,12 @@ return new class extends Migration
     {
         Schema::create('consultas', function (Blueprint $table) {
             $table->id();
-            /* $table->id_paciente();
-            $table->id_profissional(); */
-            $table->foreignId('id_profissional')->references('id')->on('users')->onUpdate('cascade')->nullOnDelete();
-            $table->foreignId('id_paciente')->references('id')->on('users')->onUpdate('cascade')->nullOnDelete();
-            //$table->enum('tipo_consulta', ['presencial','teleconsulta'])->default('presencial');
+            $table->foreignId('profissional_id')->references('id')->on('users')->onUpdate('cascade')->nullOnDelete();
+            $table->foreignId('paciente_id')->references('id')->on('users')->onUpdate('cascade')->nullOnDelete();
             $table->enum('status', ['agendada','realizada', 'cancelada'])->default('agendada');
             $table->string('observacao')->nullable();
             $table->dateTime('data_hora');
-            $table->timestamps();
-            /* $table->string('sintomas')->nullable();
-            $table->string('diagnostico')->nullable();
-            $table->string('prescricao')->nullable();
-            $table->string('receituario')->nullable();
-            $table->string('laudo')->nullable();
-            $table->string('atestado')->nullable();
-            $table->string('exame')->nullable();
-            $table->string('exame_resultado')->nullable(); */
+            $table->timestamps();     
         });
     }
 

@@ -9,22 +9,26 @@ use Illuminate\Testing\Fluent\Concerns\Has;
 class Consulta extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
-        'id_paciente',
-        'id_profissional',
+        'paciente_id',
+        'profissional_id',
         'status',
         'observacao',
         'data_hora',
-        // add any other fields that should be fillable
     ];
 
     public function paciente()
     {
-        return $this->belongsTo(User::class, 'id_paciente');
+        return $this->belongsTo(Paciente::class, 'paciente_id');
     }
     public function profissional()
     {
-        return $this->belongsTo(User::class, 'id_profissional');
+        return $this->belongsTo(Profissional::class, 'profissional_id');
+    }
+
+    public function dispenca_educacao_fisica()
+    {
+        return $this->hasOne(DispensaEducacaoFisica::class);
     }
 }
