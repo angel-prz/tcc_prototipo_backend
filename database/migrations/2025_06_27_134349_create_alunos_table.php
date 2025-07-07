@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('alunos', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
             $table->foreign('id')->references('id')->on('pacientes')->constrained()->cascadeOnDelete();
+            $table->string('turma');
             $table->string('matricula');
             $table->unique('matricula');
             $table->string('campus');

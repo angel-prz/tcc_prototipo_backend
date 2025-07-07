@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -20,6 +21,18 @@ return new class extends Migration
             $table->string('numero_conselho')->nullable();
             $table->timestamps();
         });
+
+        //Assegurar que o tipo de profissional e o conselho seja o mesmo ? fazer no formresquest ou front?
+        /* DB::statement("
+            ALTER TABLE profissionais
+            ADD CONSTRAINT check_tipo_sigla
+            CHECK (
+                (tipo_profissional = 'medico' AND sigla_conselho = 'CRM') OR
+                (tipo_profissional = 'odontologista' AND sigla_conselho = 'CRO') OR
+                (tipo_profissional IN ('enfermeiro', 'tecnico_enfermeiro') AND sigla_conselho = 'COREN') OR
+                (tipo_profissional = 'bolsista' AND sigla_conselho IS NULL)
+            )
+        "); */
     }
 
     /**

@@ -15,6 +15,10 @@ return new class extends Migration
             $table->unsignedBigInteger('id')->primary();
             $table->foreign('id')->references('id')->on('pacientes')->constrained()->cascadeOnDelete();
             $table->enum('tipo_funcionario', ['terceirizado','docente', 'tecnico_administrativo'])->default('docente');
+            $table->string('cargo');
+            $table->string('setor')->nullable();
+            $table->string('ramal')->nullable();
+            $table->enum('turno', ['matutino', 'vespertino', 'noturno'])->nullable();
             $table->timestamps();
         });
     }
