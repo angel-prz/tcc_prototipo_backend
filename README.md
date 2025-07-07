@@ -10,13 +10,13 @@
 
 ## Instalação
 
-1. **Clone o repositório:**
+1. Clone o repositório:
 
 ```sh
 git clone https://github.com/seu-usuario/seu-repositorio.git
 cd angelperez_projeto_dbe2
 ```
-2.Instalar as dependências PHP:
+2. Instalar as dependências PHP:
 
 ```sh
 composer install
@@ -27,12 +27,12 @@ composer install
 npm install
 ```
 
-4.Copiar o arquivo de ambiente e configure:
+4. Copiar o arquivo de ambiente e configure:
 ```sh
 cp .env.example .env
 ```
 
-5.Gere a chave de app (APP_KEY):
+5. Gere a chave de app (APP_KEY):
 ```sh
 php artisan key:generate
 ```
