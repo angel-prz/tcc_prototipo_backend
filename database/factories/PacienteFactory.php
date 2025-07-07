@@ -17,7 +17,7 @@ class PacienteFactory extends Factory
     public function definition(): array
     {
         return [
-           $this->faker->randomElement(['aluno', 'funcionario']),
+           'tipo_paciente' => $this->faker->randomElement(['aluno', 'funcionario']),
         ];
     }
 }

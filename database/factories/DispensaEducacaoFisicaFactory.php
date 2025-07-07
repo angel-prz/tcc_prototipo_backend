@@ -17,11 +17,11 @@ class DispensaEducacaoFisicaFactory extends Factory
     public function definition(): array
     {
         return [
-            "turma" => fake()->word() . fake()->number(),
+            "turma" => fake()->word() . fake()->randomNumber(),
             "motivo" => fake()->paragraph(),
             "comeco" => fake()->date(),
             "fim" => fake()->date(),
-            "numero_dias" => fake()->number()
+            "numero_dias" => fake()->randomNumber()
         ];
     }
 }

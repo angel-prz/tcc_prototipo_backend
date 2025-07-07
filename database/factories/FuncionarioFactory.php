@@ -17,7 +17,11 @@ class FuncionarioFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'tipo_funcionario' => $this->faker->randomElement(['terceirizado','docente', 'tecnico_administrativo']),
+            'cargo' => $this->faker->jobTitle(),
+            'setor' => $this->faker->word(),
+            'ramal' => $this->faker->randomNumber(),
+            'turno' => $this->faker->randomElement(['matutino', 'vespertino', 'noturno']),
         ];
     }
 }

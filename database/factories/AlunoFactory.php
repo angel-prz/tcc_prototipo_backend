@@ -17,7 +17,7 @@ class AlunoFactory extends Factory
     public function definition(): array
     {
         // TEMPORARIO
-        // REFAZER COM FILE STORAGE 
+        // REFAZER COM FILE STORAGE
         // https://laravel.com/docs/12.x/filesystem#main-content
         $campi = [
             'Reitoria',
@@ -75,15 +75,16 @@ class AlunoFactory extends Factory
             'Mestrado Profissional e Doutorado Profissional em Educação e Tecnologia',
             'Mestrado Profissional em Engenharia e Ciências Ambientais',
         ];
-        
+
 
         return [
-            "turma" => fake()->word() . fake()->number(),
-            "campus" => $this->faker->randomElement($campi),
-            "curso" => $this->faker->randomElement($cursos),
-            "semestre" => fake()->randomDigit(),
-            "ano" => fake()->year(),
-            "fone_responsavel" => $this->faker->randomElement(['cellphone', 'landline']),
+            'turma' => fake()->word() . fake()->randomNumber(),
+            'matricula' => fake()->unique()->numerify('##########'),
+            'campus' => $this->faker->randomElement($campi),
+            'curso' => $this->faker->randomElement($cursos),
+            'semestre' => fake()->randomDigit(),
+            'ano' => fake()->year(),
+            'fone_responsavel' => $this->faker->numerify('(##) ####-####'),
         ];
     }
 }
