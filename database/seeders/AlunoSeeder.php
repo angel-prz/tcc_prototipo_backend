@@ -15,12 +15,12 @@ class AlunoSeeder extends Seeder
      */
     public function run(): void
     {
-        $pacientes = Paciente::factory()->count(100)->create();
+        $alunos = Paciente::where('tipo_paciente', 'aluno')->get();
 
-        foreach (range(1, 15) as $i)
+        foreach ($alunos as $aluno)
         {
             Aluno::factory()->create([
-                'id' => $pacientes->random()->id,
+                'id' => $aluno->id,
             ]);
         }
     }

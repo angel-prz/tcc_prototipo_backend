@@ -19,19 +19,23 @@ class DatabaseSeeder extends Seeder
         //user
         $seedUser = new UserSeeder();
         $seedUser->run();
-        
+
         //profissional
+        $seedProfissional = new ProfissionalSeeder();
+        $seedProfissional->run();
         //horarios
-        
+        $seedHorarios = new HorariosProfissionalSeeder();
+        $seedHorarios->run();
+
 
         //paciente
-       
+        $seedPaciente = new PacienteSeeder();
+        $seedPaciente->run();
 
         //aluno
         $seedAluno = new AlunoSeeder();
         $seedAluno->run();
-        //dispensa
-        
+
 
         //funcionario
         $seedFuncionario = new FuncionarioSeeder();
@@ -40,6 +44,10 @@ class DatabaseSeeder extends Seeder
         //consulta
         $seedConsulta = new ConsultaSeeder();
         $seedConsulta->run();
-        
+
+        //dispensa
+        $seedAlunoDispensa = new DispensaEducacaoFisicaSeeder();
+        $seedAlunoDispensa->run();
+
     }
 }

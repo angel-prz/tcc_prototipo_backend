@@ -16,11 +16,11 @@ class ConsultaSeeder extends Seeder
     public function run(): void
     {
         //consultas
-        $profissionais = Profissional::factory()->count(12)->create();
-        $pacientes = Paciente::factory()->count(100)->create();
+        $profissionais = User::where('tipo_usuario', 'profissional')->get();
+        $pacientes = User::where('tipo_usuario', 'paciente')->get();
 
-        // Cria 20 consultas aleatórias
-        foreach (range(1, 30) as $i) {
+        // Cria 50 consultas aleatórias
+        foreach (range(1, 50) as $i) {
             Consulta::factory()->create([
                 'profissional_id' => $profissionais->random()->id,
                 'paciente_id' => $pacientes->random()->id,
