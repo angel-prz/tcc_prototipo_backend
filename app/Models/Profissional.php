@@ -4,15 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Profissional extends User
 {
-  
+
+    use HasFactory;
+
     protected $table = 'profissionais';
     protected $fillable = [
-        'specialization', 
-        'license_number', 
-        'years_of_experience'
+        'tipo_profissional',
+        'sigla_conselho',
+        'uf_conselho',
+        'numero_conselho',
     ];
 
     //RELAÇÔES DB TERMINAR DEPOIS
@@ -21,5 +25,5 @@ class Profissional extends User
         return $this->hasMany(Consulta::class);
     }
 
-    
+
 }

@@ -8,17 +8,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Funcionario extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
-        'tipo',
+        'tipo_funcionario',
         'cargo',
         'setor',
         'ramal',
         'turno',
     ];
 
-    function paciente()
+    public function user()
     {
-        return $this->belongsTo(PAciente::class);
+        return $this->belongsToThrough(
+            User::class, [Paciente::class],
+            null,
+            '',
+            [
+                User::class=>'user_id',
+                Paciente::class=>'paciente_id'
+            ]
+        );
     }
 }

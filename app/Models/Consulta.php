@@ -9,7 +9,7 @@ use Illuminate\Testing\Fluent\Concerns\Has;
 class Consulta extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'paciente_id',
         'profissional_id',
@@ -20,11 +20,11 @@ class Consulta extends Model
 
     public function paciente()
     {
-        return $this->belongsTo(User::class, 'paciente_id');
+        return $this->belongsTo(Paciente::class, 'paciente_id');
     }
     public function profissional()
     {
-        return $this->belongsTo(User::class, 'profissional_id');
+        return $this->belongsTo(Profissional::class, 'profissional_id');
     }
 
     public function dispenca_educacao_fisica()
