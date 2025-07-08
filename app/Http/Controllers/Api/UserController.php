@@ -37,19 +37,19 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $User)
+    public function show(User $user)
     {
-        return new UserResource($User);
+        return new UserResource($user);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserUpdateRequest $request, User $User)
+    public function update(UserUpdateRequest $request, User $user)
     {
         try {
-            $User->update($request->validated());
-            return new UserResource($User);
+            $user->update($request->validated());
+            return new UserResource($user);
         } catch (\Exception $e) {
             return $this->errorHandler('Erro ao atualizar Usuario',$e);
         }
@@ -58,15 +58,15 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $User)
+    public function destroy(User $user)
     {
         try {
-            $User->delete();
-            return (new UserResource($User))->additional([
+            $user->delete();
+            return (new UserResource($user))->additional([
                     'message' => 'Usuario deletado com sucesso!'
                 ]);
         } catch (\Exception $e) {
-            return $this->errorHandler('Erro ao atualizar Usuario',$e);
+            return $this->errorHandler('Erro ao excluir Usuario',$e);
         }
     }
 }
