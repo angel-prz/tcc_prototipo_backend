@@ -23,5 +23,7 @@ class PacienteSeeder extends Seeder
                 'id' => $paciente->id,
             ]);
         }
+
+        echo "Pacientes: " . $pacientes->count() . "\n";
     }
 }

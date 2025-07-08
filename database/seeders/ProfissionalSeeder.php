@@ -14,7 +14,7 @@ class ProfissionalSeeder extends Seeder
      */
     public function run(): void
     {
-        $profissionais = User::where('tipo_usuario', 'funcionario')->get();
+        $profissionais = User::where('tipo_usuario', 'profissional')->get();
 
         foreach($profissionais as $profissional)
         {
@@ -22,5 +22,6 @@ class ProfissionalSeeder extends Seeder
                 'id' => $profissional->id,
             ]);
         }
+        echo "Profissionais: " . $profissionais->count() . "\n";
     }
 }
