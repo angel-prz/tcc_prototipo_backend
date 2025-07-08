@@ -37,19 +37,19 @@ class ConsultaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Consulta $Consulta)
+    public function show(Consulta $consulta)
     {
-        return new ConsultaResource($Consulta);
+        return new ConsultaResource($consulta);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(ConsultaUpdateRequest $request, Consulta $Consulta)
+    public function update(ConsultaUpdateRequest $request, Consulta $consulta)
     {
         try {
-            $Consulta->update($request->validated());
-            return new ConsultaResource($Consulta);
+            $consulta->update($request->validated());
+            return new ConsultaResource($consulta);
         } catch (\Exception $e) {
             return $this->errorHandler('Erro ao atualizar Consulta',$e);
         }
@@ -58,11 +58,11 @@ class ConsultaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Consulta $Consulta)
+    public function destroy(Consulta $consulta)
     {
         try {
-            $Consulta->delete();
-            return (new ConsultaResource($Consulta))->additional([
+            $consulta->delete();
+            return (new ConsultaResource($consulta))->additional([
                     'message' => 'Consulta excluida com sucesso!'
                 ]);
         } catch (\Exception $e) {
