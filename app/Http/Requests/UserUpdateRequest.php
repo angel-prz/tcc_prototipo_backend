@@ -17,7 +17,7 @@ class UserUpdateRequest extends UserStoreRequest
     {
         return [
             'email' => 'required|email|max:255',
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => 'nullable|string',
             'nome' => 'required|string|max:255',
             'data_nascimento' => 'nullable|date',
             'sexo' => 'nullable|string|in:M,F',
