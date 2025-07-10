@@ -9,7 +9,7 @@
 
 <body>
     <h1>Lista de Consultas</h1>
-    <a href="{{ route('consultas.create') }}">Criar Nova Consulta</a>
+    <a href="{{ route('consulta.create') }}">Criar Nova Consulta</a>
     <table>
         <thead>
             <tr>
@@ -24,8 +24,8 @@
             @foreach ($consultas as $consulta)
                 <tr>
                     <td>{{ $consulta->id }}</td>
-                    <td>{{ $consulta->paciente->name }}</td>
-                    <td>{{ $consulta->profissional->name }}</td>
+                    <td>{{ $consulta->paciente->name ?? '-' }}</td>
+                    <td>{{ $consulta->profissional->name ?? '-' }}</td>
                     <td>{{ $consulta->data_hora }}</td>
                     <td>
                         <a href="{{ route('consultas.edit', $consulta->id) }}">Editar</a>

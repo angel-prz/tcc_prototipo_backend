@@ -10,13 +10,14 @@ class ConsultaController extends Controller
 {
     public function index()
     {
-        $consultas = Consulta::all();
+        $consultas = Consulta::with(relations: ['paciente', 'profissional'])->get();
+        dd($consultas);
         return view('consultas.index', compact('consultas'));
     }
 
     public function create()
     {
-        $profissionais = User::where('tipo_usuario', 'profissionalSaude')->get();
+        $profissionais = User::where('tipo_usuario', 'profissional')->get();
         $pacientes = User::where('tipo_usuario', 'paciente')->get();
         return view('consultas.create', compact('profissionais', 'pacientes'));
         //return view('consultas.create');
@@ -37,7 +38,7 @@ class ConsultaController extends Controller
         else dd("Erro ao agendar consulta!!");
     }
 
-    public function edit($id) 
+    public function edit($id)
     {
         $consulta = Consulta::find($id);
         return view('consultas.edit',compact('consulta'));
@@ -53,7 +54,7 @@ class ConsultaController extends Controller
         else dd("Erro ao atualizar consulta!!");
     }
 
-    public function delete($id) 
+    public function delete($id)
     {
         return view('consultas.remove', ['consulta' => Consulta::findOrFail($id)]);
     }

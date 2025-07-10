@@ -23,7 +23,7 @@ class Paciente extends Model
     //EXTENDS USER
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'id');
     }
 
     public function aluno()

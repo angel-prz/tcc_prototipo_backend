@@ -20,14 +20,14 @@
                 <td>Data e Hora:</td>
                 <td><input type="datetime-local" name="data_hora" value="{{$consulta->data_hora}}"/></td>
             </tr>
-            
+
             <tr align="center">
                 <td colspan="2"><input type="submit" value="Criar"/></td>
             </tr>
             <tr align="center">
                 <td colspan="2"><a href="/consultas" style="display: inline">&#9664;&nbsp;Voltar</a></td>
             </tr>
-            
+
         </table>
     </form>
 </body>

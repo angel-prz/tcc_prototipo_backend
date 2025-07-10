@@ -9,7 +9,7 @@
 
 <body>
     <h1>Lista de Profissionais</h1>
-    <a href="{{ route('profissionals.create') }}">Criar Novo Profissional</a>
+   {{--  <a href="{{ route('profissionals.create') }}">Criar Novo Profissional</a> --}}
     <table>
         <thead>
             <tr>
@@ -28,8 +28,8 @@
                     <td>{{ $profissional->email }}</td>
                     <td>{{ $profissional->specialization }}</td>
                     <td>
-                        <a href="{{ route('profissionals.edit', $profissional->id) }}">Editar</a>
-                        <form action="{{ route('profissionals.destroy', $profissional->id) }}" method="POST" style="display:inline;">
+                        <a href="{{ route('profissional.edit', $profissional->id) }}">Editar</a>
+                        <form action="{{ route('profissional.destroy', $profissional->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit">Excluir</button>
