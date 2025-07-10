@@ -24,8 +24,8 @@
             @foreach ($consultas as $consulta)
                 <tr>
                     <td>{{ $consulta->id }}</td>
-                    <td>{{ $consulta->paciente->name ?? '-' }}</td>
-                    <td>{{ $consulta->profissional->name ?? '-' }}</td>
+                    <td>{{ $consulta->paciente->user->name ?? '-' }}</td>
+                    <td>{{ $consulta->profissional->user->name ?? '-' }}</td>
                     <td>{{ $consulta->data_hora }}</td>
                     <td>
                         <a href="{{ route('consultas.edit', $consulta->id) }}">Editar</a>

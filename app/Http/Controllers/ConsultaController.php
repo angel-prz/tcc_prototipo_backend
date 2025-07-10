@@ -10,8 +10,8 @@ class ConsultaController extends Controller
 {
     public function index()
     {
-        $consultas = Consulta::with(relations: ['paciente', 'profissional'])->get();
-        dd($consultas);
+        $consultas = Consulta::with(['paciente.user','profissional.user'])->get();
+        //dd($consultas);
         return view('consultas.index', compact('consultas'));
     }
 
