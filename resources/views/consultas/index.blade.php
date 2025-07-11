@@ -23,7 +23,12 @@
         <tbody>
             @foreach ($consultas as $consulta)
                 <tr>
-                    <td>{{ $consulta->id }}</td>
+
+                        <td>
+                            <a href="/consultas/{{ $consulta->id }}">{{ $consulta->id }}
+                            </a>
+                        </td>
+
                     <td>{{ $consulta->paciente->user->name ?? '-' }}</td>
                     <td>{{ $consulta->profissional->user->name ?? '-' }}</td>
                     <td>{{ $consulta->data }}</td>

@@ -26,7 +26,7 @@
             </tr>
 
             <tr align="center">
-                <td colspan="2"><input type="submit" value="Criar"/></td>
+                <td colspan="2"><input type="submit" value="Atualizar"/></td>
             </tr>
             <tr align="center">
                 <td colspan="2"><a href="/consultas" style="display: inline">&#9664;&nbsp;Voltar</a></td>
