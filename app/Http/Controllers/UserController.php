@@ -34,12 +34,12 @@ class UserController extends Controller
         else dd("Erro ao inserir usuario!!"); */
         $user = User::create($newUser);
 
-        if($user){
-            if($user->tipo_usuario == 'profissional')
-            {
-                return redirect()->route('profissional.create', ['id' => $user->id]);
-            }
-        }else {
+        if($user)
+        {
+                return redirect('/users');
+        }
+        else 
+        {
             return back()->with('error', 'Erro ao criar usuario!');
         }
     }

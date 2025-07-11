@@ -9,27 +9,23 @@ class ProfissionalController extends Controller
 {
     public function index()
     {
-        $profissionals = Profissional::all();
-        return view('profissionals.index', compact('profissionals'));
+        $profissionals = Profissional::with('profissional.user')->get();
+        return view('profissionais.index', compact('profissionals'));
     }
 
     public function create()
     {
-        return view('profissionals.create');
+        return view('profissionais.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
-            'specialization' => 'required|string|max:255',
-            'license_number' => 'required|string|max:255',
+            'numero_conselho' => 'required',
         ]);
 
         Profissional::create($request->all());
-        return redirect()->route('profissionals.index')->with('success', 'Profissional criado com sucesso!');
+        return redirect('profissionais.index')->with('success', 'Profissional criado com sucesso!');
     }
 
     public function show(Profissional $profissional)
@@ -39,7 +35,7 @@ class ProfissionalController extends Controller
 
     public function edit(Profissional $profissional)
     {
-        return view('profissionals.edit', compact('profissional'));
+        return view('profissional.edit', compact('profissional'));
     }
 
     public function update(Request $request, Profissional $profissional)
@@ -52,12 +48,12 @@ class ProfissionalController extends Controller
         ]);
 
         $profissional->update($request->all());
-        return redirect()->route('profissionals.index')->with('success', 'Profissional atualizado com sucesso!');
+        return redirect('profissionals.index')->with('success', 'Profissional atualizado com sucesso!');
     }
 
     public function destroy(Profissional $profissional)
     {
         $profissional->delete();
-        return redirect()->route('profissionals.index')->with('success', 'Profissional excluído com sucesso!');
+        return redirect('profissionals.index')->with('success', 'Profissional excluído com sucesso!');
     }
 }
