@@ -45,8 +45,12 @@
             </tr>
 
             <tr>
-                <td>Data e Hora:</td>
-                <td><input type="datetime-local" name="data_hora"/></td>
+                <td>Data:</td>
+                <td><input type="date" name="data"/></td>
+            </tr>
+            <tr>
+                <td>Hora:</td>
+                <td><input type="time" name="hora"/></td>
             </tr>
 
             <tr align="center">

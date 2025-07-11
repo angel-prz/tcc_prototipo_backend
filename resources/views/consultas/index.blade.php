@@ -26,14 +26,17 @@
                     <td>{{ $consulta->id }}</td>
                     <td>{{ $consulta->paciente->user->name ?? '-' }}</td>
                     <td>{{ $consulta->profissional->user->name ?? '-' }}</td>
-                    <td>{{ $consulta->data_hora }}</td>
+                    <td>{{ $consulta->data }}</td>
+                    <td>{{ $consulta->hora }}</td>
                     <td>
-                        <a href="{{ route('consultas.edit', $consulta->id) }}">Editar</a>
-                        <form action="{{ route('consultas.delete', $consulta->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit">Excluir</button>
-                        </form>
+                        <a href="{{ route('consulta.edit', $consulta->id) }}">
+                            Editar
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ route('consulta.delete',$consulta->id) }}">
+                            DELETAR
+                        </a>
                     </td>
                 </tr>
             @endforeach

@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignId('paciente_id')->references('id')->on('pacientes')->onUpdate('cascade')->onDelete('cascade');
             $table->enum('status', ['agendada','realizada', 'cancelada'])->default('agendada');
             $table->string('observacao')->nullable();
-            $table->dateTime('data_hora');
+            $table->date('data');
+            $table->time('hora');
             $table->timestamps();
         });
     }

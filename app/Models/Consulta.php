@@ -15,7 +15,8 @@ class Consulta extends Model
         'profissional_id',
         'status',
         'observacao',
-        'data_hora',
+        'data',
+        'hora',
     ];
 
     public function paciente()
@@ -39,8 +40,8 @@ class Consulta extends Model
         Profissional::class,
         null,
         null,
-        'profissional_id', // Foreign key on `consultas` table to `profissionais` table
-        'id'         // Foreign key on `profissionais` table to `users` table
+        'profissional_id', 
+        'id'         
         );
     }
 
@@ -51,8 +52,8 @@ class Consulta extends Model
         Paciente::class,
         null,
         null,
-        'paciente_id', // Foreign key on `consultas` table to `profissionais` table
-        'id'         // Foreign key on `profissionais` table to `users` table
+        'paciente_id', 
+        'id'         
         );
     }
 

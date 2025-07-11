@@ -20,7 +20,8 @@ class ConsultaFactory extends Factory
         return [
             'status' => $this->faker->randomElement(['agendada', 'realizada', 'cancelada']),
             'observacao' => $this->faker->optional()->sentence(),
-            'data_hora' => $this->faker->dateTimeBetween('now', '+1 month'),
+            'data' => $this->faker->date(),
+            'hora' => $this->faker->time(),
         ];
     }
 }
