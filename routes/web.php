@@ -4,6 +4,8 @@ use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfissionalController;
+use App\Http\Controllers\DispensaEducacaoFisicaController;
+use App\Http\Controllers\HorariosProfissionalController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -45,7 +47,45 @@ Route::controller(ConsultaController::class)->group(function ()
     });
 });
 
-Route::controller(ProfissionalController::class)->group(function () {
+Route::controller(HorariosProfissionalController::class)->group(function()
+{
+    Route::prefix('/horarios_profissional')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    Route::prefix('/horario_profissional')->group(function () {
+        Route::get('/', 'create')->name('horario_profissional.create');
+        Route::post('/', 'store')->name('horario_profissional.store');
+        Route::get('/edit/{id}', 'edit')->name('horario_profissional.edit');
+        Route::post('/update/{id}', 'update')->name('horario_profissional.update');
+        Route::get('/delete/{id}', 'delete')->name('horario_profissional.delete');
+        Route::post('/remove/{id}', 'remove')->name('horario_profissional.remove');
+    });
+});
+
+
+
+
+
+/* Route::controller(DispensaEducacaoFisicaController::class)->group(function()
+{
+    Route::prefix('/dispensasef')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    Route::prefix('/dispensaef')->group(function () {
+        Route::get('/', 'create')->name('dispensaef.create');
+        Route::post('/', 'store')->name('dispensaef.store');
+        Route::get('/edit/{id}', 'edit')->name('dispensaef.edit');
+        Route::post('/update/{id}', 'update')->name('dispensaef.update');
+        Route::get('/delete/{id}', 'delete')->name('dispensaef.delete');
+        Route::post('/remove/{id}', 'remove')->name('dispensaef.remove');
+    });
+}); */
+
+/* Route::controller(ProfissionalController::class)->group(function () {
     Route::prefix('/profissionais')->group(function () {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
@@ -60,3 +100,4 @@ Route::controller(ProfissionalController::class)->group(function () {
         Route::post('/remove/{id}', 'remove')->name('profissional.remove');
     });
 });
+ */
