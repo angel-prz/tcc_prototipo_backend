@@ -25,7 +25,8 @@ class ConsultaController extends Controller
 
     public function show($id)
     {
-        return view('consultas.show', ['consulta' => Consulta::find($id)]);
+        return view('consultas.show',
+            ['consulta' => $consulta = Consulta::with(['paciente.user', 'profissional.user'])->find($id)]);
     }
 
     public function store(Request $request)
