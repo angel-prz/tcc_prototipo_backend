@@ -12,6 +12,7 @@ class HorariosProfissional extends Model
     protected $table = 'horarios_profissionais';
 
     protected $fillable = [
+        'profissional_id',
         'dia_semana',
         'entrada',
         'saida',

@@ -33,11 +33,25 @@ class HorariosProfissionalController extends Controller
     public function store(Request $request)
     {
         $newHorarios = $request->all();
-        //dd($newConsulta);
+        //dd($newHorarios);
 
         if(HorariosProfissional::create($newHorarios))
             return redirect('/horarios_profissional');
         else dd("Erro ao registrar horario!!");
+
+        /* $validated = $request->validate([
+            'profissional_id' => 'required|exists:profissionais,id',
+            'dia_semana' => 'required',
+            'entrada' => 'required',
+            'saida' => 'required',
+         ]);
+
+        HorariosProfissional::create([
+            'profissional_id' => $validated['profissional_id'],
+            'dia_semana' => $validated['dia_semana'],
+            'entrada' => $validated['entrada'],
+            'saida' => $validated['saida'],
+        ]); */
     }
 
     /**
