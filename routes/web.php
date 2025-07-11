@@ -37,10 +37,10 @@ Route::controller(ConsultaController::class)->group(function ()
     Route::prefix('/consulta')->group(function (){
         Route::get('/', 'create')->name('consulta.create');
         Route::post('/', 'store')->name('consulta.store');
-        Route::get('edit/{id}', 'edit')->name('consultas.edit');
-        Route::post('/update/{id}', 'update')->name('consultas.update');
-        Route::get('/delete/{id}', 'delete')->name('consultas.delete');
-        Route::post('/remove/{id}', 'remove')->name('consultas.remove');
+        Route::get('edit/{id}', 'edit')->name('consulta.edit');
+        Route::post('/update/{id}', 'update')->name('consulta.update');
+        Route::get('/delete/{id}', 'delete')->name('consulta.delete');
+        Route::post('/remove/{id}', 'remove')->name('consulta.remove');
 
     });
 });
