@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\HorariosProfissional;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Profissional;
 
 class HorariosProfissionalSeeder extends Seeder
 {
@@ -12,6 +14,13 @@ class HorariosProfissionalSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $profissionais = Profissional::all();
+
+        foreach($profissionais as $profissional)
+        {
+            HorariosProfissional::factory()->create([
+                'profissional_id' => $profissionais->random()->id,
+            ]);
+        }
     }
 }

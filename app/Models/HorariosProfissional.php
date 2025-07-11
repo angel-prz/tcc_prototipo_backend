@@ -21,4 +21,16 @@ class HorariosProfissional extends Model
     {
         return $this->belongsTo(Profissional::class);
     }
+
+    public function userProfissional()
+    {
+        return $this->belongsToThrough(
+        User::class,
+        Profissional::class,
+        'id',
+        'id',
+        /* 'id',
+        'profissional_id' */
+        );
+    }
 }

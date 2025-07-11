@@ -69,8 +69,8 @@ class User extends Authenticatable
         return $this->hasOneThrough(
             Aluno::class,
             Paciente::class,
-            'user_id',
-            'paciente_id',
+            'id',
+            'id',
             'id',
             'id'
         );
@@ -81,8 +81,8 @@ class User extends Authenticatable
         return $this->hasOneThrough(
             Aluno::class,
             Funcionario::class,
-            'user_id',
-            'funcionario_id',
+            'id',
+            'id',
             'id',
             'id'
         );
@@ -109,6 +109,19 @@ class User extends Authenticatable
             'profissional_id',
             'id',
             'id'
+        );
+    }
+
+    public function horarioDoProfissional()
+    {
+        return $this->hasManyThrough(
+            HorariosProfissional::class,
+            Profissional::class,
+            null,null,
+            'id',
+            'profissional_id',
+            /* 'profissional_id',
+            'id' */
         );
     }
 

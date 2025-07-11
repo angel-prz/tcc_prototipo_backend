@@ -28,4 +28,9 @@ class Profissional extends User
     {
         return $this->belongsTo(User::class, 'id');
     }
+
+    public function horariosProfissional()
+    {
+        return $this->hasMany(HorariosProfissional::class);
+    }
 }

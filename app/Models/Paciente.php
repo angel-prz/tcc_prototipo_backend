@@ -46,4 +46,16 @@ class Paciente extends Model
     {
         return $this->hasMany(DispensaEducacaoFisica::class, 'paciente_id', 'id');
     }
+    public function alunoDispensa()
+    {
+        return $this->hasManyThrough(
+            DispensaEducacaoFisica::class,
+            Aluno::class,
+            'consulta_id',
+            'paciente_id',
+            'id',
+            'id'
+        );
+    }
+
 }
