@@ -91,10 +91,10 @@ class HorariosProfissionalController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function remove($id)
     {
         if(HorariosProfissional::destroy($id))
             return redirect('/horarios_profissional');
-        else dd("Erro ao registrar horario!!");
+        else dd("Erro ao remover horario!!");
     }
 }
