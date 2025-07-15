@@ -22,9 +22,11 @@ class ConsultaStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'paciente_id' => 'required|exists:pacientes,id',
-            'profissional_id' => 'required|exists:profissionais,id',
-            'data_hora' => 'required',
+            'paciente_id' => 'required',
+            'profissional_id' => 'required',
+            'observacao' => 'string',
+            'data' => 'required',
+            'hora' => 'required',
         ];
     }
 
@@ -32,9 +34,7 @@ class ConsultaStoreRequest extends FormRequest
     {
         return [
             'paciente_id.required' => 'O campo Paciente é obrigatório.',
-            'paciente_id.exists' => 'O Paciente selecionado não existe.',
             'profissional_id.required' => 'O campo Profissional é obrigatório.',
-            'profissional_id.exists' => 'O Profissional selecionado não existe.',
             'data_hora.required' => 'O campo Data e Hora é obrigatório.',
         ];
     }

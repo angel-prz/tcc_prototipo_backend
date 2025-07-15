@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Requests\ConsultaStoreRequest;
 
 class ConsultaUpdateRequest extends ConsultaStoreRequest
@@ -16,9 +15,11 @@ class ConsultaUpdateRequest extends ConsultaStoreRequest
     public function rules(): array
     {
         return [
-            'paciente_id' => 'required|exists:pacientes,id',
-            'profissional_id' => 'required|exists:profissionais,id',
-            'data_hora' => 'required',
+            'paciente_id' => 'required',
+            'profissional_id' => 'required',
+            'observacao' => 'string',
+            'data' => 'required',
+            'hora' => 'required',
         ];
     }
 }

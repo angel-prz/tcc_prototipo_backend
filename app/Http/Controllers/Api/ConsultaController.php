@@ -49,7 +49,9 @@ class ConsultaController extends Controller
     {
         try {
             $consulta->update($request->validated());
-            return new ConsultaResource($consulta);
+            return (new ConsultaResource($consulta))->additional([
+                    'message' => 'Consulta atualizada com sucesso!'
+            ]);
         } catch (\Exception $e) {
             return $this->errorHandler('Erro ao atualizar Consulta',$e);
         }
