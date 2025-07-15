@@ -57,22 +57,71 @@ class User extends Authenticatable
     //RELAÇÔES  1 para 1 ? FILHOS/CHILD
     public function paciente()
     {
-        return $this->hasOne(Paciente::class);
+        return $this->hasOne(Paciente::class, 'id', 'id');
     }
     public function profissional()
     {
-        return $this->hasOne(Profissional::class);
+        return $this->hasOne(Profissional::class, 'id', 'id');
     }
 
-    public function aluno()
+    public function pacienteAluno()
     {
         return $this->hasOneThrough(
-            Aluno::class, 
-            Paciente::class, 
-            'user_id', 
-            'paciente_id', 
-            'id', 
+            Aluno::class,
+            Paciente::class,
+            'id',
+            'id',
+            'id',
             'id'
+        );
+    }
+
+     public function pacienteFuncionario()
+    {
+        return $this->hasOneThrough(
+            Aluno::class,
+            Funcionario::class,
+            'id',
+            'id',
+            'id',
+            'id'
+        );
+    }
+
+    public function consultaComoPaciente()
+    {
+        return $this->hasManyThrough(
+            Consulta::class,
+            Paciente::class,
+            'id',
+            'paciente_id',
+            'id',
+            'id'
+        );
+    }
+
+    public function consultaComoProfissional()
+    {
+        return $this->hasManyThrough(
+            Consulta::class,
+            Profissional::class,
+            'id',
+            'profissional_id',
+            'id',
+            'id'
+        );
+    }
+
+    public function horarioDoProfissional()
+    {
+        return $this->hasManyThrough(
+            HorariosProfissional::class,
+            Profissional::class,
+            null,null,
+            'id',
+            'profissional_id',
+            /* 'profissional_id',
+            'id' */
         );
     }
 

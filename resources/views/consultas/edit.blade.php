@@ -11,23 +11,27 @@
 
 <body>
     <h1>Atualizar Consulta</h1>
-    <form action="{{route('consultas.update',$consulta->id)}}" method="POST">
+    <form action="{{route('consulta.update',$consulta->id)}}" method="POST">
         @csrf
         {{-- <input type="hidden" name="_token" value="{{csrf_token()}}"/> --}}
         <table>
 
-            <tr>
-                <td>Data e Hora:</td>
-                <td><input type="datetime-local" name="data_hora" value="{{$consulta->data_hora}}"/></td>
+           <tr>
+                <td>Data:</td>
+                <td><input type="date" name="data" value="{{$consulta->data}}"/></td>
             </tr>
-            
+            <tr>
+                <td>Hora:</td>
+                <td><input type="time" name="hora" value="{{$consulta->hora}}/></td>
+            </tr>
+
             <tr align="center">
-                <td colspan="2"><input type="submit" value="Criar"/></td>
+                <td colspan="2"><input type="submit" value="Atualizar"/></td>
             </tr>
             <tr align="center">
                 <td colspan="2"><a href="/consultas" style="display: inline">&#9664;&nbsp;Voltar</a></td>
             </tr>
-            
+
         </table>
     </form>
 </body>

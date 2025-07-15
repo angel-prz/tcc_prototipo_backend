@@ -22,7 +22,7 @@
     @else
         <p>Consulta não encontrada! </p>
     @endif
-    <form action="{{route('consulta.remove', $consulta->id)}}" method="post">
+    <form action="{{route('consulta.remove', $consulta->id)}}" method="POST">
         @csrf
         <h1>DESEJA CONFIRMAR EXCLUSÃO DA CONSULTA</h1>
         <input type="submit" value="Excluir"/>

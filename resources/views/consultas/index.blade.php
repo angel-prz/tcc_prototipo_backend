@@ -9,7 +9,7 @@
 
 <body>
     <h1>Lista de Consultas</h1>
-    <a href="{{ route('consultas.create') }}">Criar Nova Consulta</a>
+    <a href="{{ route('consulta.create') }}">Criar Nova Consulta</a>
     <table>
         <thead>
             <tr>
@@ -23,17 +23,25 @@
         <tbody>
             @foreach ($consultas as $consulta)
                 <tr>
-                    <td>{{ $consulta->id }}</td>
-                    <td>{{ $consulta->paciente->name }}</td>
-                    <td>{{ $consulta->profissional->name }}</td>
-                    <td>{{ $consulta->data_hora }}</td>
+
+                        <td>
+                            <a href="/consultas/{{ $consulta->id }}">{{ $consulta->id }}
+                            </a>
+                        </td>
+
+                    <td>{{ $consulta->paciente->user->name ?? '-' }}</td>
+                    <td>{{ $consulta->profissional->user->name ?? '-' }}</td>
+                    <td>{{ $consulta->data }}</td>
+                    <td>{{ $consulta->hora }}</td>
                     <td>
-                        <a href="{{ route('consultas.edit', $consulta->id) }}">Editar</a>
-                        <form action="{{ route('consultas.delete', $consulta->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit">Excluir</button>
-                        </form>
+                        <a href="{{ route('consulta.edit', $consulta->id) }}">
+                            Editar
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ route('consulta.delete',$consulta->id) }}">
+                            DELETAR
+                        </a>
                     </td>
                 </tr>
             @endforeach

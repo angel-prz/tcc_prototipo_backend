@@ -29,10 +29,19 @@ class UserController extends Controller
     {
         $newUser = $request->all();
         //dd($newUser);
-
-        if(User::create($newUser))
+        /* if(User::create($newUser))
             return redirect('/users');
-        else dd("Erro ao inserir usuario!!");
+        else dd("Erro ao inserir usuario!!"); */
+        $user = User::create($newUser);
+
+        if($user)
+        {
+                return redirect('/users');
+        }
+        else 
+        {
+            return back()->with('error', 'Erro ao criar usuario!');
+        }
     }
 
     /**
@@ -46,7 +55,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id) 
+    public function edit($id)
     {
         $user = User::find($id);
         return view('users.edit',compact('user'));
@@ -59,7 +68,7 @@ class UserController extends Controller
     public function update(Request $request,$id)
     {
         $newUser = $request->all();
-       
+
         //dd(["Atualizar Usuario", $newUser]);
 
         if(User::findOrFail($id)->update($newUser))
@@ -70,7 +79,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete($id) 
+    public function delete($id)
     {
         return view('users.remove', ['user' => User::findOrFail($id)]);
     }

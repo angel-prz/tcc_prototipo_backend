@@ -16,8 +16,8 @@ class ConsultaSeeder extends Seeder
     public function run(): void
     {
         //consultas
-        $profissionais = User::where('tipo_usuario', 'profissional')->get();
-        $pacientes = User::where('tipo_usuario', 'paciente')->get();
+        $profissionais = Profissional::all();
+        $pacientes = Paciente::all();
 
         // Cria 50 consultas aleatórias
         foreach (range(1, 50) as $i) {

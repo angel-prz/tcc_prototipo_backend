@@ -4,42 +4,100 @@ use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfissionalController;
+use App\Http\Controllers\DispensaEducacaoFisicaController;
+use App\Http\Controllers\HorariosProfissionalController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-//usuario generico
-Route::get('/users',[UserController::class,'index']);
-Route::get('/users/{id}', [UserController::class,'show']);
+Route::controller(UserController::class)->group(function () {
+    Route::prefix('/users')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}','show');
+    });
 
-//CRUD - USER
-Route::get('/user', [UserController::class,'create']);
-Route::post('/user', [UserController::class,'store']);
-
-Route::get('/user/edit/{id}',[UserController::class,'edit'])->name('user.edit');
-Route::post('/user/update/{id}',[UserController::class,'update'])->name('user.update');
-
-Route::get('/user/delete/{id}',[UserController::class,'delete'])->name('user.delete');
-Route::post('/user/remove/{id}',[UserController::class,'remove'])->name('user.remove');
-
-//CRUD - profissionais
-Route::get('/profissionais', [ProfissionalController::class,'index']);
-Route::get('/profissionais/{id}', [ProfissionalController::class,'show']);
-
+    Route::prefix('/user')->group(function () {
+        Route::get('/', 'create');
+        Route::post('/', 'store');
+        Route::get('/edit/{id}', 'edit')->name('user.edit');
+        Route::post('/update/{id}', 'update')->name('user.update');
+        Route::get('/delete/{id}', 'delete')->name('user.delete');
+        Route::post('/remove/{id}', 'remove')->name('user.remove');
+    });
+});
 
 // Rotas para Consultas
-Route::get('/consultas', [ConsultaController::class, 'index']);
-Route::get('/consultas/{id}', [ConsultaController::class, 'show']);
-Route::get('/consultas/create', [ConsultaController::class, 'create'])->name('consultas.create');
-Route::post('/consulta', [ConsultaController::class, 'store'])->name('consultas.store');
-Route::get('/consultas/edit/{id}', [ConsultaController::class, 'edit'])->name('consultas.edit');
-Route::post('/consultas/update/{id}', [ConsultaController::class, 'update'])->name('consultas.update');
-Route::get('/consultas/delete/{id}', [ConsultaController::class, 'delete'])->name('consultas.delete');
-Route::post('/consultas/remove/{id}', [ConsultaController::class, 'remove'])->name('consultas.remove');
+Route::controller(ConsultaController::class)->group(function ()
+{
+    Route::prefix('/consultas')->group(function () {
+        Route::get('/','index');
+        Route::get('/{id}', 'show');
+    });
+
+    Route::prefix('/consulta')->group(function (){
+        Route::get('/', 'create')->name('consulta.create');
+        Route::post('/', 'store')->name('consulta.store');
+        Route::get('edit/{id}', 'edit')->name('consulta.edit');
+        Route::post('/update/{id}', 'update')->name('consulta.update');
+        Route::get('/delete/{id}', 'delete')->name('consulta.delete');
+        Route::post('/remove/{id}', 'remove')->name('consulta.remove');
+
+    });
+});
+
+Route::controller(HorariosProfissionalController::class)->group(function()
+{
+    Route::prefix('/horarios_profissional')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    Route::prefix('/horario_profissional')->group(function () {
+        Route::get('/', 'create')->name('horario_profissional.create');
+        Route::post('/', 'store')->name('horario_profissional.store');
+        Route::get('/edit/{id}', 'edit')->name('horario_profissional.edit');
+        Route::post('/update/{id}', 'update')->name('horario_profissional.update');
+        Route::get('/delete/{id}', 'delete')->name('horario_profissional.delete');
+        Route::post('/remove/{id}', 'remove')->name('horario_profissional.remove');
+    });
+});
 
 
-// CRUD - pacientes
-/* Route::get('/pacientes', [PacienteController::class,'index']);
-Route::get('/pacientes/{id}', [PacienteController::class,'show']); */
+
+
+
+/* Route::controller(DispensaEducacaoFisicaController::class)->group(function()
+{
+    Route::prefix('/dispensasef')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    Route::prefix('/dispensaef')->group(function () {
+        Route::get('/', 'create')->name('dispensaef.create');
+        Route::post('/', 'store')->name('dispensaef.store');
+        Route::get('/edit/{id}', 'edit')->name('dispensaef.edit');
+        Route::post('/update/{id}', 'update')->name('dispensaef.update');
+        Route::get('/delete/{id}', 'delete')->name('dispensaef.delete');
+        Route::post('/remove/{id}', 'remove')->name('dispensaef.remove');
+    });
+}); */
+
+/* Route::controller(ProfissionalController::class)->group(function () {
+    Route::prefix('/profissionais')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    Route::prefix('/profissional')->group(function () {
+        Route::get('/', 'create');
+        Route::post('/', 'store');
+        Route::get('/edit/{id}', 'edit')->name('profissional.edit');
+        Route::post('/update/{id}', 'update')->name('profissional.update');
+        Route::get('/delete/{id}', 'delete')->name('profissional.delete');
+        Route::post('/remove/{id}', 'remove')->name('profissional.remove');
+    });
+});
+ */

@@ -29,4 +29,6 @@ class Funcionario extends Model
             ]
         );
     }
+
+
 }

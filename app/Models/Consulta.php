@@ -15,20 +15,46 @@ class Consulta extends Model
         'profissional_id',
         'status',
         'observacao',
-        'data_hora',
+        'data',
+        'hora',
     ];
 
     public function paciente()
     {
-        return $this->belongsTo(Paciente::class, 'paciente_id');
+        return $this->belongsTo(Paciente::class, 'paciente_id', 'id');
     }
     public function profissional()
     {
-        return $this->belongsTo(Profissional::class, 'profissional_id');
+        return $this->belongsTo(Profissional::class, 'profissional_id', 'id');
     }
 
     public function dispenca_educacao_fisica()
     {
-        return $this->hasOne(DispensaEducacaoFisica::class);
+        return $this->hasOne(DispensaEducacaoFisica::class, 'consulta_id', 'dispensas_educacao_fisica_id');
     }
+
+    public function userProfissional()
+    {
+        return $this->belongsToThrough(
+        User::class,
+        Profissional::class,
+        null,
+        null,
+        'profissional_id', 
+        'id'         
+        );
+    }
+
+    public function userPaciente()
+    {
+        return $this->belongsToThrough(
+        User::class,
+        Paciente::class,
+        null,
+        null,
+        'paciente_id', 
+        'id'         
+        );
+    }
+
 }

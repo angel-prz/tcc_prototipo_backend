@@ -14,12 +14,12 @@
     <form action="/consulta" method="POST">
         @csrf
         {{-- <input type="hidden" name="_token" value="{{csrf_token()}}"/> --}}
-        <table>             
-            <tr> 
+        <table>
+            <tr>
                 <!-- <td>ID Paciente:</td>
                 <td><input type="text" name="id_paciente"/></td> -->
-                <label for="id_paciente">Paciente:</label>
-                <select name="id_paciente" id="id_paciente" required>
+                <label for="paciente_id">Paciente:</label>
+                <select name="paciente_id" id="paciente_id" required>
                     <!-- <option value="">Selecione um paciente</option> -->
                     @foreach ($pacientes as $paciente)
                         <option value="{{ $paciente->id }}">
@@ -28,8 +28,8 @@
                     @endforeach
                 </select>
             </tr>
-            
-            <tr> 
+
+            <tr>
                 <!-- <td>ID Profissional:</td> -->
                 <!-- <td><input type="text" name="id_profissional"/></td> -->
                 <label for="profissional_id">Profissional de Saúde:</label>
@@ -45,17 +45,21 @@
             </tr>
 
             <tr>
-                <td>Data e Hora:</td>
-                <td><input type="datetime-local" name="data_hora"/></td>
+                <td>Data:</td>
+                <td><input type="date" name="data"/></td>
             </tr>
-            
+            <tr>
+                <td>Hora:</td>
+                <td><input type="time" name="hora"/></td>
+            </tr>
+
             <tr align="center">
                 <td colspan="2"><input type="submit" value="Criar"/></td>
             </tr>
             <tr align="center">
                 <td colspan="2"><a href="/consultas" style="display: inline">&#9664;&nbsp;Voltar</a></td>
             </tr>
-            
+
         </table>
     </form>
 </body>

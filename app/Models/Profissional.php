@@ -24,6 +24,13 @@ class Profissional extends User
     {
         return $this->hasMany(Consulta::class);
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id');
+    }
 
-
+    public function horariosProfissional()
+    {
+        return $this->hasMany(HorariosProfissional::class);
+    }
 }
