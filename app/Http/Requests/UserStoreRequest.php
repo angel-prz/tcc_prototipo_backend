@@ -24,7 +24,7 @@ class UserStoreRequest extends FormRequest
         return [
             'email' => 'required|email|max:255',
             'password' => 'required|string',
-            'nome' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'data_nascimento' => 'nullable|date',
             'sexo' => 'nullable|string|in:M,F',
             'endereco' => 'nullable|string|max:255',
@@ -38,9 +38,9 @@ class UserStoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nome.required' => 'O campo nome é obrigatório.',
-            'nome.string' => 'O campo nome deve ser uma string.',
-            'nome.max' => 'O campo nome deve ter no máximo 255 caracteres.',
+            'name.required' => 'O campo nome é obrigatório.',
+            'name.string' => 'O campo nome deve ser uma string.',
+            'name.max' => 'O campo nome deve ter no máximo 255 caracteres.',
             'email.required' => 'O campo email é obrigatório.',
             'email.email' => 'O campo email deve ser um endereço de e-mail válido.',
             'password.required' => 'O campo senha é obrigatório.',

@@ -39,7 +39,14 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return new UserResource($user);
+        /* try
+        { */
+            return new UserResource($user);
+        /* }
+        catch (\Exception $e)
+        {
+            return $this->errorHandler('Usuario não encontrado', $e);
+        } */
     }
 
     /**
@@ -49,7 +56,9 @@ class UserController extends Controller
     {
         try {
             $user->update($request->validated());
-            return new UserResource($user);
+            return (new UserResource($user))->additional([
+                    'message' => 'Usuario atualizado com sucesso!'
+            ]);
         } catch (\Exception $e) {
             return $this->errorHandler('Erro ao atualizar Usuario',$e);
         }
