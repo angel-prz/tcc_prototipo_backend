@@ -68,7 +68,7 @@ class ConsultaController extends Controller
                     'message' => 'Consulta excluida com sucesso!'
                 ]);
         } catch (\Exception $e) {
-            return $this->errorHandler('Erro ao atualizar Consulta',$e);
+            return $this->errorHandler('Erro ao excluir Consulta',$e);
         }
     }
 }
