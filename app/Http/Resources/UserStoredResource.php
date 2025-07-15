@@ -2,13 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Produto;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserStoredResource extends UserResource
 {
-
     public function withResponse(Request $request, JsonResponse $response)
     {
         $response->setStatusCode(201,"Usuario Criado!");
