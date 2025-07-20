@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
 
 class UserSeeder extends Seeder
 {
@@ -18,9 +20,6 @@ class UserSeeder extends Seeder
         ]);
         User::factory()->count(20)->create([
             'tipo_usuario' => 'profissional',
-        ]);
-        User::factory()->count(2)->create([
-            'tipo_usuario' => 'administrador',
         ]);
     }
 }
