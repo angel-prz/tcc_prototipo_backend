@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ConsultaController;
 use App\Http\Controllers\Api\PacienteController;
+use App\Http\Controllers\Api\ProfissionalController;
 
 
 /* Route::get('/user', function (Request $request) {
@@ -15,4 +16,6 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('consultas', ConsultaController::class);
     Route::apiResource('pacientes', PacienteController::class);
+    //profissionais por enquanto tera apenas index publica
+    Route::apiResource('profissionais', ProfissionalController::class)->only(['index']);
 });
