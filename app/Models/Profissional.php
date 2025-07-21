@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Profissional extends User
+class Profissional extends Model
 {
 
     use HasFactory;
@@ -26,7 +26,7 @@ class Profissional extends User
     }
     public function user()
     {
-        return $this->belongsTo(User::class, 'id');
+        return $this->belongsTo(User::class, 'id', 'id');
     }
 
     public function horariosProfissional()
