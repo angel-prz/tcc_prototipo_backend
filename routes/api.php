@@ -9,14 +9,28 @@ use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\HorariosProfissionalController;
 
 
-use App\Http\Controllers\Api\HorariosProfissionalController;
-
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
 Route::prefix('v1')->group(function () {
-    Route::apiResource('users', UserController::class);
-    Route::apiResource('consultas', ConsultaController::class);
-    Route::apiResource('pacientes', PacienteController::class);
+
+    //privadas
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::apiResource('users', UserController::class);
+
+        Route::apiResource('users', UserController::class)
+            ->only('destroy')
+            ->middleware("ability:is-admin");
+
+        Route::get('consultas/count', [ConsultaController::class, 'count']);
+        Route::apiResource('consultas', ConsultaController::class);
+
+        /* Route::apiResource('horarios_profissional', HorariosProfissionalController::class); */
+    });
+
+    // publicas
+    Route::apiResource('horarios_profissional', HorariosProfissionalController::class);
+    Route::apiResource('profissionais', ProfissionalController::class)->only(['index']);
+    Route::post('/login',[LoginController::class, 'login']);
 });
