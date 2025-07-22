@@ -19,7 +19,8 @@ class ConsultaController extends Controller
      */
     public function index()
     {
-        return new ConsultaCollectionResource(Consulta::all());
+        return new ConsultaCollectionResource(
+            Consulta::with(['paciente.user','profissional.user'])->get());
     }
 
     /**
@@ -68,5 +69,12 @@ class ConsultaController extends Controller
         } catch (\Exception $e) {
             return $this->errorHandler('Erro ao atualizar Consulta',$e);
         }
+    }
+
+    public function count()
+    {
+        $count = Consulta::count();
+        //dd($count);
+        return response()->json(['count' => $count]);
     }
 }
