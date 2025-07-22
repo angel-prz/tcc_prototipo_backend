@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\ConsultaController;
 use App\Http\Controllers\Api\PacienteController;
 use App\Http\Controllers\Api\ProfissionalController;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\HorariosProfissionalController;
+
 
 
 Route::get('/user', function (Request $request) {
@@ -19,7 +21,6 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('users', UserController::class);
 
-        // This overrides the delete route from the above apiResource
         Route::apiResource('users', UserController::class)
             ->only('destroy')
             ->middleware("ability:is-admin");
@@ -27,10 +28,11 @@ Route::prefix('v1')->group(function () {
         Route::get('consultas/count', [ConsultaController::class, 'count']);
         Route::apiResource('consultas', ConsultaController::class);
 
-        Route::apiResource('pacientes', PacienteController::class);
+        /* Route::apiResource('pacientes', PacienteController::class); */
     });
 
     // publicas
+    Route::apiResource('horarios_profissional', HorariosProfissionalController::class);
     Route::apiResource('profissionais', ProfissionalController::class)->only(['index']);
     Route::post('/login',[LoginController::class, 'login']);
 });
