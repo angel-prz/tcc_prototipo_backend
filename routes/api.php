@@ -14,7 +14,10 @@ use App\Http\Controllers\Api\ProfissionalController;
 
 Route::prefix('v1')->group(function () {
     Route::apiResource('users', UserController::class);
+
+    Route::get('consultas/count', [ConsultaController::class, 'count']);
     Route::apiResource('consultas', ConsultaController::class);
+
     Route::apiResource('pacientes', PacienteController::class);
     //profissionais por enquanto tera apenas index publica
     Route::apiResource('profissionais', ProfissionalController::class)->only(['index']);
