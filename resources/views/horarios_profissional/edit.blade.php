@@ -10,14 +10,14 @@
 </head>
 
 <body>
-    <h1>Atualizar Horario de Profissional</h1>
+    <h1>Atualizar Horario de Profissional ID: {{$horario->profissional_id}}</h1>
     <form action="{{route('horario_profissional.update',$horario->id)}}" method="POST">
         @csrf
         {{-- <input type="hidden" name="_token" value="{{csrf_token()}}"/> --}}
         <table>
             <tr>
                 <label for="horarios->id">Profissional ID:</label>
-                <input id="horario->id" name="horario->id" type="text" value="{{$horario->ID}}" />
+                <input id="horario->id" name="horario->id" type="text" value="{{$horario->profissional_id}}" readonly/>
             </tr>
             <tr>
                 <td>Dia:</td>
