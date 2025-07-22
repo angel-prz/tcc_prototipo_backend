@@ -6,19 +6,31 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ConsultaController;
 use App\Http\Controllers\Api\PacienteController;
 use App\Http\Controllers\Api\ProfissionalController;
+use App\Http\Controllers\Api\LoginController;
 
 
-/* Route::get('/user', function (Request $request) {
+Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum'); */
+})->middleware('auth:sanctum');
 
 Route::prefix('v1')->group(function () {
-    Route::apiResource('users', UserController::class);
 
-    Route::get('consultas/count', [ConsultaController::class, 'count']);
-    Route::apiResource('consultas', ConsultaController::class);
+    //privadas
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::apiResource('users', UserController::class);
 
-    Route::apiResource('pacientes', PacienteController::class);
-    //profissionais por enquanto tera apenas index publica
+        // This overrides the delete route from the above apiResource
+        Route::apiResource('users', UserController::class)
+            ->only('destroy')
+            ->middleware("ability:is-admin");
+
+        Route::get('consultas/count', [ConsultaController::class, 'count']);
+        Route::apiResource('consultas', ConsultaController::class);
+
+        Route::apiResource('pacientes', PacienteController::class);
+    });
+
+    // publicas
     Route::apiResource('profissionais', ProfissionalController::class)->only(['index']);
+    Route::post('/login',[LoginController::class, 'login']);
 });
