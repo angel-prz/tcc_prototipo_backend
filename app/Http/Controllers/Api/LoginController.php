@@ -11,22 +11,43 @@ use App\Http\Requests\LoginRequest;
 class LoginController extends Controller
 {
     public function login(LoginRequest $request) {
-    try {
-        $user = $request->user;
-        if (!$user) throw new Exception("Dados inválidos!");
+        try {
+            $user = $request->user;
+            if (!$user) throw new Exception("Dados inválidos!");
 
-        $ability = $user->tipo_usuario === 'administrador' ? ['is-admin'] : [];
+            $ability = $user->tipo_usuario === 'administrador' ? ['is-admin'] : [];
 
-        $token = $user->createToken($user->email, $ability)->plainTextToken;
+            $token = $user->createToken($user->email, $ability)->plainTextToken;
 
-        return compact('token', 'user');
-    } catch (Exception $error) {
-        return $this->errorHandler(
-            $error->getMessage(),
-            $error,
-            401
-        );
+            return compact('token', 'user');
+        } catch (Exception $error) {
+            return $this->errorHandler(
+                $error->getMessage(),
+                $error,
+                401
+            );
+        }
     }
-}
 
+    public function logout(Request $request)
+    {
+        try {
+            $auth_user = $request->user();
+            if($request->has('all'))
+            {
+                $auth_user->tokens()->delete();
+                $result = ['logout' => 'Todos os tokens foram removidos'];
+            }
+            else
+            {
+                $auth_user->currentAccessToken()->delete();
+                $result = ['logout' => 'Token removido, usuario desconectado!'];
+            }
+            return response()->json($result);
+        } catch (\Exception $error) {
+            return response()->json([
+                'Error' => $error->getMessage()
+            ], 500);
+        }
+    }
 }
