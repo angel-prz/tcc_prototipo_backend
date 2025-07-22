@@ -11,6 +11,7 @@ use App\Http\Resources\UserStoredResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Exception;
 
 class UserController extends Controller
 {
@@ -19,6 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
+        //dd(Auth::user());
         return new UserCollectionResource(User::all());
     }
 
@@ -58,15 +60,21 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
+        $statusHttpError = 500;
         try {
+            if(!$request->user()->tokenCan('is-admin'))
+            {
+                $statusHttpError = 403;
+                throw new Exception("Acesso negado!!");
+            }
             $user->delete();
             return (new UserResource($user))->additional([
                     'message' => 'Usuario deletado com sucesso!'
                 ]);
         } catch (\Exception $e) {
-            return $this->errorHandler('Erro ao excluir Usuario',$e);
+            return $this->errorHandler('Erro ao deletar usuario',$e,$statusHttpError);
         }
     }
 }
