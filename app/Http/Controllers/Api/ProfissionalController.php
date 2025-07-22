@@ -15,6 +15,7 @@ class ProfissionalController extends Controller
      */
     public function index()
     {
+        //para pegar o nome na table usuario (estudar jeito melhor do que isso?)
         return new ProfissionalCollectionResource(
             Profissional::whereHas('user', function ($query) {
             $query->where('tipo_usuario', 'profissional');
