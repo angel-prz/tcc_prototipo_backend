@@ -39,16 +39,13 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
-        /* try
-        { */
-            return new UserResource($user);
-        /* }
-        catch (\Exception $e)
-        {
-            return $this->errorHandler('Usuario não encontrado', $e);
-        } */
+        if ($request->user()->id !== $user->id)
+            return response()->json(['error' => 'Acesso negado!'], 403);
+
+        return new UserResource($user);
+
     }
 
     /**
