@@ -1,12 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ConsultaController;
 use App\Http\Controllers\Api\PacienteController;
 use App\Http\Controllers\Api\ProfissionalController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\HorariosProfissionalController;
+
 
 
 Route::get('/user', function (Request $request) {
@@ -20,13 +22,13 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('users', UserController::class);
 
         Route::apiResource('users', UserController::class)
-            ->only('destroy')
+            ->only('index')/*  , 'destroy' */
             ->middleware("ability:is-admin");
 
         Route::get('consultas/count', [ConsultaController::class, 'count']);
         Route::apiResource('consultas', ConsultaController::class);
 
-        /* Route::apiResource('horarios_profissional', HorariosProfissionalController::class); */
+        Route::apiResource('horarios_profissional', HorariosProfissionalController::class);
         Route::post('/logout', [LoginController::class, 'logout']);
     });
 

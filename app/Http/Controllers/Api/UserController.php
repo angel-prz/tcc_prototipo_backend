@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Exception;
+use App\Http\Controllers\Api\LoginController;
 
 class UserController extends Controller
 {
@@ -29,6 +30,8 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
+        if (!$request->user()->tokenCan('is-admin'))
+            return response()->json(['error' => 'Acesso negado!'], 403);
         try {
             return new UserStoredResource(User::create($request->validated()));
         } catch (\Exception $e) {
@@ -41,7 +44,7 @@ class UserController extends Controller
      */
     public function show(Request $request, User $user)
     {
-        if ($request->user()->id !== $user->id)
+        if ($request->user()->id !== $user->id || $request->user()->tokenCan('is-admin'))
             return response()->json(['error' => 'Acesso negado!'], 403);
 
         return new UserResource($user);
@@ -53,6 +56,9 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
+        if ($request->user()->id !== $user->id || $request->user()->tokenCan('is-admin'))
+            return response()->json(['error' => 'Acesso negado!'], 403);
+
         try {
             $user->update($request->validated());
             return (new UserResource($user))->additional([
@@ -70,12 +76,17 @@ class UserController extends Controller
     {
         $statusHttpError = 500;
         try {
-            if(!$request->user()->tokenCan('is-admin'))
+            if($request->user()->id !== $user->id || $request->user()->tokenCan('is-admin'))
             {
                 $statusHttpError = 403;
                 throw new Exception("Acesso negado!!");
             }
             $user->delete();
+
+            /* logout
+            if($request->user()->id !== $user->id)
+            */
+
             return (new UserResource($user))->additional([
                     'message' => 'Usuario deletado com sucesso!'
                 ]);
