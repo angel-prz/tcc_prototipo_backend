@@ -27,6 +27,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('consultas', ConsultaController::class);
 
         /* Route::apiResource('horarios_profissional', HorariosProfissionalController::class); */
+        Route::post('/logout', [LoginController::class, 'logout']);
     });
 
     // publicas
