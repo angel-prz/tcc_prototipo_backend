@@ -50,7 +50,7 @@ class LoginController extends Controller
             else
             {
                 $auth_user->currentAccessToken()->delete();
-                $result = ['logout' => 'Token removido, usuario desconectado!'];
+                $result = ['logout' => 'Token removido, usuario {'.$auth_user->id .'} desconectado!'];
             }
             return response()->json($result);
         } catch (\Exception $error) {
