@@ -44,7 +44,7 @@ class UserController extends Controller
      */
     public function show(Request $request, User $user)
     {
-        if ($request->user()->id !== $user->id || $request->user()->tokenCan('is-admin'))
+        if(!$request->user()->id !== $user->id && !$request->user()->tokenCan('is-admin'))
             return response()->json(['error' => 'Acesso negado!'], 403);
 
         return new UserResource($user);
@@ -56,7 +56,7 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
-        if ($request->user()->id !== $user->id || $request->user()->tokenCan('is-admin'))
+        if(!$request->user()->id !== $user->id && !$request->user()->tokenCan('is-admin'))
             return response()->json(['error' => 'Acesso negado!'], 403);
 
         try {
@@ -76,7 +76,7 @@ class UserController extends Controller
     {
         $statusHttpError = 500;
         try {
-            if($request->user()->id !== $user->id || $request->user()->tokenCan('is-admin'))
+            if(!$request->user()->id !== $user->id && !$request->user()->tokenCan('is-admin'))
             {
                 $statusHttpError = 403;
                 throw new Exception("Acesso negado!!");
