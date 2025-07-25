@@ -15,7 +15,16 @@ class LoginController extends Controller
             $user = $request->user;
             if (!$user) throw new Exception("Dados inválidos!");
 
-            $ability = $user->tipo_usuario === 'administrador' ? ['is-admin'] : [];
+            $ability = [];
+
+            if ($user->tipo_usuario == 'administrador')
+                $ability = ['is-admin'];
+
+            if($user->tipo_usuario == 'paciente')
+                $ability = ['is-paciente'];
+
+            if($user->tipo_usuario == 'profissional')
+                $ability = ['is-profissional'];
 
             $token = $user->createToken($user->email, $ability)->plainTextToken;
 
