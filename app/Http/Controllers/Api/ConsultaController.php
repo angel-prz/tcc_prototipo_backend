@@ -20,7 +20,8 @@ class ConsultaController extends Controller
     public function index()
     {
         return new ConsultaCollectionResource(
-            Consulta::with(['paciente.user','profissional.user'])->get());
+            /* Consulta::with(['paciente.user','profissional.user'])->get() */
+            Consulta::all()->load('paciente.user','profissional.user'));
     }
 
     /**
