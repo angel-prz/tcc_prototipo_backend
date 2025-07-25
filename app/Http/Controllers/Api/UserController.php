@@ -11,14 +11,18 @@ use App\Http\Resources\UserStoredResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Exception;
+use App\Http\Controllers\Api\LoginController;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if (!$request->user()->tokenCan('is-admin'))
+            return response()->json(['error' => 'Acesso negado!'], 403);
         return new UserCollectionResource(User::all());
     }
 
@@ -27,6 +31,8 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
+        if (!$request->user()->tokenCan('is-admin'))
+            return response()->json(['error' => 'Acesso negado!'], 403);
         try {
             return new UserStoredResource(User::create($request->validated()));
         } catch (\Exception $e) {
@@ -37,16 +43,13 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
-        /* try
-        { */
-            return new UserResource($user);
-        /* }
-        catch (\Exception $e)
-        {
-            return $this->errorHandler('Usuario não encontrado', $e);
-        } */
+        if($request->user()->id !== $user->id && !$request->user()->tokenCan('is-admin'))
+            return response()->json(['error' => 'Acesso negado! , userid='.$user->id ], 403);
+
+        return new UserResource($user);
+
     }
 
     /**
@@ -54,6 +57,9 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
+        if($request->user()->id !== $user->id && !$request->user()->tokenCan('is-admin'))
+            return response()->json(['error' => 'Acesso negado!'], 403);
+
         try {
             $user->update($request->validated());
             return (new UserResource($user))->additional([
@@ -67,15 +73,26 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
+        $statusHttpError = 500;
         try {
+            if($request->user()->id !== $user->id && !$request->user()->tokenCan('is-admin'))
+            {
+                $statusHttpError = 403;
+                throw new Exception("Acesso negado!!");
+            }
             $user->delete();
+
+            /* logout
+            if($request->user()->id !== $user->id)
+            */
+
             return (new UserResource($user))->additional([
                     'message' => 'Usuario deletado com sucesso!'
                 ]);
         } catch (\Exception $e) {
-            return $this->errorHandler('Erro ao excluir Usuario',$e);
+            return $this->errorHandler('Erro ao deletar usuario',$e,$statusHttpError);
         }
     }
 }

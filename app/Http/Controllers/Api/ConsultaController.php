@@ -19,7 +19,9 @@ class ConsultaController extends Controller
      */
     public function index()
     {
-        return new ConsultaCollectionResource(Consulta::all());
+        return new ConsultaCollectionResource(
+            /* Consulta::with(['paciente.user','profissional.user'])->get() */
+            Consulta::all()->load('paciente.user','profissional.user'));
     }
 
     /**
@@ -70,5 +72,12 @@ class ConsultaController extends Controller
         } catch (\Exception $e) {
             return $this->errorHandler('Erro ao excluir Consulta',$e);
         }
+    }
+
+    public function count()
+    {
+        $count = Consulta::count();
+        //dd($count);
+        return response()->json(['count' => $count]);
     }
 }

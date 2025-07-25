@@ -3,11 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
-use App\Models\Consulta;
-use App\Models\Aluno;
-use App\Models\DispensaEducacaoFisica;
-use Database\Factories\DispensaEducacaoFisicaFactory;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,6 +12,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        //user admin
+        $this->call(UserAdminSeeder::class);
         //user
         $seedUser = new UserSeeder();
         $seedUser->run();
@@ -49,5 +47,9 @@ class DatabaseSeeder extends Seeder
         $seedAlunoDispensa = new DispensaEducacaoFisicaSeeder();
         $seedAlunoDispensa->run();
 
+        $this->call([
+            PacienteTestSeeder::class,
+            ProfissionalTestSeeder::class,
+        ]);
     }
 }
