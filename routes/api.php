@@ -19,21 +19,28 @@ Route::prefix('v1')->group(function () {
 
     //privadas
     Route::middleware('auth:sanctum')->group(function () {
-        Route::apiResource('users', UserController::class);
 
-        Route::apiResource('users', UserController::class)
-            ->only('index')/*  , 'destroy' */
-            ->middleware("ability:is-admin");
+        Route::middleware("ability:is-admin")->group(function () {
+            Route::apiResource('users', UserController::class);
+            Route::apiResource('consultas', ConsultaController::class);
+            Route::apiResource('horarios_profissional', HorariosProfissionalController::class);
+        });
+
+        Route::apiResource('users', UserController::class);
 
         Route::get('consultas/count', [ConsultaController::class, 'count']);
         Route::apiResource('consultas', ConsultaController::class);
 
-        Route::apiResource('horarios_profissional', HorariosProfissionalController::class);
+        Route::apiResource('horarios_profissional', HorariosProfissionalController::class)
+            ->middleware(["ability:is-profissional"]);
+
         Route::post('/logout', [LoginController::class, 'logout']);
     });
 
-    // publicas
-    Route::apiResource('horarios_profissional', HorariosProfissionalController::class);
+     // publicas
+    Route::apiResource('horarios_profissional', HorariosProfissionalController::class)
+        ->only('index');
     Route::apiResource('profissionais', ProfissionalController::class)->only(['index']);
     Route::post('/login',[LoginController::class, 'login']);
+
 });
