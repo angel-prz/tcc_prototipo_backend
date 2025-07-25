@@ -26,7 +26,8 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('horarios_profissional', HorariosProfissionalController::class);
         });
 
-        Route::apiResource('users', UserController::class);
+        Route::apiResource('users', UserController::class)
+            ->only('show', 'update', 'destroy');
 
         Route::get('consultas/count', [ConsultaController::class, 'count']);
         Route::apiResource('consultas', ConsultaController::class);
