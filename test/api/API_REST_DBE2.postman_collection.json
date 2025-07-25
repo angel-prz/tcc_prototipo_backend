@@ -206,7 +206,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/users/72",
+							"raw": "{{base_url}}/api/v1/users/73",
 							"host": [
 								"{{base_url}}"
 							],
@@ -214,7 +214,7 @@
 								"api",
 								"v1",
 								"users",
-								"72"
+								"73"
 							]
 						}
 					},
@@ -222,6 +222,11 @@
 				},
 				{
 					"name": "UPDATE",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -244,6 +249,11 @@
 								"value": "{{BEARER_TOKEN}}",
 								"type": "text",
 								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -251,7 +261,7 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "pacienteTeste@administracao.com",
+									"value": "paciente@sys.com",
 									"type": "text"
 								},
 								{
@@ -302,7 +312,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/users/72",
+							"raw": "{{base_url}}/api/v1/users/73",
 							"host": [
 								"{{base_url}}"
 							],
@@ -310,7 +320,7 @@
 								"api",
 								"v1",
 								"users",
-								"72"
+								"73"
 							]
 						}
 					},
@@ -343,7 +353,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/users/2",
+							"raw": "{{base_url}}/api/v1/users/73",
 							"host": [
 								"{{base_url}}"
 							],
@@ -351,7 +361,7 @@
 								"api",
 								"v1",
 								"users",
-								"2"
+								"73"
 							]
 						}
 					},
@@ -963,7 +973,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/horarios_profissional/19",
+							"raw": "{{base_url}}/api/v1/horarios_profissional/17",
 							"host": [
 								"{{base_url}}"
 							],
@@ -971,7 +981,7 @@
 								"api",
 								"v1",
 								"horarios_profissional",
-								"19"
+								"17"
 							]
 						}
 					},
