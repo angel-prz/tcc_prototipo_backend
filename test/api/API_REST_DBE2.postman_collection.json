@@ -12,14 +12,38 @@
 				{
 					"name": "INDEX",
 					"protocolProfileBehavior": {
-						"disableBodyPruning": true
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {
+							"accept": true
+						}
 					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -44,13 +68,31 @@
 					"name": "CREATE",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -124,16 +166,47 @@
 				},
 				{
 					"name": "SHOW",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/users/2",
+							"raw": "{{base_url}}/api/v1/users/72",
 							"host": [
 								"{{base_url}}"
 							],
@@ -141,7 +214,7 @@
 								"api",
 								"v1",
 								"users",
-								"2"
+								"72"
 							]
 						}
 					},
@@ -150,11 +223,27 @@
 				{
 					"name": "UPDATE",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -162,17 +251,17 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "admin@administracao.com",
+									"value": "pacienteTeste@administracao.com",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "admin",
+									"value": "1234",
 									"type": "text"
 								},
 								{
 									"key": "name",
-									"value": "John Doe",
+									"value": "Paciente",
 									"type": "text"
 								},
 								{
@@ -207,13 +296,13 @@
 								},
 								{
 									"key": "tipo_usuario",
-									"value": "administrador",
+									"value": "paciente",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/users/78",
+							"raw": "{{base_url}}/api/v1/users/72",
 							"host": [
 								"{{base_url}}"
 							],
@@ -221,7 +310,7 @@
 								"api",
 								"v1",
 								"users",
-								"78"
+								"72"
 							]
 						}
 					},
@@ -230,15 +319,31 @@
 				{
 					"name": "DELETE",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/users/78",
+							"raw": "{{base_url}}/api/v1/users/2",
 							"host": [
 								"{{base_url}}"
 							],
@@ -246,7 +351,162 @@
 								"api",
 								"v1",
 								"users",
-								"78"
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMIN_LOGIN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "admin@sys.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "administrador",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PACIENTE_LOGIN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "paciente@sys.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PROFISSIONAL_LOGIN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "profissional@sys.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LOGOUT",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "key",
+									"value": "all",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"logout"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -260,14 +520,38 @@
 				{
 					"name": "INDEX",
 					"protocolProfileBehavior": {
-						"disableBodyPruning": true
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {
+							"accept": true
+						}
 					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -291,11 +575,27 @@
 				{
 					"name": "CREATE",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -350,11 +650,32 @@
 				{
 					"name": "SHOW",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -375,6 +696,16 @@
 				{
 					"name": "UPDATE",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [
 							{
@@ -435,11 +766,27 @@
 				{
 					"name": "DELETE",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -464,14 +811,42 @@
 			"item": [
 				{
 					"name": "INDEX",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/horarios_profissional",
 							"host": [
@@ -489,11 +864,27 @@
 				{
 					"name": "CREATE",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -518,6 +909,11 @@
 									"key": "saida",
 									"value": " 23:00",
 									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text"
 								}
 							]
 						},
@@ -538,15 +934,36 @@
 				{
 					"name": "SHOW",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/horarios_profissional/2",
+							"raw": "{{base_url}}/api/v1/horarios_profissional/19",
 							"host": [
 								"{{base_url}}"
 							],
@@ -554,7 +971,7 @@
 								"api",
 								"v1",
 								"horarios_profissional",
-								"2"
+								"19"
 							]
 						}
 					},
@@ -563,11 +980,32 @@
 				{
 					"name": "UPDATE",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -580,23 +1018,23 @@
 								},
 								{
 									"key": "dia_semana",
-									"value": " Quarta",
+									"value": "Quarta",
 									"type": "text"
 								},
 								{
 									"key": "entrada",
-									"value": " 17:00",
+									"value": "12:00",
 									"type": "text"
 								},
 								{
 									"key": "saida",
-									"value": " 23:00",
+									"value": "18:00",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/horarios_profissional/21",
+							"raw": "{{base_url}}/api/v1/horarios_profissional/22",
 							"host": [
 								"{{base_url}}"
 							],
@@ -604,7 +1042,7 @@
 								"api",
 								"v1",
 								"horarios_profissional",
-								"21"
+								"22"
 							]
 						}
 					},
@@ -613,15 +1051,31 @@
 				{
 					"name": "DELETE",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{BEARER_TOKEN}}",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/horarios_profissional/2",
+							"raw": "{{base_url}}/api/v1/horarios_profissional/19",
 							"host": [
 								"{{base_url}}"
 							],
@@ -629,7 +1083,31 @@
 								"api",
 								"v1",
 								"horarios_profissional",
-								"2"
+								"19"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profissional",
+			"item": [
+				{
+					"name": "INDEX",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/profissionais",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"profissionais"
 							]
 						}
 					},
@@ -670,6 +1148,11 @@
 			"value": "",
 			"type": "string",
 			"disabled": true
+		},
+		{
+			"key": "BEARER_TOKEN",
+			"value": "",
+			"type": "default"
 		}
 	]
 }
