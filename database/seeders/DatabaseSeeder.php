@@ -47,6 +47,9 @@ class DatabaseSeeder extends Seeder
         $seedAlunoDispensa = new DispensaEducacaoFisicaSeeder();
         $seedAlunoDispensa->run();
 
-        $this->call(UserTestSeeder::class);
+        $this->call([
+            PacienteTestSeeder::class,
+            ProfissionalTestSeeder::class,
+        ]);
     }
 }
