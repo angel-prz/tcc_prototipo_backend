@@ -13,7 +13,7 @@
 1. Clone o repositório:
 
 ```sh
-git clone https://github.com/seu-usuario/seu-repositorio.git
+git clone https://github.com/angel-prz/angelperez_projeto_dbe2.git
 cd angelperez_projeto_dbe2
 ```
 2. Instalar as dependências PHP:
