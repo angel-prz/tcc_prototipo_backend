@@ -1,1 +1,1 @@
-const PainelDeControle 
+const PainelDeControle = () => { return (0);}

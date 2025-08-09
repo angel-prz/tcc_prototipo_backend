@@ -11,7 +11,7 @@ export default function Login() {
 
   const emailRef = useRef();
   const passwordRef = useRef();
-/*   const tipoUserRef = useRef(); */  
+/*   const tipoUserRef = useRef(); */
   const navigate = useNavigate();
   const [tipoUser, setTipoUser] = useState("administrador");
 
@@ -23,25 +23,28 @@ export default function Login() {
     };
     console.log({ payload });
     try {
-      const response = 
+      const response =
         await axiosClient.post("/login", payload);
       const { data } = response;
+      /* console.log("teste: " , response) */
       alert("Usuário logado");
+      /* console.log("data: "); */
       console.log({data})
       setToken(data.token);
       setUser(data.user);
+      /* console.log("tipoUser: ", data.user.tipo_usuario); */
       localStorage.setItem(
         'CURRENT_USER',
         JSON.stringify(data.user)
       );
 
-      if(tipoUser === "administrador")
+      if(data.user.tipo_usuario === "administrador")
         navigate("/users");
-      if(tipoUser === "profissionalSaude")
+      if(data.user.tipo_usuario === "profissionalSaude")
         navigate("/profissional");
-      if(tipoUser === "paciente")
-        navigate("/paciente"); 
-      
+      if(data.user.tipo_usuario === "paciente")
+        navigate("/paciente");
+
     } catch (error) {
       console.dir({error});
       console.error(error.response.data.message);
@@ -99,45 +102,6 @@ export default function Login() {
                   Esqueceu sua senha?
                 </span>
               </div>
-            </div>
-          </p>
-          <p>
-            <label className="block text-sm font-medium text-gray-700">
-              Tipo de usuário:
-            </label>
-            <div>
-              <label >
-                <input
-                  type="radio"
-                  name="tipoUser"
-                  value="administrador"
-                  checked={tipoUser === "administrador"}
-                  onChange={() => setTipoUser("administrador")}
-                />
-                Administrador
-              </label>
-              <label className="ml-10">
-                <input
-                  type="radio"
-                  name="tipoUser"
-                  value="profissionalSaude"
-                  checked={tipoUser === "profissionalSaude"}
-                  onChange={() => setTipoUser("profissionalSaude")}
-                  disabled
-                />
-                Profissional de Saúde
-              </label>
-              <label className="ml-10">
-                <input
-                  type="radio"
-                  name="tipoUser"
-                  value="paciente"
-                  checked={tipoUser === "paciente"}
-                  onChange={() => setTipoUser("paciente")}
-                  disabled
-                />
-                Paciente
-              </label>
             </div>
           </p>
           <p>

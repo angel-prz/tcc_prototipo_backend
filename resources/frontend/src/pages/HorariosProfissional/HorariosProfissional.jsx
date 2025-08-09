@@ -13,7 +13,7 @@ const HorariosProfissional = () => {
 
   console.log('url', API_URL);
   console.log(data);
-
+    console.log(data);
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4 text-gray-800">Lista de Profissionais</h2>
@@ -31,6 +31,7 @@ const HorariosProfissional = () => {
             data && data.length > 0 ? (
               data.map((horarios_profissional) => (
                 <tr key={horarios_profissional.id} className='hover:bg-gray-50 transition duration-150 ease-in-out'>
+
                   <td className='px-4 py-3 border-b border-gray-200'>
                     {horarios_profissional.profissional.user.name}
                   </td>

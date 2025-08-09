@@ -1,165 +1,23 @@
 @import "tailwindcss";
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root {
+    --font-open-sans: 'Open Sans', 'sans-serif';
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: Arial, sans-serif;
-}
 
-/* =======================================
- LAYOUT
-======================================= */
-/*(Mobile-First(BLA)) */
-.main_container {
-  display: grid;
-  grid-template-rows: auto auto 1fr auto; /* Ordem: Header, Navbar, Main, Footer */
-  grid-template-areas:
-    'header'
-    'nav'
-    'main'
-    'footer';
-  gap: 1.25em;
-  padding: 0.625em;
-  width: 100%;
-  height: 100vh; /* Preenche a altura da tela */
-}
+@theme {
+    --font-open-sans: var(--font-open-sans);
 
-@media only screen and (min-width: 768px) {
-  .main_container {
-    display: grid;
-    grid-template-areas:
-      'header header'
-      'nav main'
-      'footer footer';
-    grid-template-columns: 15.625em 1fr;
-    grid-template-rows: 3.75em 1fr;
-    height: 100vh;
-  }
-}
-
-/* Main Content */
-main {
-  grid-area: main;
-  padding: 15px;
-  background-color: #fff;
-  border-radius: 0.5em;
-  border: 0.0625em solid #ddd;
-  max-height: 100vh;
-  overflow-y: auto;
-}
-
-/* Footer */
-footer {
-  grid-area: footer;
-  background-color: #333;
-  color: white;
-  text-align: center;
-  padding: 0.625em;
-}
-
-/************************************
-Estilo dos usuarios
-************************************/
-/* Estilo do formulário */
-@media only screen and (max-width: 768px) {
-  .flex-container {
-    display: flex;
-    flex-direction: column;
-  }
-}
-.lista-paciente {
-  margin: 1em 0;
-  margin-top: 1em;
-}
-
-/* Flex container */
-.flex-container {
-  flex-direction: row;
-  display: flex;
-  align-items: center;
-  gap: 0.8em;
-  padding: 0.75em;
-  border: 0.0625em solid #ccc;
-  border-radius: 0.3125em;
-  background-color: #f9f9f9;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  height: 5vh;
-}
-
-.flex-item {
-  margin: 0;
-}
-
-/* Imagem de perfil */
-.imagem_perfil {
-  border-left: 1em;
-  width: 2em;
-  height: 2em;
-  border-radius: 50%;
-  object-fit: cover;
-  /*border: 0.625em solid #ddd;*/
-}
-
-/* Nome do paciente */
-.nome {
-  flex-grow: 1; /* Ocupa o espaço restante */
-  font-size: 0.875em;
-}
-
-/* Botões */
-.flex-container button {
-  padding: 0.3125em 0.625em;
-  font-size: 0.75em;
-  border: none;
-  border-radius: 0.3125em;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.flex-container #bt_ficha {
-  background-color: #007bff;
-  color: white;
-}
-
-.flex-container #bt_excluir {
-  background-color: #dc3545;
-  color: white;
-}
-
-.flex-container button:hover {
-  filter: brightness(0.9);
-}
-
-/************************************
-Formulário cadastro usuário
-************************************/
-
-#divTipoProfissional {
-  display: none;
-}
-
-#divNumeroConselho {
-  display: none;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f4;
-}
-
-main > h1 {
-  text-align: center;
-  margin-top: 20px;
+    /* tema padrão - ifsul*/
+    --color-ifsul-vermelho: #FF1120;
+    --color-ifsul-verde: #248232;
+    --color-ifsul-amarelo: #FFD34B;
+    --color-ifsul-darkpinegreen:  #1E3231;
+    --color-ifsul-greengooseberry: #B4DCA2;
+    --color-ifsul-greentrance: #A2D5A5;
+    --color-ifsul-lilypad: #829084;
+    --color-ifsul-periwinkletint: #D4DED6;
+    --color-ifsul-iceglow: #FFFDE9;
+    --color-ifsul-redsalsa: #F73944;
+    --color-ifsul-siestarose: #EA777B;
 }

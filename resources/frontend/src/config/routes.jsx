@@ -29,6 +29,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route element={<AuthLayout />}>
+        <Route element={<Login />} />
         <Route path="/login" element={<Login />} />
       </Route>
       <Route path="/" element={<Guest />}>
@@ -36,15 +37,15 @@ const router = createBrowserRouter(
         <Route path="/profissionais" element={
           <ProfissionaisProvider>
             <Profissionais/>
-            
-          </ProfissionaisProvider>} 
-        />        
-        
+
+          </ProfissionaisProvider>}
+        />
+
         <Route path="/register" element={<SignUp />} />
         <Route path="/horarios" element={
           <HorariosProfissionalProvider>
             <HorariosProfissional/>
-          </HorariosProfissionalProvider>} 
+          </HorariosProfissionalProvider>}
         />
       </Route>
       <Route path="/" element={<Private><AdmLayout /></Private>}>
@@ -53,12 +54,12 @@ const router = createBrowserRouter(
         <Route path="/logout" element={<Logout />} />
         <Route path="/pacientes" element={<Pacientes />}/>
         <Route path="/consultas" element={
-        <ConsultaProvider> 
-          <Consultas /> 
+        <ConsultaProvider>
+          <Consultas />
         </ConsultaProvider>}
       />
       </Route>
-      
+
       <Route path="*" element={<NotFound />} />
     </>
   )
