@@ -20,7 +20,7 @@ class HorariosProfissionalController extends Controller
      */
     public function index()
     {
-        return new HorarioProfissionalCollectionResource(HorariosProfissional::all());
+        return new HorarioProfissionalCollectionResource(HorariosProfissional::all()->load('profissional.user'));
     }
 
     public function verificaTokenCan_AdmPro(Request $request)
