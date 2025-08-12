@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('fone_celular')->nullable();
             $table->string('fone_fixo')->nullable();
             $table->enum('tipo_usuario', ['administrador', 'paciente', 'profissional'])->default('paciente');
+            $table->boolean('ativo')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });
