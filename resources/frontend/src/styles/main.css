@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 :root {
     --font-open-sans: 'Open Sans', 'sans-serif';
 }
@@ -20,4 +21,10 @@
     --color-ifsul-iceglow: #FFFDE9;
     --color-ifsul-redsalsa: #F73944;
     --color-ifsul-siestarose: #EA777B;
+
 }
+
+.texto-cor { color: var(--color-ifsul-darkpinegreen); }
+.sucesso-cor {color: var(--color-ifsul-verde)}
+.alerta-cor {color: var(--color-ifsul-amarelo)}
+.erro-cor {color: var(--color-ifsul-vermelho)}

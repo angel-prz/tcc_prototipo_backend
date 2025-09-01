@@ -27,7 +27,7 @@ const UserTable = () => {
           </tr>
         </thead>
         <tbody className='hover:bg-gray-50'>
-          {isLoaded && data?.length ? 
+          {isLoaded && data?.length ?
             data.map((user, key) => (
               <UserRow key={`user-${key}`} user={user} />
           ))

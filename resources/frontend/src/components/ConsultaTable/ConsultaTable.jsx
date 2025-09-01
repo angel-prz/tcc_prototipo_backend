@@ -22,13 +22,13 @@ const ConsultaTable = () => {
             <th className='px-4 py-2 border-b'>ID</th>
             <th className='px-4 py-2 border-b'>Paciente</th>
             <th className='px-4 py-2 border-b'>Profissional</th>
-            
+
             <th className='px-4 py-2 border-b'>observacao</th>
             <th className='px-4 py-2 border-b'>Status</th>
           </tr>
         </thead>
-        <tbody className='hover:bg-gray-50'>
-          {isLoaded && data?.length ? 
+        <tbody className=''>
+          {isLoaded && data?.length ?
             data.map((consulta, key) => (
               <ConsultaRow key={`consulta-${key}`} consulta={consulta} />
           ))

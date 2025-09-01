@@ -4,7 +4,7 @@ const ConsultaRow = ({ consulta }) => {
 	//console.log(consulta.paciente.user.name);
 
   return (
-    <tr className='hover:bg-gray-50'>
+    <tr className='odd:bg-white even:bg-gray-200' >
       {/* <td>
         <Link to={`/consulta/${consulta.id}`}>{consulta.id}</Link>
       </td> */}

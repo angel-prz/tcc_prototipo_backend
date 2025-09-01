@@ -40,8 +40,8 @@ export default function Login() {
 
       if(data.user.tipo_usuario === "administrador")
         navigate("/users");
-      if(data.user.tipo_usuario === "profissionalSaude")
-        navigate("/profissional");
+      if(data.user.tipo_usuario === "profissional")
+        navigate("/ProfissionalDashboard");
       if(data.user.tipo_usuario === "paciente")
         navigate("/paciente");
 
@@ -55,9 +55,8 @@ export default function Login() {
 
   return (
     <>
-      <h1>Login</h1>
-      <div className="height: 50vh display: flex flex-direction: column justify-content: center align-items: center">
-        <br />
+      <div className="">
+        <h1 className="text-2xl justify-center">Login</h1>
         <form
           id="form_login"
           name="form_login"
@@ -96,6 +95,7 @@ export default function Login() {
               id="senha"
               placeholder="Senha"
             />
+            </p>
             <div className="flex items-center justify-between">
               <div className="text-sm">
                 <span className="text-blue-600 hover:text-blue-500 cursor-pointer">
@@ -103,7 +103,6 @@ export default function Login() {
                 </span>
               </div>
             </div>
-          </p>
           <p>
             <button
               type="submit"
@@ -131,3 +130,5 @@ export default function Login() {
     </>
   );
 }
+
+//TODO: adicionar transition no botão quando clicar em entrar

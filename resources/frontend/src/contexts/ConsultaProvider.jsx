@@ -24,7 +24,7 @@ const ConsultaProvider = ({ children }) => {
       const _data = data?.data;
       console.log({_data});
 
-      if (!_data) 
+      if (!_data)
         throw new Error("Erro ao carregar usuarios");
 
       Array.isArray(_data) && _data.reverse();
@@ -35,15 +35,16 @@ const ConsultaProvider = ({ children }) => {
   };
 
   const countConsultas = async () => {
-    const url = `/consultas/count`;
+    const url = '/consultas/count';
 
     console.log(url);
     try {
       const {data} = await axiosClient.get(url);
+      console.log({data});
       const _data = data?.data;
       console.log({_data});
 
-      if (!_data) 
+      if (!_data)
         throw new Error("Erro ao carregar usuarios");
 
       Array.isArray(_data) && _data.reverse();
