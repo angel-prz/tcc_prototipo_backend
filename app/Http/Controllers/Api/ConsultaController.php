@@ -78,6 +78,6 @@ class ConsultaController extends Controller
     {
         $count = Consulta::count();
         //dd($count);
-        return response()->json(['count' => $count]);
+        return new ConsultaResource(Consulta::count());
     }
 }
