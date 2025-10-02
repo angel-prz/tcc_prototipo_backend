@@ -7,8 +7,8 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 
 # Instala dependências do Composer sem scripts
-RUN composer install --no-dev --optimize-autoloader --no-scripts
-
+RUN composer install  --optimize-autoloader --no-scripts
+#--no-dev
 # Copia o resto do projeto
 COPY . .
 
