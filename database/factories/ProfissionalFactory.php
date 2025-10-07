@@ -28,7 +28,7 @@ class ProfissionalFactory extends Factory
         {
             'medico' => fake()->stateAbbr(),
             'odontologista' => fake()->stateAbbr(),
-            'enfermeiro', fake()->stateAbbr(),
+            'enfermeiro', 'tecnico_enfermeiro' => fake()->stateAbbr(),
             'bolsista' => null,
         };
 
