@@ -35,7 +35,7 @@ class ProfissionalFactory extends Factory
         return [
             'tipo_profissional' => $tipo_profissional,
             'sigla_conselho' => $sigla_conselho,
-            'uf_conselho' => fake()->stateAbbr(),
+            'uf_conselho' => $uf_conselho,
             'numero_conselho' => $sigla_conselho ? fake()->unique()->numerify('##########') : null,
         ];
     }
