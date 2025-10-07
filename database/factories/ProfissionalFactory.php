@@ -24,6 +24,13 @@ class ProfissionalFactory extends Factory
             'enfermeiro', 'tecnico_enfermeiro' => 'COREN',
             'bolsista' => null,
         };
+        $uf_conselho = match ($tipo_profissional)
+        {
+            'medico' => fake()->stateAbbr(),
+            'odontologista' => fake()->stateAbbr(),
+            'enfermeiro', fake()->stateAbbr(),
+            'bolsista' => null,
+        };
 
         return [
             'tipo_profissional' => $tipo_profissional,

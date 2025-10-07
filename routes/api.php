@@ -43,5 +43,5 @@ Route::prefix('v1')->group(function () {
         ->only('index');
     Route::apiResource('profissionais', ProfissionalController::class)->only(['index']);
     Route::post('/login',[LoginController::class, 'login']);
-
+    Route::post('/ping', function() { return response()->json(['message' => 'pong']); });
 });
