@@ -66,7 +66,7 @@ class User extends Authenticatable
         return $this->hasOne(Profissional::class, 'id', 'id');
     }
 
-    public function pacienteAluno()
+    public function aluno()
     {
         return $this->hasOneThrough(
             Aluno::class,
@@ -78,7 +78,7 @@ class User extends Authenticatable
         );
     }
 
-     public function pacienteFuncionario()
+    public function funcionario()
     {
         return $this->hasOneThrough(
             Aluno::class,
