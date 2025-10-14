@@ -10,7 +10,11 @@ class ConsultaController extends Controller
 {
     public function index()
     {
-        $consultas = Consulta::with(['paciente.user','profissional.user'])->get();
+$consultas = Consulta::with(['paciente.user' => function($query) {
+        $query->with(['aluno', 'funcionario']);
+        }, 'profissional.user' => function($query) {
+            $query->with(['bolsista', 'medico', 'odontologista', 'enfermeiro', 'tecnico_enfermeiro']);
+        }])->get();
         //dd($consultas);
         return view('consultas.index', compact('consultas'));
     }
