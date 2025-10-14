@@ -1,5 +1,6 @@
 /.phpunit.cache
 /node_modules
+node_modules
 /public/build
 /public/hot
 /public/storage
@@ -23,3 +24,4 @@ yarn-error.log
 /.zed
 .github
 .devcontainer
+referencias
