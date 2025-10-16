@@ -1,7 +1,6 @@
 import { Plus, Search, ArrowUpRight, Filter } from 'lucide-react';
 
 import ConsultasList from '../../components/ConsultasList.jsx/ConsultasCard';
-import SearchBar  from '../../components/SearchBar/SearchBar';
 
 const Consultas = () => {
 
@@ -27,7 +26,6 @@ const Consultas = () => {
                     </button>
                 </div>
             </div>
-            <SearchBar />
             <ConsultasList />
         </div>
     );

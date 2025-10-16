@@ -28,6 +28,7 @@ import AuthLayout from '../layouts/AuthLayout';
 import ProfissionalLayout from '../layouts/ProfissionalLayout';
 
 import ProfissionalDashboardWrapper from '../wrappers/ProfissionalDashboardWrapper';
+import ShowConsulta from '../pages/ShowConsulta/ShowConsulta.jsx';
 
 
 const router = createBrowserRouter(
@@ -72,11 +73,12 @@ const router = createBrowserRouter(
       <Route path="/" element={<Private><ProfissionalLayout /></Private>}>
             <Route index element={<ProfissionalDashboardWrapper />} />
             <Route path="/ProfissionalDashboard" element={<ProfissionalDashboardWrapper />} />
-            <Route path="/profissionais/consultas" element={
+            <Route path="/consultas" element={
               <ConsultaProvider>
                 <Consultas />
               </ConsultaProvider>
             } />
+            <Route path="/consultas/:id" element={<ShowConsulta />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

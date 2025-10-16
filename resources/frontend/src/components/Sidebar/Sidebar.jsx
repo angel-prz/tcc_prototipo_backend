@@ -58,7 +58,7 @@ export const Sidebar = (/* { layoutType } */) => {
                             <NavLink to="/ProfissionalDashboard" icon={<Home size={20} />} label="Dashboard" isActive={isActive('/ProfissionalDashboard')} onClick={toggleSidebar} />
                             <NavLink to="/pacientes" icon={<Users size={20} />} label="Pacientes" isActive={isActive('/pacientes')} onClick={toggleSidebar} />
                             <NavLink to="/profissionais" icon={<UserRound size={20} />} label="Profissionais da Saúde" isActive={isActive('/profissionais')} onClick={toggleSidebar} />
-                            <NavLink to="/profissionais/consultas" icon={<ClipboardList size={20} />} label="Consultas" isActive={isActive('/profissionais/consultas')} onClick={toggleSidebar} />
+                            <NavLink to="/consultas" icon={<ClipboardList size={20} />} label="Consultas" isActive={isActive('/consultas')} onClick={toggleSidebar} />
                             <NavLink to="/calendario" icon={<Calendar size={20} />} label="Calendario" isActive={isActive('/calendario')} onClick={toggleSidebar} />
                         </nav>
                     </div>
@@ -92,7 +92,7 @@ export const Sidebar = (/* { layoutType } */) => {
                             <NavLink to="/ProfissionalDashboard" icon={<Home size={20} />} label="Dashboard" isActive={isActive('ProfissionalDashboard')} />
                             <NavLink to="/pacientes" icon={<Users size={20} />} label="Pacientes" isActive={isActive('/pacientes')} />
                             <NavLink to="/profissionais" icon={<UserRound size={20} />} label="Profissionais da Saúde" isActive={isActive('/profissionais')} />
-                            <NavLink to="/profissionais/consultas" icon={<ClipboardList size={20} />} label="Consultas" isActive={isActive('/profissionais/consultas')} />
+                            <NavLink to="/consultas" icon={<ClipboardList size={20} />} label="Consultas" isActive={isActive('/consultas')} />
                             <NavLink to="/calendario" icon={<Calendar size={20} />} label="Calendario" isActive={isActive('/calendario')} />
                         </nav>
                     </div>

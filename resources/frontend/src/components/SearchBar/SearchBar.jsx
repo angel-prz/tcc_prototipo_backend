@@ -2,11 +2,20 @@ import { useEffect, useState, useRef  } from "react"
 import { Search, Filter } from 'lucide-react';
 
 
-const SearchBar = (/* {filterFunction, disabled} */) => {
+const SearchBar = ( onSearch, onFilter ) => {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
 
+    // Envia os valores para o componente pai quando mudam
+    useEffect(() => {
+        if (typeof onSearch === 'function') {
+            onSearch(searchTerm);
+        }
+        if (typeof onFilter === 'function') {
+            onFilter(statusFilter);
+        }
+    }, [searchTerm, statusFilter, onSearch, onFilter]);
 
     return(
         <>
