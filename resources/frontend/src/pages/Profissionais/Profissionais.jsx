@@ -1,81 +1,125 @@
-import { useContext, useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { ProfissionaisContext } from "../../contexts/ProfissionalProvider";
+import { Plus, Search, UserCircle, ArrowUpRight } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
+/* const API_URL = import.meta.env.VITE_API_URL;
+ */
 const Profissionais = () => {
-  const { data, isLoaded, loadProfissionais } = useContext(ProfissionaisContext);
+    const { data, isLoaded, loadProfissionais } =
+        useContext(ProfissionaisContext);
 
-  useEffect(() => {
-    loadProfissionais();
-  }, []);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-  console.log('url', API_URL);
-  console.log(data);
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
-  return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Lista de Profissionais</h2>
-      <table className="min-w-full bg-white border border-gray-200 text-sm text-left shadow-md rounded-lg overflow-hidden">
-        <thead className='bg-gray-100 text-gray-700 uppercase tracking-wider'>
-          <tr>
-            <th className='px-4 py-3 border-b-2 border-gray-200'>ID</th>
-            <th className='px-4 py-3 border-b-2 border-gray-200'>Nome</th>
-            <th className='px-4 py-3 border-b-2 border-gray-200'>Tipo</th>
-            <th className='px-4 py-3 border-b-2 border-gray-200'>Opcoes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {isLoaded ? (
-            data && data.length > 0 ? (
-              data.map((profissional) => (
-                <tr key={profissional.id} className='hover:bg-gray-50 transition duration-150 ease-in-out'>
-                  <td className='px-4 py-3 border-b border-gray-200'>
-                    <Link to={`/profissional/${profissional.id}`} className="text-blue-600 hover:underline">
-                      {profissional.id}
-                    </Link>
-                  </td>
-                  <td className='px-4 py-3 border-b border-gray-200'>
-  {profissional.user.name}
-</td>
-<td className='px-4 py-3 border-b border-gray-200'>
-  {profissional.tipo_profissional}
-</td>
-                  <td className='px-4 py-3 border-b border-gray-200'>
+    useEffect(() => {
+        loadProfissionais();
+    }, []);
+
+    /*     console.log("url", API_URL);
+     */ console.log(data);
+
+    return (
+        <div className="space-y-6 animate-fadeIn">
+            <div className="md:flex md:items-center md:justify-between">
+                <div className="flex-1 min-w-0">
+                    <h1 className="text-2xl font-semibold leading-tight text-gray-800">
+                        Profissionais de Saúde
+                    </h1>
+                    <p className="mt-1 text-sm text-gray-500">
+                        Gerenciar profissionais de saúde
+                    </p>
+                </div>
+                <div className="mt-4 flex md:mt-0 md:ml-4">
                     <button
-                      onClick={() => console.log('Editar', profissional.id)}
-                      className="text-indigo-600 hover:text-indigo-900 mr-2"
+                        type="button"
+                        onClick={openModal}
+                        className="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
-                      Editar
+                        <Plus className="-ml-1 mr-2 h-4 w-4" />
+                        Adicionar Profissional
                     </button>
-                    <button
-                      onClick={() => console.log('Deletar', profissional.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Deletar
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6" className="px-4 py-4 text-center text-gray-500">
-                  Nenhum profissional encontrado.
-                </td>
-              </tr>
-            )
-          ) : (
-            <tr>
-              <td colSpan="6" className="px-4 py-4 text-center text-gray-500">
-                Carregando profissionais...
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
+                </div>
+            </div>
+
+            {/* Search */}
+            <div className="relative rounded-md shadow-sm max-w-lg">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-2 sm:text-sm border-gray-300 rounded-md"
+                    placeholder="Pesquise por nome, especialidade ou e-mail"
+                />
+            </div>
+
+            {/* Professional List */}
+            <div className="bg-white shadow overflow-hidden sm:rounded-md">
+                <ul className="divide-y divide-gray-200">
+                    {isLoaded && data.length > 0 ? (
+                        data.map((profissional) => (
+                            <li key={profissional.id}>
+                                <Link
+                                    to={`/profissionais/${profissional.id}`}
+                                    className="block hover:bg-gray-50"
+                                >
+                                    <div className="px-4 py-4 sm:px-6">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center">
+                                                <div className="flex-shrink-0 h-10 w-10 bg-teal-100 rounded-full flex items-center justify-center">
+                                                    <UserCircle className="h-6 w-6 text-teal-600" />
+                                                </div>
+                                                <div className="ml-4">
+                                                    <p className="text-sm font-medium text-teal-600">
+                                                        {profissional.user.name}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500 mt-1">
+                                                        {
+                                                            profissional.tipo_profissional
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center">
+                                                <div className="mr-4 text-right">
+                                                    <p className="text-sm text-gray-900">
+                                                        {
+                                                            profissional.sigla_conselho
+                                                        }
+                                                    </p>
+                                                    <p className="text-sm text-gray-500">
+                                                        {
+                                                            profissional.numero_conselho
+                                                        }
+                                                    </p>
+                                                </div>
+                                                <ArrowUpRight className="h-5 w-5 text-gray-400" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Link>
+                            </li>
+                        ))
+                    ) : (
+                        <li className="px-4 py-5 text-center text-gray-500">
+                            {searchTerm
+                                ? "Nenhum profissional corresponde à sua pesquisa"
+                                : "Nenhum profissional encontrado"}
+                        </li>
+                    )}
+                </ul>
+            </div>
+
+            {/* Add Professional Modal */}
+            {isModalOpen && <ProfessionalForm onClose={closeModal} />}
+        </div>
+    );
 };
 
 export default Profissionais;
