@@ -4,17 +4,11 @@ import { Link } from "react-router-dom";
 import { Calendar, Plus, Search, ArrowUpRight, Filter } from 'lucide-react';
 import SearchBar  from '../SearchBar/SearchBar';
 
-const statusColors = {
-  agendada: "bg-blue-100 text-blue-800",
-  realizada: "bg-green-100 text-green-800",
-  cancelada: "bg-red-100 text-red-800",
-  faltou: "bg-yellow-100 text-yellow-800"
-};
+
 
 const ConsultasCard = () => {
 
   const { data, isLoaded, loadConsultas } = useContext(ConsultasContext);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
