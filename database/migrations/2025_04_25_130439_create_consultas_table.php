@@ -18,8 +18,7 @@ return new class extends Migration
             $table->enum('status', ['agendada','realizada', 'cancelada'])->default('agendada');
             $table->enum('tipo', ['enfermagem', 'medica', 'odontologica'])->default('medica');
             $table->string('observacao')->nullable();
-            $table->date('data');
-            $table->time('hora');
+            $table->date('data_hora');
             $table->timestamps();
         });
     }

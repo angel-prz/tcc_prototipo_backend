@@ -21,8 +21,20 @@ class ConsultaController extends Controller
     {
         return new ConsultaCollectionResource(
             /* Consulta::with(['paciente.user','profissional.user'])->get() */
-            Consulta::all()->load('paciente.user','profissional.user'));
-    }
+          Consulta::all()->load('paciente.user','profissional.user'));
+
+        /*$consultas = Consulta::with([
+        'paciente.user' => function($query) {
+            $query->with([
+                'aluno',
+                'funcionario'
+            ]);
+        },
+        'profissional.user'
+    ])->get();
+
+    return new ConsultaCollectionResource($consultas);*/
+}
 
     /**
      * Store a newly created resource in storage.

@@ -15,8 +15,7 @@ class Consulta extends Model
         'profissional_id',
         'status',
         'observacao',
-        'data',
-        'hora',
+        'data_hora',
     ];
 
     public function paciente()
@@ -40,8 +39,8 @@ class Consulta extends Model
         Profissional::class,
         null,
         null,
-        'profissional_id', 
-        'id'         
+        'profissional_id',
+        'id'
         );
     }
 
@@ -52,9 +51,25 @@ class Consulta extends Model
         Paciente::class,
         null,
         null,
-        'paciente_id', 
-        'id'         
+        'paciente_id',
+        'id'
         );
     }
 
+    public function atendimento()
+    {
+        return $this->hasOne(Atendimento::class, 'consulta_id', 'id');
+    }
+
+    public function documentosAtestados()
+    {
+        return $this->hasManyThrough(
+            DocumentosAtestados::class,
+            Atendimento::class,
+            'consulta_id',
+            'atendimento_id',
+            'id',
+            'id'
+        );
+    }
 }

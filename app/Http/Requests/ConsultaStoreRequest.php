@@ -25,8 +25,7 @@ class ConsultaStoreRequest extends FormRequest
             'paciente_id' => 'required',
             'profissional_id' => 'required',
             'observacao' => 'string',
-            'data' => 'required',
-            'hora' => 'required',
+            'data_hora' => 'required',
         ];
     }
 
