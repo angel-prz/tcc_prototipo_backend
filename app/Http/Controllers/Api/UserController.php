@@ -21,8 +21,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->user()->tokenCan('is-admin'))
-            return response()->json(['error' => 'Acesso negado!'], 403);
+        /* if (!$request->user()->tokenCan('is-admin') || !$request->user()->tokenCan('is-profissional') )
+            return response()->json(['error' => 'Acesso negado!'], 403); */
         return new UserCollectionResource(User::all());
     }
 
