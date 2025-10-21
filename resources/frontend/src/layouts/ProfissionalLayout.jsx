@@ -34,7 +34,7 @@ const NavLink = ({ to, icon, label, isActive, onClick = () => {} }) => {
 const ProfissionalLayout = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
-    const { token, user, verifyLogin } = useAuthContext();
+    const { token, user /* verifyLogin */ } = useAuthContext();
     const intervalLogin = useRef(null);
     console.log(token, user);
     const navigate = useNavigate();
@@ -43,8 +43,9 @@ const ProfissionalLayout = () => {
         console.log({ user });
         intervalLogin?.current && clearInterval(intervalLogin.current);
         intervalLogin.current = setInterval(async () => {
-            console.log("Verificando login...");
-            verifyLogin().then((isLogged) => !isLogged && navigate("/login"));
+            /*             console.log("Verificando login...");
+             */
+            /* verifyLogin().then((isLogged) => !isLogged && navigate("/login")); */
         }, 10000);
         return () => clearInterval(intervalLogin.current);
     }, [token]);
@@ -137,12 +138,10 @@ const ProfissionalLayout = () => {
                             </div>
                             <nav className="mt-5 px-2 space-y-1">
                                 <NavLink
-                                    to="/ProfissionalDashboard"
-                                    icon={<Home size={20} />}
-                                    label="Dashboard"
-                                    isActive={isActive(
-                                        "/ProfissionalDashboard"
-                                    )}
+                                    to="/calendario"
+                                    icon={<Calendar size={20} />}
+                                    label="Calendario"
+                                    isActive={isActive("/calendario")}
                                     onClick={toggleSidebar}
                                 />
                                 <NavLink
@@ -159,20 +158,23 @@ const ProfissionalLayout = () => {
                                     isActive={isActive("/profissionais")}
                                     onClick={toggleSidebar}
                                 />
-                                <NavLink
+                                {/* <NavLink
+                                    to="/ProfissionalDashboard"
+                                    icon={<Home size={20} />}
+                                    label="Dashboard"
+                                    isActive={isActive(
+                                        "/ProfissionalDashboard"
+                                    )}
+                                    onClick={toggleSidebar}
+                                /> */}
+
+                                {/* <NavLink
                                     to="/consultas"
                                     icon={<ClipboardList size={20} />}
                                     label="Consultas"
                                     isActive={isActive("/consultas")}
                                     onClick={toggleSidebar}
-                                />
-                                <NavLink
-                                    to="/calendario"
-                                    icon={<Calendar size={20} />}
-                                    label="Calendario"
-                                    isActive={isActive("/calendario")}
-                                    onClick={toggleSidebar}
-                                />
+                                /> */}
                             </nav>
                         </div>
 
@@ -203,10 +205,10 @@ const ProfissionalLayout = () => {
                             </div>
                             <nav className="mt-5 flex-1 px-2 space-y-1">
                                 <NavLink
-                                    to="/ProfissionalDashboard"
-                                    icon={<Home size={20} />}
-                                    label="Dashboard"
-                                    isActive={isActive("ProfissionalDashboard")}
+                                    to="/calendario"
+                                    icon={<Calendar size={20} />}
+                                    label="Calendario"
+                                    isActive={isActive("/calendario")}
                                 />
                                 <NavLink
                                     to="/pacientes"
@@ -220,18 +222,19 @@ const ProfissionalLayout = () => {
                                     label="Profissionais da Saúde"
                                     isActive={isActive("/profissionais")}
                                 />
-                                <NavLink
+                                {/* <NavLink
+                                    to="/ProfissionalDashboard"
+                                    icon={<Home size={20} />}
+                                    label="Dashboard"
+                                    isActive={isActive("ProfissionalDashboard")}
+                                /> */}
+
+                                {/* <NavLink
                                     to="/consultas"
                                     icon={<ClipboardList size={20} />}
                                     label="Consultas"
                                     isActive={isActive("/consultas")}
-                                />
-                                <NavLink
-                                    to="/calendario"
-                                    icon={<Calendar size={20} />}
-                                    label="Calendario"
-                                    isActive={isActive("/calendario")}
-                                />
+                                /> */}
                             </nav>
                         </div>
                         <div className="flex-shrink-0 flex border-t border-blue-700 p-4">
