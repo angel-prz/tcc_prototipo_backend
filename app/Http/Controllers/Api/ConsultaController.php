@@ -88,8 +88,28 @@ class ConsultaController extends Controller
 
     public function count()
     {
-        $count = Consulta::count();
-        //dd($count);
-        return new ConsultaResource(Consulta::count());
+        try {
+        $statuses = ['agendada', 'concluida', 'cancelada', 'em_espera'];
+
+        $counts = \App\Models\Consulta::select('status')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        // Garante que todos os status apareçam, mesmo se não houver registros
+        $result = collect($statuses)->mapWithKeys(function ($status) use ($counts) {
+            return [$status => $counts[$status] ?? 0];
+        });
+
+        return response()->json([
+            'total' => $result->sum(),
+            'por_status' => $result
+        ]);
+        } catch (\Throwable $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
     }
 }
