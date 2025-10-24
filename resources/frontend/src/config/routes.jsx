@@ -31,6 +31,7 @@ import ProfissionalDashboardWrapper from "../wrappers/ProfissionalDashboardWrapp
 import ConsultaShow from "../pages/ConsultaShow/ConsultaShow.jsx";
 import Calendario from "../pages/Calendario/Calendario.jsx";
 import ShowProfissional from "../pages/ShowProfissional/ShowProfissional.jsx";
+import PacienteProvider from "../contexts/PacienteProvider.jsx";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -74,7 +75,7 @@ const router = createBrowserRouter(
                 <Route path="/users" element={<Users />} />
                 {/* <Route path="/users/:id" element={<ShowUser />} /> */}
                 <Route path="/logout" element={<Logout />} />
-                <Route path="/pacientes" element={<Pacientes />} />
+                {/* <Route path="/pacientes" element={<Pacientes />} /> */}
                 <Route
                     path="/adm/consultas"
                     element={
@@ -138,6 +139,7 @@ const router = createBrowserRouter(
                         </ProfissionaisProvider>
                     }
                 />
+                <Route path="/pacientes" element={<PacienteProvider><Pacientes /></PacienteProvider>} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
