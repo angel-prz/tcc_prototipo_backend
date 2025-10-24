@@ -36,24 +36,27 @@ const ConsultaProvider = ({ children }) => {
         }
     };
 
-    const countConsultas = async () => {
-        const url = "/consultas/count";
+  const countConsultas = async () => {
+  const url = "/consultas/count";
 
-        console.log(url);
-        try {
-            const { data } = await axiosClient.get(url);
-            console.log({ data });
-            const _data = data?.data;
-            console.log({ _data });
+  try {
+    const { data } = await axiosClient.get(url);
+    console.log({ data });
 
-            if (!_data) throw new Error("Erro ao carregar usuarios");
+    // usa o próprio data
+    if (!data) throw new Error("Erro ao carregar contagem de consultas");
 
-            Array.isArray(_data) && _data.reverse();
-            setData(_data);
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    // Aqui estão as chaves corretas
+    console.log("Agendadas:", data.por_status.agendada);
+    console.log("Total:", data.total);
+
+    // se quiser salvar tudo no estado
+    setData(data);
+
+  } catch (error) {
+    console.error("Erro ao carregar consultas:", error);
+  }
+};
 
     const editConsulta = async (id, consulta = null) => {
         /* return true; //TODO */
