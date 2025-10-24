@@ -22,7 +22,7 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware("ability:is-admin")->group(function () {
             Route::apiResource('users', UserController::class);
-            Route::apiResource('consultas', ConsultaController::class);
+            /* Route::apiResource('consultas', ConsultaController::class); */
             Route::apiResource('horarios_profissional', HorariosProfissionalController::class);
         });
         Route::apiResource('users', UserController::class);
