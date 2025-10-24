@@ -1,53 +1,66 @@
-import { createContext, useState } from 'react';
-import { mockedPacientes } from '../data/mockedPacientes';
-
-const MAX_TIMEOUT = 100;
-const MOCKED_PACIENTES = mockedPacientes.reverse();
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useState } from "react";
+import axiosClient from "../utils/axios-client";
 
 export const PacientesContext = createContext({
-  paciente: {},
-  listPacientes: [],
-  setPaciente: () => {},
-  loadPacientes: () => {},
-  filterPacientes: () => {},
-  findPacienteById: () => {},
+    data: [],
+    setData: () => {},
+    isLoaded: false,
+    loadPacientes: () => {},
+    editPaciente: () => {},
+    deletePaciente: () => {},
+    addPaciente: () => {},
 });
 
-const PacientesProvider = ({ children }) => {
-  const [paciente, setPaciente] = useState({});
-  const [listPacientes, setListPacientes] = useState([]);
+const PacienteProvider = ({ children }) => {
+    const [data, setData] = useState([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
-  const loadPacientes = () => {
-    setTimeout(() => setListPacientes(MOCKED_PACIENTES), MAX_TIMEOUT);
-  };
+    const loadPacientes = async (id = null) => {
+        const url = id ? `/pacientes/${id}` : `/pacientes`;
+        try {
+            const response = await axiosClient.get(url);
+            console.log({ response });
+            const { data } = response;
+            const _data = data?.data;
+            console.log(_data);
+            if (!_data) throw new Error("Erro ao carregar pacientes");
 
-  const findById = (id) => {
-    let paciente = MOCKED_PACIENTES.find((paciente) => paciente.id === +id);
-    setPaciente(paciente);
-    return paciente;
-  };
+            setData(_data);
+        } catch (error) {
+            if (error.status === 500)
+                console.error("Erro ao comunicar com a API!!!");
+            console.log(error);
+        }
+    };
 
-  const filterPacientes = (searchTerm) => {
-    const filteredPacientes = MOCKED_PACIENTES.filter((paciente) => {
-      return paciente.nome.toLowerCase().includes(searchTerm.toLowerCase());
-    });
-    setListPacientes(filteredPacientes);
-  };
+    const editPaciente = () => {
+        return true; //TODO
+    };
 
-  return (
-    <PacientesContext.Provider
-      value={{
-        paciente,
-        listPacientes,
-        setPaciente,
-        loadPacientes,
-        filterPacientes,
-        findPacienteById: findById,
-      }}
-    >
-      {children}
-    </PacientesContext.Provider>
-  );
+    const deletePaciente = () => {
+        return true; //TODO
+    };
+
+    const addPaciente = () => {
+        return true; //TODO
+    };
+
+    return (
+        <PacientesContext.Provider
+            value={{
+                data,
+                isLoaded,
+                setData,
+                loadPacientes,
+                editPaciente,
+                deletePaciente,
+                addPaciente,
+            }}
+        >
+            {children}
+        </PacientesContext.Provider>
+    );
 };
 
-export default PacientesProvider;
+export default PacienteProvider;
