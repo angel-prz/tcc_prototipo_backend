@@ -145,6 +145,15 @@ const ProfissionalLayout = () => {
                                     onClick={toggleSidebar}
                                 />
                                 <NavLink
+                                    to="/ProfissionalDashboard"
+                                    icon={<Home size={20} />}
+                                    label="Dashboard"
+                                    isActive={isActive(
+                                        "/ProfissionalDashboard"
+                                    )}
+                                    onClick={toggleSidebar}
+                                />
+                                <NavLink
                                     to="/pacientes"
                                     icon={<Users size={20} />}
                                     label="Pacientes"
@@ -158,15 +167,7 @@ const ProfissionalLayout = () => {
                                     isActive={isActive("/profissionais")}
                                     onClick={toggleSidebar}
                                 />
-                                {/* <NavLink
-                                    to="/ProfissionalDashboard"
-                                    icon={<Home size={20} />}
-                                    label="Dashboard"
-                                    isActive={isActive(
-                                        "/ProfissionalDashboard"
-                                    )}
-                                    onClick={toggleSidebar}
-                                /> */}
+
 
                                 {/* <NavLink
                                     to="/consultas"
@@ -211,6 +212,12 @@ const ProfissionalLayout = () => {
                                     isActive={isActive("/calendario")}
                                 />
                                 <NavLink
+                                    to="/ProfissionalDashboard"
+                                    icon={<Home size={20} />}
+                                    label="Dashboard"
+                                    isActive={isActive("ProfissionalDashboard")}
+                                />
+                                <NavLink
                                     to="/pacientes"
                                     icon={<Users size={20} />}
                                     label="Pacientes"
@@ -222,12 +229,7 @@ const ProfissionalLayout = () => {
                                     label="Profissionais da Saúde"
                                     isActive={isActive("/profissionais")}
                                 />
-                                {/* <NavLink
-                                    to="/ProfissionalDashboard"
-                                    icon={<Home size={20} />}
-                                    label="Dashboard"
-                                    isActive={isActive("ProfissionalDashboard")}
-                                /> */}
+
 
                                 {/* <NavLink
                                     to="/consultas"
