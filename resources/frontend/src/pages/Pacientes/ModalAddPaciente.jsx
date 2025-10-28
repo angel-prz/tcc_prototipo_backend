@@ -324,7 +324,7 @@ const ModalAddPaciente = ({ onClose }) => {
                   type="text"
                   name="aluno_matricula"
                   id="aluno_matricula"
-                  value="2045.219032121"
+                  placeholder='213214421'
                   onChange={validateForm}
                   ref={inputPacienteAlunoMatricula}
                   className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${

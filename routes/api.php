@@ -35,6 +35,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('horarios_profissional', HorariosProfissionalController::class)
             ->middleware(["ability:is-profissional"]);
 
+        Route::get('pacientes/{paciente}/consultas', [PacienteController::class, 'showConsultas']);
         Route::apiResource('pacientes', PacienteController::class);
 
         Route::post('/logout', [LoginController::class, 'logout']);

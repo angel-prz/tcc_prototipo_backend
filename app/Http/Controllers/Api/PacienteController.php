@@ -88,9 +88,9 @@ class PacienteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Paciente $Paciente)
+    public function show(Paciente $paciente)
     {
-        return new PacienteResource($Paciente::with(['user', 'aluno', 'funcionario'])
+        return new PacienteResource($paciente::with(['user', 'aluno', 'funcionario'])
             ->where(function ($query) {
                 $query->whereHas('aluno')
                     ->orWhereHas('funcionario');
@@ -126,5 +126,8 @@ class PacienteController extends Controller
         }
     }
 
+    public function showConsultas(Paciente $Paciente){
+        return new PacienteResource($Paciente->load(['user', 'consultas', 'consultas.profissional.user']));
+    }
 
 }
