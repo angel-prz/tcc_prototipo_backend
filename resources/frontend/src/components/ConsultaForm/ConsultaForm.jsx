@@ -13,7 +13,7 @@ const ConsultaForm = ({ consulta, onClose, onSuccess }) => {
         paciente_id: consulta?.paciente?.id || "",
         profissional_id: consulta?.profissional?.id || "",
         data_hora: consulta?.data_hora || "",
-        status: consulta?.status || "agendada",
+        status: consulta?.status || "",
         observacao: consulta?.observacao || "",
     });
 
@@ -311,13 +311,13 @@ const ConsultaForm = ({ consulta, onClose, onSuccess }) => {
                                             onChange={handleChange}
                                             className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                         >
-                                            <option value="scheduled">
+                                            <option value="agendada">
                                                 Agendada
                                             </option>
-                                            <option value="completed">
+                                            <option value="finalizada">
                                                 Finalizada
                                             </option>
-                                            <option value="cancelled">
+                                            <option value="cancelada">
                                                 Cancelada
                                             </option>
                                         </select>

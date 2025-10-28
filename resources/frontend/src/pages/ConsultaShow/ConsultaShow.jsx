@@ -22,7 +22,7 @@ import { getHora, getData } from "../../utils/dataHora";
 
 const statusColors = {
     agendada: "bg-blue-100 text-blue-800",
-    realizada: "bg-green-100 text-green-800",
+    finalizada: "bg-green-100 text-green-800",
     cancelada: "bg-red-100 text-red-800",
     faltou: "bg-yellow-100 text-yellow-800",
 };
@@ -43,8 +43,7 @@ const ConsultaShow = () => {
     const [consulta, setConsulta] = useState(location.state?.consulta ?? null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    const [message, setMessage] = useState(null);
-
+    /*const [message, setMessage] = useState(null); */
     useEffect(() => {
         loadConsultas();
         setIsLoaded(true);
@@ -69,7 +68,7 @@ const ConsultaShow = () => {
         return <div>Loading...</div>;
     }
 
-    const handleDelete = (e) => {
+    const handleDelete = () => {
         deleteConsulta(consulta);
         navigate("/consultas");
     };

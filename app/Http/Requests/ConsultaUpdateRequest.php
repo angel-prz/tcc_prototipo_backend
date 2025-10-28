@@ -19,6 +19,7 @@ class ConsultaUpdateRequest extends ConsultaStoreRequest
             'profissional_id' => 'required',
             'observacao' => 'string',
             'data_hora' => 'required',
+            'status' => 'required|in:agendada,finalizada,cancelada',
         ];
     }
 }
