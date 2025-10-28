@@ -16,16 +16,28 @@ class PacienteTestSeeder extends Seeder
      */
     public function run(): void
     {
-        $pacienteUser = User::factory()->create([
-            'name' => 'Paciente',
-            'email' => 'paciente@sys.com',
+        $pacienteAlunoUser = User::factory()->create([
+            'name' => 'PacienteAluno',
+            'email' => 'pacienteAluno@sys.com',
             'password' => Hash::make('123'),
             'tipo_usuario' => 'paciente',
         ]);
 
         $pacienteAluno = Paciente::factory()->create([
-            'id' => $pacienteUser->id,
+            'id' => $pacienteAlunoUser->id,
             'tipo_paciente' => 'aluno',
+        ]);
+
+        $pacienteFuncionarioUser = User::factory()->create([
+            'name' => 'PacienteFuncionario',
+            'email' => 'pacienteFuncionario@sys.com',
+            'password' => Hash::make('123'),
+            'tipo_usuario' => 'paciente',
+        ]);
+
+        $pacienteFuncionario = Paciente::factory()->create([
+            'id' => $pacienteFuncionarioUser->id,
+            'tipo_paciente' => 'funcionario',
         ]);
     }
 }

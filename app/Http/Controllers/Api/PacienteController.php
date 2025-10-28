@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\Controller;
+use App\Models\User;
 use App\Models\Paciente;
-use Illuminate\Http\Request;
+use App\Models\Aluno;
+use App\Models\Funcionario;
 use App\Http\Resources\PacienteResource;
 use App\Http\Resources\PacienteCollectionResource;
 use App\Http\Resources\PacienteStoredResource;
@@ -18,27 +20,82 @@ class PacienteController extends Controller
      */
     public function index()
     {
-        return new PacienteCollectionResource(Paciente::all());
+        return new PacienteCollectionResource(Paciente::with(['user', 'aluno', 'funcionario'])
+            ->where(function ($query) {
+                $query->whereHas('aluno')
+                    ->orWhereHas('funcionario');
+            })
+            ->get());
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PacienteStoreRequest $request)
+    /* public function store(PacienteStoreRequest $request)
     {
         try {
             return new PacienteStoredResource(Paciente::create($request->validated()));
         } catch (\Exception $e) {
             return $this->errorHandler('Erro ao criar Paciente',$e);
         }
+    } */
+   public function store(PacienteStoreRequest $request){
+    try{
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'cpf' => $request->cpf,
+            'data_nascimento' => $request->data_nascimento,
+            'sexo' => $request->sexo,
+            'fone_celular' => $request->fone_celular,
+            'fone_fixo' => $request->fone_fixo,
+            'tipo_usuario' => 'paciente',
+        ]);
+
+        $paciente = Paciente::create([
+            'id' => $user->id,
+            'tipo_paciente' => $request->tipo_paciente,
+        ]);
+
+        if ($request->tipo_paciente === 'aluno') {
+            Aluno::create([
+                'id' => $paciente->id,
+                'matricula' => $request->matricula,
+                'campus' => $request->campus,
+                'curso' => $request->curso,
+                'turma' => $request->turma,
+                'semestre' => $request->semestre,
+                'ano' => $request->ano,
+                'fone_responsavel' => $request->fone_responsavel,
+            ]);
+        } elseif ($request->tipo_paciente === 'funcionario') {
+            Funcionario::create([
+                'id' => $paciente->id,
+                'tipo_funcionario' => $request->tipo_funcionario,
+            ]);
+        }
+
+        $paciente->load(['user', 'aluno', 'funcionario']);
+
+        return new PacienteStoredResource($paciente);
+
+    } catch (\Exception $e) {
+        return $this->errorHandler('Erro ao criar Usuário', $e);
     }
+   }
 
     /**
      * Display the specified resource.
      */
     public function show(Paciente $Paciente)
     {
-        return new PacienteResource($Paciente);
+        return new PacienteResource($Paciente::with(['user', 'aluno', 'funcionario'])
+            ->where(function ($query) {
+                $query->whereHas('aluno')
+                    ->orWhereHas('funcionario');
+            })
+            ->get());
     }
 
     /**
@@ -68,4 +125,6 @@ class PacienteController extends Controller
             return $this->errorHandler('Erro ao atualizar Paciente',$e);
         }
     }
+
+
 }

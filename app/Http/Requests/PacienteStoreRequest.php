@@ -22,7 +22,24 @@ class PacienteStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|exists:users,id',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'cpf' => 'required|string|unique:users',
+            'password' => 'nullable|string|min:6',
+            'data_nascimento' => 'required|date',
+            'sexo' => 'required|in:m,f,o',
+            'fone_celular' => 'nullable|string',
+            'fone_fixo' => 'nullable|string',
+            'tipo_paciente' => 'required|in:aluno,funcionario',
+            'matricula' => 'nullable|required_if:tipo_paciente,aluno|string',
+            'campus' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
+            'curso' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
+            'turma' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
+            'semestre' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
+            'ano' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
+            'fone_responsavel' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
+            'tipo_funcionario' => 'nullable', /* |required_if:tipo_paciente,funcionario|string*/
+
         ];
     }
 

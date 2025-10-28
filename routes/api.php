@@ -4,10 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ConsultaController;
-use App\Http\Controllers\Api\PacienteController;
 use App\Http\Controllers\Api\ProfissionalController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\HorariosProfissionalController;
+use App\Http\Controllers\Api\PacienteController;
 
 
 
@@ -21,8 +21,8 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
 
         Route::middleware("ability:is-admin")->group(function () {
-            Route::apiResource('users', UserController::class);
-            /* Route::apiResource('consultas', ConsultaController::class); */
+/*             Route::apiResource('users', UserController::class);
+ */            Route::apiResource('consultas', ConsultaController::class);
             Route::apiResource('horarios_profissional', HorariosProfissionalController::class);
         });
         Route::apiResource('users', UserController::class);
@@ -35,6 +35,8 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('horarios_profissional', HorariosProfissionalController::class)
             ->middleware(["ability:is-profissional"]);
 
+        Route::apiResource('pacientes', PacienteController::class);
+
         Route::post('/logout', [LoginController::class, 'logout']);
     });
 
@@ -44,4 +46,5 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('profissionais', ProfissionalController::class)->only(['index']);
     Route::post('/login',[LoginController::class, 'login']);
     Route::post('/ping', function() { return response()->json(['message' => 'pong']); });
+    Route::get('/users/{user}/consultas', [UserController::class, 'showUserConsultas']);
 });

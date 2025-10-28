@@ -1,29 +1,33 @@
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Plus, Search, UserCircle, ArrowUpRight } from "lucide-react";
-/* import PatientForm from "../components/PatientForm";
- */ import PacientesContext from "../../contexts/PacienteProvider";
+import { PacientesContext } from "../../contexts/PacienteProvider";
+import ModalAddPaciente from "./ModalAddPaciente";
 
 const Pacientes = () => {
     const { data, isLoaded, loadPacientes } = useContext(PacientesContext);
     const [searchTerm, setSearchTerm] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     useEffect(() => {
         loadPacientes();
+        console.log(data);
     }, []);
 
     const filteredPacientes = data.filter((paciente) => {
-        const name = `${paciente.user.name}`.toLowerCase();
+        const name =
+            `${paciente.user.name} ${paciente.user.name}`.toLowerCase();
         return (
             name.includes(searchTerm.toLowerCase()) ||
-            paciente.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            paciente.fone_celular.includes(searchTerm)
+            paciente.user.email
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) /* ||
+            paciente.aluno.matricula.includes(searchTerm) ||
+            paciente.funcionario.tipo_funcionario.includes(searchTerm) */
         );
     });
-
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
 
     return (
         <div className="space-y-6 animate-fadeIn">
@@ -65,7 +69,7 @@ const Pacientes = () => {
             {/* Patient List */}
             <div className="bg-white shadow overflow-hidden sm:rounded-md">
                 <ul className="divide-y divide-gray-200">
-                    {isLoaded && filteredPacientes.length > 0 ? (
+                    {filteredPacientes.length > 0 ? (
                         filteredPacientes.map((paciente) => (
                             <li key={paciente.id}>
                                 <Link
@@ -99,10 +103,13 @@ const Pacientes = () => {
                                             <div className="flex items-center">
                                                 <div className="mr-4 text-right">
                                                     <p className="text-sm text-gray-900">
-                                                        {paciente.phone}
+                                                        {
+                                                            paciente.user
+                                                                .fone_celular
+                                                        }
                                                     </p>
                                                     <p className="text-sm text-gray-500">
-                                                        {paciente.email}
+                                                        {paciente.user.email}
                                                     </p>
                                                 </div>
                                                 <ArrowUpRight className="h-5 w-5 text-gray-400" />
@@ -123,7 +130,7 @@ const Pacientes = () => {
             </div>
 
             {/* Add Patient Modal */}
-            {isModalOpen && <PatientForm onClose={closeModal} />}
+            {isModalOpen && <ModalAddPaciente onClose={closeModal} />}
         </div>
     );
 };

@@ -11,12 +11,14 @@ class Aluno extends Model
     use HasFactory, \Znck\Eloquent\Traits\BelongsToThrough;
     protected $fillable = [
         //numero_carteirinha
+        'id',
         'matricula',
         'campus',
         'curso',
         'semestre',
         'ano',
         'fone_responsavel',
+        'turma',
     ];
 
     public function paciente()

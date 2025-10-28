@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'name',
+        'cpf',
         'data_nascimento',
         'sexo',
         'endereco',
