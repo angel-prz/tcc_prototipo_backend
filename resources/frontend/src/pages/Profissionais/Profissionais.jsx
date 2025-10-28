@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ProfissionaisContext } from "../../contexts/ProfissionalProvider";
 import { Plus, Search, UserCircle, ArrowUpRight } from "lucide-react";
+import ModalAddProfissional from "./ModalAddProfissional";
 
 /* const API_URL = import.meta.env.VITE_API_URL;
  */
@@ -22,6 +23,17 @@ const Profissionais = () => {
     /*     console.log("url", API_URL);
      */ console.log(data);
 
+    const filteredProfissionais = data.filter((profissional) => {
+        const name =
+            `${profissional.user.name} ${profissional.user.name}`.toLowerCase();
+        return (
+            name.includes(searchTerm.toLowerCase()) ||
+            profissional.user.email
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+            profissional.numero_conselho?.includes(searchTerm.toLowerCase())
+        );
+    });
     return (
         <div className="space-y-6 animate-fadeIn">
             <div className="md:flex md:items-center md:justify-between">
@@ -55,7 +67,7 @@ const Profissionais = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-2 sm:text-sm border-gray-300 rounded-md"
-                    placeholder="Pesquise por nome, especialidade ou e-mail"
+                    placeholder="Pesquise por nome, numero do conselho ou e-mail"
                 />
             </div>
 
@@ -63,7 +75,7 @@ const Profissionais = () => {
             <div className="bg-white shadow overflow-hidden sm:rounded-md">
                 <ul className="divide-y divide-gray-200">
                     {isLoaded && data.length > 0 ? (
-                        data.map((profissional) => (
+                        filteredProfissionais.map((profissional) => (
                             <li key={profissional.id}>
                                 <Link
                                     to={`/profissionais/${profissional.id}`}
@@ -91,6 +103,10 @@ const Profissionais = () => {
                                                     <p className="text-sm text-gray-900">
                                                         {
                                                             profissional.sigla_conselho
+                                                        }{" "}
+                                                        /{" "}
+                                                        {
+                                                            profissional.uf_conselho
                                                         }
                                                     </p>
                                                     <p className="text-sm text-gray-500">
@@ -117,7 +133,7 @@ const Profissionais = () => {
             </div>
 
             {/* Add Professional Modal */}
-            {isModalOpen && <ProfessionalForm onClose={closeModal} />}
+            {isModalOpen && <ModalAddProfissional onClose={closeModal} />}
         </div>
     );
 };
