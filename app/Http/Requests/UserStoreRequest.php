@@ -26,7 +26,7 @@ class UserStoreRequest extends FormRequest
             'password' => 'required|string',
             'name' => 'required|string|max:255',
             'data_nascimento' => 'nullable|date',
-            'sexo' => 'nullable|string|in:M,F',
+            'sexo' => 'nullable|string|in:m,f,o',
             'endereco' => 'nullable|string|max:255',
             'naturalidade' => 'nullable|string|max:255',
             'fone_celular' => 'nullable|string|max:15',
