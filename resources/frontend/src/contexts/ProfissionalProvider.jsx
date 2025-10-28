@@ -3,7 +3,7 @@ import { createContext, useState, useEffect } from "react";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const ProfissionaisContext = createContext({
-    data: null,
+    data: [],
     setData: () => {},
     loadProfissionais: () => {},
     setIsLoaded: () => {},
@@ -14,7 +14,7 @@ export const ProfissionaisContext = createContext({
 });
 
 const ProfissionaisProvider = ({ children }) => {
-    const [data, setData] = useState(null);
+    const [data, setData] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
 
     const loadProfissionais = async (id = null) => {
