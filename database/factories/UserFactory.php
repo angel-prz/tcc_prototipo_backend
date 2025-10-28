@@ -25,6 +25,7 @@ class UserFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
+            'cpf' => $this->faker->unique()->numerify('###########'),
             'data_nascimento' => $this->faker->date(),
             'sexo' => $this->faker->randomElement(['M', 'F']),
             'endereco' => $this->faker->address(),
