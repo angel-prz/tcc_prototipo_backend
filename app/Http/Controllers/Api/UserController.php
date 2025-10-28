@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Exception;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Resources\ConsultaCollectionResource;
 
 class UserController extends Controller
 {
@@ -31,8 +32,8 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
-        if (!$request->user()->tokenCan('is-admin'))
-            return response()->json(['error' => 'Acesso negado!'], 403);
+        /* if (!$request->user()->tokenCan('is-admin'))
+            return response()->json(['error' => 'Acesso negado!'], 403); */
         try {
             return new UserStoredResource(User::create($request->validated()));
         } catch (\Exception $e) {
@@ -45,8 +46,8 @@ class UserController extends Controller
      */
     public function show(Request $request, User $user)
     {
-        if($request->user()->id !== $user->id && !$request->user()->tokenCan('is-admin'))
-            return response()->json(['error' => 'Acesso negado! , userid='.$user->id ], 403);
+        /* if($request->user()->id !== $user->id && !$request->user()->tokenCan('is-admin'))
+            return response()->json(['error' => 'Acesso negado! , userid='.$user->id ], 403); */
 
         return new UserResource($user);
 
@@ -57,8 +58,8 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
-        if($request->user()->id !== $user->id && !$request->user()->tokenCan('is-admin'))
-            return response()->json(['error' => 'Acesso negado!'], 403);
+        /* if($request->user()->id !== $user->id && !$request->user()->tokenCan('is-admin'))
+            return response()->json(['error' => 'Acesso negado!'], 403); */
 
         try {
             $user->update($request->validated());
@@ -95,4 +96,20 @@ class UserController extends Controller
             return $this->errorHandler('Erro ao deletar usuario',$e,$statusHttpError);
         }
     }
+
+    public function showUserConsultas(User $user)
+    {
+        
+        if ($user->paciente) {
+            $consultas = $user->consultaComoPaciente()->latest('data_hora')->get();
+            return new ConsultaCollectionResource($consultas);
+        }
+        if ($user->profissional) {
+            $consultas = $user->consultaComoProfissional()->latest('data_hora')->get();
+            return new ConsultaCollectionResource($consultas);
+        }
+        
+        return response()->json(['error' => 'Usuário não recebe consultas.'], 404);
+    }
+
 }
