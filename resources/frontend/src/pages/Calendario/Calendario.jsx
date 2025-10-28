@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, } from "react";
 import { Link } from "react-router-dom";
 import {
     format,
@@ -23,6 +23,8 @@ import {
 import { ConsultasContext } from "../../contexts/ConsultaProvider";
 import { getData, getHora } from "../../utils/dataHora";
 import ConsultaForm from "../../components/ConsultaForm/ConsultaForm";
+import SearchBar from "../../components/SearchBar/SearchBar";
+
 
 //TODO: Organizar essa gambiarra em componentes
 const Calendario = () => {
@@ -34,6 +36,9 @@ const Calendario = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
+
+    /* const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all"); */
 
     useEffect(() => {
         loadConsultas();
@@ -145,7 +150,7 @@ const Calendario = () => {
         switch (status) {
             case "agendada":
                 return "bg-blue-100 border-blue-200";
-            case "realizada":
+            case "finalizada":
                 return "bg-green-100 border-green-200";
             case "cancelada":
                 return "bg-red-100 border-red-200";
@@ -156,7 +161,7 @@ const Calendario = () => {
 
     const statusLabels = {
         agendada: "Agendada",
-        realizada: "Realizada",
+        finalizada: "Finalizada",
         cancelada: "Cancelada",
     };
 
@@ -293,15 +298,19 @@ const Calendario = () => {
                                                     </p>
                                                     <div className="text-sm text-gray-500 mt-1">
                                                         <p>
-                                                            {getPatientName(
-                                                                consulta
-                                                            )}
+                                                            <strong>
+                                                                {getPatientName(
+                                                                    consulta
+                                                                )}
+                                                            </strong>
                                                         </p>
                                                         <p className="text-xs text-gray-400 mt-1">
                                                             com{" "}
-                                                            {getProfessionalName(
-                                                                consulta
-                                                            )}
+                                                            <strong>
+                                                                {getProfessionalName(
+                                                                    consulta
+                                                                )}
+                                                            </strong>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -313,7 +322,7 @@ const Calendario = () => {
                                                     "agendada"
                                                         ? "bg-blue-100 text-blue-800"
                                                         : consulta.status ===
-                                                          "realizada"
+                                                          "finalizada"
                                                         ? "bg-green-100 text-green-800"
                                                         : "bg-red-100 text-red-800"
                                                 }`}
@@ -429,7 +438,7 @@ const Calendario = () => {
                               ${
                                   consulta.status === "agendada"
                                       ? "bg-blue-100 text-blue-800"
-                                      : consulta.status === "realizada"
+                                      : consulta.status === "finalizada"
                                       ? "bg-green-100 text-green-800"
                                       : "bg-red-100 text-red-800"
                               }`}
@@ -489,8 +498,8 @@ const Calendario = () => {
                     </button>
                 </div>
             </div>
-
-            <div className="bg-white p-4 shadow rounded-lg">
+{/*             <SearchBar onSearch={setSearchTerm} onFilter={setStatusFilter} />
+ */}            <div className="bg-white p-4 shadow rounded-lg">
                 {/* Calendar Controls */}
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex space-x-2">
@@ -500,7 +509,8 @@ const Calendario = () => {
                                 view === "today"
                                     ? "border-blue-600 text-blue-600"
                                     : "border-gray-300 text-gray-700 hover:bg-gray-50"
-                            } shadow-sm text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                            } shadow-sm text-sm font-medium
+                             rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
                         >
                             Hoje
                         </button>
