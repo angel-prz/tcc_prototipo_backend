@@ -70,18 +70,18 @@ const ConsultaShow = () => {
 
     const handleDelete = () => {
         deleteConsulta(consulta);
-        navigate("/consultas");
+        navigate("/calendario");
     };
 
     return (
         <div className="space-y-6 animate-fadeIn">
             <div className="flex items-center">
                 <Link
-                    to="/consultas/"
+                    to="/calendario/"
                     className="text-blue-600 hover:text-blue-700 flex items-center"
                 >
                     <ChevronLeft className="h-4 w-4 mr-1" />
-                    Voltar para consultas
+                    Voltar para calendario
                 </Link>
             </div>
 
