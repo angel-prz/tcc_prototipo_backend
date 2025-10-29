@@ -115,7 +115,7 @@ const ModalAddPaciente = ({ onClose }) => {
 
     return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-      <div className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-6 py-4 border-b">
           <h2 className="text-xl font-semibold text-gray-800">
              Adicionar Novo Paciente
