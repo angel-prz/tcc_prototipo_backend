@@ -41,10 +41,10 @@ const PacienteProvider = ({ children }) => {
         }
     };
 
-    const editPaciente = async (id, pacienteData) => {
+    const editPaciente = async (id, paciente) => {
         try {
-            const { data: response } = await axiosClient.put(`/pacientes/${id}`, pacienteData);
-            await loadPacientes(); // Recarrega a lista
+            const { data: response } = await axiosClient.put(`/pacientes/${id}`, paciente);
+            await loadPacientes();
             return response;
         } catch (error) {
             console.error("Erro ao editar paciente:", error);
@@ -71,13 +71,32 @@ const PacienteProvider = ({ children }) => {
             const _data = response?.data;
             const { message } = response;
 
-            await loadPacientes(); // Recarrega a lista
+            await loadPacientes();
             return { _data, message };
         } catch (error) {
             console.error(error);
             throw error?.response?.data?.message || "Erro ao cadastrar paciente";
         }
     };
+
+    //TODO: Implementar a função para adicionar um novo paciente
+    /* const addPaciente = async (paciente=null) => {
+        try{
+             if(!paciente) throw new Error("Paciente não informado");
+            console.log(`Cadastrar novo paciente: `, {paciente});
+            const { data } = await axiosCliente.post(`/pacientes`, paciente);
+            if(!data) throw new Error("Erro ao cadastrar paciente");
+            const _data = data?.data;
+            const {message} = data;
+
+            console.log({_data, message});
+            loadPacientes();
+            return message;
+        } catch (error) {
+            console.error(error);
+            return error?.response?.data?.message || "Erro ao cadastrar paciente";
+        }
+    } */
 
     const loadConsultas = async (id) => {
         try {

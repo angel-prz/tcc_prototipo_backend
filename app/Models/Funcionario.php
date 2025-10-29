@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Funcionario extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'id',
         'tipo_funcionario',
         'cargo',
         'setor',
@@ -24,11 +25,9 @@ class Funcionario extends Model
             null,
             '',
             [
-                User::class=>'user_id',
-                Paciente::class=>'paciente_id'
+                User::class => 'user_id',
+                Paciente::class => 'paciente_id',
             ]
         );
     }
-
-
 }
