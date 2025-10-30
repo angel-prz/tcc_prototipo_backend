@@ -1,0 +1,38 @@
+.tabela-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.tabela-generica {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: white;
+}
+
+.tabela-generica th,
+.tabela-generica td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.tabela-generica th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+
+.tabela-generica tr:hover {
+  background-color: #f5f5f5;
+}
+
+.tabela-generica a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.tabela-generica a:hover {
+  text-decoration: underline;
+}

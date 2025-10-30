@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+
+:root {
+    --font-open-sans: 'Open Sans', 'sans-serif';
+}
+
+
+@theme {
+    --font-open-sans: var(--font-open-sans);
+
+    /* tema padrão - ifsul*/
+    --color-ifsul-vermelho: #FF1120;
+    --color-ifsul-verde: #248232;
+    --color-ifsul-amarelo: #FFD34B;
+    --color-ifsul-darkpinegreen:  #1E3231;
+    --color-ifsul-greengooseberry: #B4DCA2;
+    --color-ifsul-greentrance: #A2D5A5;
+    --color-ifsul-lilypad: #829084;
+    --color-ifsul-periwinkletint: #D4DED6;
+    --color-ifsul-iceglow: #FFFDE9;
+    --color-ifsul-redsalsa: #F73944;
+    --color-ifsul-siestarose: #EA777B;
+
+}
+
+.texto-cor { color: var(--color-ifsul-darkpinegreen); }
+.sucesso-cor {color: var(--color-ifsul-verde)}
+.alerta-cor {color: var(--color-ifsul-amarelo)}
+.erro-cor {color: var(--color-ifsul-vermelho)}
