@@ -1,18 +1,26 @@
 import { useState, useEffect, useContext } from "react";
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { PacientesContext } from "../../contexts/PacienteProvider";
-import ConfirmDialog from '../../components/ConfirmDialog';
+import ConfirmDialog from "../../components/ConfirmDialog";
+import ModalEditPaciente from "../Pacientes/ModalEditPaciente";
 
 import {
-  Calendar, Edit, Trash2, ChevronLeft,
-  FilePlus, ClipboardList, UserCircle, ArrowUpRight
-} from 'lucide-react';
+    Calendar,
+    Edit,
+    Trash2,
+    ChevronLeft,
+    FilePlus,
+    ClipboardList,
+    UserCircle,
+    ArrowUpRight,
+} from "lucide-react";
 
 const PacienteShow = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const { data, isLoaded, loadPacientes, deletePaciente, loadConsultas } = useContext(PacientesContext);
+    const { data, isLoaded, loadPacientes, deletePaciente, loadConsultas } =
+        useContext(PacientesContext);
     const [paciente, setPaciente] = useState(null);
     const [consultas, setConsultas] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -20,6 +28,9 @@ const PacienteShow = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     useEffect(() => {
         loadPacienteData();
@@ -39,7 +50,7 @@ const PacienteShow = () => {
 
     useEffect(() => {
         if (data && data.length > 0) {
-            const foundPaciente = data.find(p => p.id === parseInt(id));
+            const foundPaciente = data.find((p) => p.id === parseInt(id));
             setPaciente(foundPaciente);
 
             // Carrega consultas separadamente
@@ -74,7 +85,10 @@ const PacienteShow = () => {
         let age = today.getFullYear() - birth.getFullYear();
         const monthDiff = today.getMonth() - birth.getMonth();
 
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        if (
+            monthDiff < 0 ||
+            (monthDiff === 0 && today.getDate() < birth.getDate())
+        ) {
             age--;
         }
         return age;
@@ -92,7 +106,10 @@ const PacienteShow = () => {
         return (
             <div className="text-center py-12">
                 <p className="text-gray-500">Paciente não encontrado</p>
-                <Link to="/pacientes" className="text-blue-600 hover:text-blue-700 mt-4 inline-block">
+                <Link
+                    to="/pacientes"
+                    className="text-blue-600 hover:text-blue-700 mt-4 inline-block"
+                >
                     Voltar para a lista
                 </Link>
             </div>
@@ -105,7 +122,10 @@ const PacienteShow = () => {
         <div className="space-y-6 animate-fadeIn">
             {/* Cabeçalho */}
             <div className="flex items-center justify-between">
-                <Link to="/pacientes" className="text-blue-600 hover:text-blue-700 flex items-center">
+                <Link
+                    to="/pacientes"
+                    className="text-blue-600 hover:text-blue-700 flex items-center"
+                >
                     <ChevronLeft className="h-4 w-4 mr-1" />
                     Voltar para lista de pacientes
                 </Link>
@@ -152,7 +172,10 @@ const PacienteShow = () => {
                                 {paciente.user.name}
                             </h2>
                             <p className="text-gray-600 mt-1">
-                                {idade} anos • {paciente.user.sexo === 'M' ? 'Masculino' : 'Feminino'}
+                                {idade} anos •{" "}
+                                {paciente.user.sexo === "M"
+                                    ? "Masculino"
+                                    : "Feminino"}
                             </p>
                             <p className="text-sm text-gray-500 mt-2">
                                 CPF: {paciente.user.cpf}
@@ -162,33 +185,53 @@ const PacienteShow = () => {
 
                     <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6 px-6 py-4">
                         <div className="sm:col-span-1">
-                            <dt className="text-sm font-medium text-gray-500">Data de Nascimento</dt>
+                            <dt className="text-sm font-medium text-gray-500">
+                                Data de Nascimento
+                            </dt>
                             <dd className="mt-1 text-sm text-gray-900">
-                                {new Date(paciente.user.data_nascimento).toLocaleDateString('pt-BR')}
+                                {new Date(
+                                    paciente.user.data_nascimento
+                                ).toLocaleDateString("pt-BR")}
                             </dd>
                         </div>
                         <div className="sm:col-span-1">
-                            <dt className="text-sm font-medium text-gray-500">Email</dt>
-                            <dd className="mt-1 text-sm text-gray-900">{paciente.user.email}</dd>
-                        </div>
-                        <div className="sm:col-span-1">
-                            <dt className="text-sm font-medium text-gray-500">Telefones</dt>
+                            <dt className="text-sm font-medium text-gray-500">
+                                Email
+                            </dt>
                             <dd className="mt-1 text-sm text-gray-900">
-                                {paciente.user.fone_celular && `Celular: ${paciente.user.fone_celular}`}
-                                {paciente.user.fone_fixo && paciente.user.fone_celular && <br />}
-                                {paciente.user.fone_fixo && `Fixo: ${paciente.user.fone_fixo}`}
+                                {paciente.user.email}
                             </dd>
                         </div>
                         <div className="sm:col-span-1">
-                            <dt className="text-sm font-medium text-gray-500">Tipo de Paciente</dt>
+                            <dt className="text-sm font-medium text-gray-500">
+                                Telefones
+                            </dt>
+                            <dd className="mt-1 text-sm text-gray-900">
+                                {paciente.user.fone_celular &&
+                                    `Celular: ${paciente.user.fone_celular}`}
+                                {paciente.user.fone_fixo &&
+                                    paciente.user.fone_celular && <br />}
+                                {paciente.user.fone_fixo &&
+                                    `Fixo: ${paciente.user.fone_fixo}`}
+                            </dd>
+                        </div>
+                        <div className="sm:col-span-1">
+                            <dt className="text-sm font-medium text-gray-500">
+                                Tipo de Paciente
+                            </dt>
                             <dd className="mt-1 text-sm text-gray-900 capitalize">
-                                {paciente.tipo_paciente?.replace('_', ' ') || 'Não informado'}
+                                {paciente.tipo_paciente?.replace("_", " ") ||
+                                    "Não informado"}
                             </dd>
                         </div>
                         {paciente.matricula && (
                             <div className="sm:col-span-1">
-                                <dt className="text-sm font-medium text-gray-500">Matrícula</dt>
-                                <dd className="mt-1 text-sm text-gray-900">{paciente.matricula}</dd>
+                                <dt className="text-sm font-medium text-gray-500">
+                                    Matrícula
+                                </dt>
+                                <dd className="mt-1 text-sm text-gray-900">
+                                    {paciente.matricula}
+                                </dd>
                             </div>
                         )}
                     </dl>
@@ -217,12 +260,12 @@ const PacienteShow = () => {
 
                 {consultas.length > 0 ? (
                     <ul className="divide-y divide-gray-200">
-                        {consultas.map(consulta => {
+                        {consultas.map((consulta) => {
                             const statusColors = {
-                                agendada: 'bg-blue-100 text-blue-800',
-                                finalizada: 'bg-green-100 text-green-800',
-                                cancelada: 'bg-red-100 text-red-800',
-                                confirmada: 'bg-yellow-100 text-yellow-800'
+                                agendada: "bg-blue-100 text-blue-800",
+                                finalizada: "bg-green-100 text-green-800",
+                                cancelada: "bg-red-100 text-red-800",
+                                confirmada: "bg-yellow-100 text-yellow-800",
                             };
 
                             return (
@@ -239,18 +282,36 @@ const PacienteShow = () => {
                                                     </div>
                                                     <div className="ml-4">
                                                         <p className="text-sm font-medium text-blue-600">
-                                                            {consulta.profissional?.user?.name || 'Profissional não informado'}
+                                                            {consulta
+                                                                .profissional
+                                                                ?.user?.name ||
+                                                                "Profissional não informado"}
                                                         </p>
                                                         <p className="text-sm text-gray-500">
-                                                            {new Date(consulta.data_hora).toLocaleString('pt-BR')}
+                                                            {new Date(
+                                                                consulta.data_hora
+                                                            ).toLocaleString(
+                                                                "pt-BR"
+                                                            )}
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center">
-                                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                                        statusColors[consulta.status] || 'bg-gray-100 text-gray-800'
-                                                    }`}>
-                                                        {consulta.status?.charAt(0).toUpperCase() + consulta.status?.slice(1) || 'Status desconhecido'}
+                                                    <span
+                                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                                            statusColors[
+                                                                consulta.status
+                                                            ] ||
+                                                            "bg-gray-100 text-gray-800"
+                                                        }`}
+                                                    >
+                                                        {consulta.status
+                                                            ?.charAt(0)
+                                                            .toUpperCase() +
+                                                            consulta.status?.slice(
+                                                                1
+                                                            ) ||
+                                                            "Status desconhecido"}
                                                     </span>
                                                     <ArrowUpRight className="ml-2 h-5 w-5 text-gray-400" />
                                                 </div>
@@ -259,10 +320,13 @@ const PacienteShow = () => {
                                                 <div className="mt-2">
                                                     <p className="flex items-center text-sm text-gray-500">
                                                         <ClipboardList className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" />
-                                                        {consulta.notes.length > 100
-                                                            ? consulta.notes.substring(0, 100) + '...'
-                                                            : consulta.notes
-                                                        }
+                                                        {consulta.notes.length >
+                                                        100
+                                                            ? consulta.notes.substring(
+                                                                  0,
+                                                                  100
+                                                              ) + "..."
+                                                            : consulta.notes}
                                                     </p>
                                                 </div>
                                             )}
@@ -275,27 +339,29 @@ const PacienteShow = () => {
                 ) : (
                     <div className="px-4 py-12 text-center text-gray-500">
                         <Calendar className="mx-auto h-12 w-12 text-gray-400" />
-                        <p className="mt-4">Nenhuma consulta encontrada para este paciente</p>
+                        <p className="mt-4">
+                            Nenhuma consulta encontrada para este paciente
+                        </p>
                     </div>
                 )}
             </div>
 
             {/* Modais e Diálogos */}
             {isEditModalOpen && (
-                <PatientForm
-                    paciente={paciente}
+                <ModalEditPaciente
+                    editedPaciente={paciente}
                     onClose={() => setIsEditModalOpen(false)}
                     onSuccess={loadPacienteData}
                 />
             )}
 
-            {isAppointmentModalOpen && (
-                <AppointmentForm
-                    patientId={paciente.id}
+            {/* {isAppointmentModalOpen && (
+                <ConsultaForm
+                    paciente_id={paciente.id}
                     onClose={() => setIsAppointmentModalOpen(false)}
-                    onSuccess={() => loadConsultasData(paciente.id)}
+                    onSuccess={() => loadConsultas(paciente.id)}
                 />
-            )}
+            )} */}
 
             {isDeleteDialogOpen && (
                 <ConfirmDialog
