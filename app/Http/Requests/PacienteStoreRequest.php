@@ -38,8 +38,11 @@ class PacienteStoreRequest extends FormRequest
             'semestre' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
             'ano' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
             'fone_responsavel' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
-            'tipo_funcionario' => 'nullable', /* |required_if:tipo_paciente,funcionario|string*/
-
+            'tipo_funcionario' => 'nullable', /* |required_if:tipo_paciente,funcionario|string */
+            'cargo' => 'nullable',
+            'setor' => 'nullable',
+            'ramal' => 'nullable',
+            'turno' => 'nullable',
         ];
     }
 

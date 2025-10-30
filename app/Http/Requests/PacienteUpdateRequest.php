@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Requests\PacienteStoreRequest;
 
 class PacienteUpdateRequest extends FormRequest
 {
@@ -16,6 +15,28 @@ class PacienteUpdateRequest extends FormRequest
     {
         return [
             'id' => 'required|integer|exists:pacientes,id',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'cpf' => 'required|string',
+            'password' => 'nullable|string|min:6',
+            'data_nascimento' => 'required|date',
+            'sexo' => 'required|in:m,f,o',
+            'fone_celular' => 'nullable|string',
+            'fone_fixo' => 'nullable|string',
+            'tipo_paciente' => 'required|in:aluno,funcionario',
+            'matricula' => 'nullable|required_if:tipo_paciente,aluno|string',
+            'campus' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
+            'curso' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
+            'turma' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
+            'semestre' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
+            'ano' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
+            'turno' => 'nullable',
+            'fone_responsavel' => 'nullable', /* |required_if:tipo_paciente,aluno|string */
+            'tipo_funcionario' => 'nullable', /* |required_if:tipo_paciente,funcionario|string */
+            'cargo' => 'nullable',
+            'setor' => 'nullable',
+            'ramal' => 'nullable',
+            'turno' => 'nullable',
         ];
     }
 }

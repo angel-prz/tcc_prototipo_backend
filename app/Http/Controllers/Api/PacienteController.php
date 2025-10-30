@@ -105,12 +105,47 @@ class PacienteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(PacienteUpdateRequest $request, Paciente $Paciente)
+    public function update(PacienteUpdateRequest $request, Paciente $paciente)
     {
         try {
-            $Paciente->update($request->validated());
+            if ($paciente->user) {
+                $paciente->user->update([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'cpf' => $request->cpf,
+                    'data_nascimento' => $request->data_nascimento,
+                    'fone_celular' => $request->fone_celular,
+                    'fone_fixo' => $request->fone_fixo,
+                    'sexo' => $request->sexo,
+                ]);
+            }
 
-            return new PacienteResource($Paciente);
+            $paciente->update([
+                'tipo_paciente' => $request->tipo_paciente,
+            ]);
+
+            if ($paciente->tipo_paciente === 'aluno' && $paciente->aluno) {
+                $paciente->aluno->update([
+                    'matricula' => $request->matricula,
+                    'campus' => $request->campus,
+                    'curso' => $request->curso,
+                    'turma' => $request->turma,
+                    'semestre' => $request->semestre,
+                    'ano' => $request->ano,
+                    'turno' => $request->turno,
+                ]);
+            } elseif ($paciente->tipo_paciente === 'funcionario' && $paciente->funcionario) {
+                $paciente->funcionario->update([
+                    'tipo_funcionario' => $request->tipo_funcionario,
+                    'cargo' => $request->cargo,
+                    'setor' => $request->setor,
+                    'ramal' => $request->ramal,
+                    'turno' => $request->turno,
+                ]);
+            }
+
+            return new PacienteResource($paciente);
+
         } catch (\Exception $e) {
             return $this->errorHandler('Erro ao atualizar Paciente', $e);
         }
