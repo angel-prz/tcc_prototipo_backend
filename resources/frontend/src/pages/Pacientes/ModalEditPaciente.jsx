@@ -4,19 +4,24 @@ import { PacientesContext } from "../../contexts/PacienteProvider";
 
 const ModalEditPaciente = ({ editedPaciente, onClose }) => {
     const { editPaciente, loadPacientes } = useContext(PacientesContext);
-    const [disableButton, setDisableButton] = useState(true);
+    const [disableButton, setDisableButton] = useState(false);
     const [message, setMessage] = useState(null);
     const [errors, setErrors] = useState({});
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [feedback, setFeedback] = useState({ type: "", message: "" });
+
     const [formData, setFormData] = useState({
-        // Campos básicos
+        id: "",
         name: "",
         email: "",
         cpf: "",
-        // ... outros campos básicos
+        data_nascimento: "",
+        sexo: "",
+        fone_celular: "",
+        fone_fixo: "",
         tipo_paciente: "",
 
-        // Campos de aluno
         aluno: {
             matricula: "",
             turma: "",
@@ -27,7 +32,6 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
             fone_responsavel: "",
         },
 
-        // Campos de funcionário
         funcionario: {
             tipo_funcionario: "",
             cargo: "",
@@ -47,11 +51,12 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
 
         setFormData({
             ...formData,
+            id: editedPaciente?.user.id || "",
             name: editedPaciente?.user?.name || "",
             email: editedPaciente?.user?.email || "",
             cpf: editedPaciente?.user?.cpf || "",
             data_nascimento: editedPaciente?.user?.data_nascimento || "",
-            sexo: editedPaciente?.user?.sexo?.toLowerCase() || "", // 👈 here we normalize value
+            sexo: editedPaciente?.user?.sexo?.toLowerCase() || "",
             fone_celular: editedPaciente?.user?.fone_celular || "",
             fone_fixo: editedPaciente?.user?.fone_fixo || "",
             tipo_paciente: tipoPaciente || "",
@@ -104,65 +109,111 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
         }
     };
 
-    /* const validateForm = () => {
+    const validateForm = () => {
         setDisableButton(
             !(
-                inputPacienteNome.current.value.length > 0 &&
-                inputPacienteEmail.current.value.length > 0 &&
-                inputPacientePassword.current.value.length > 0
-                inputPacienteDataNascimento.current.value.length > 0 &&
-                inputPacienteSexo.current.value.length > 0
+                //TODO: tem jeito melhor mas fodac
+                (
+                    formData.name.trim().length > 0 &&
+                    formData.email.trim().length > 0 &&
+                    formData.cpf.trim().length > 0 &&
+                    formData.data_nascimento.trim().length > 0 &&
+                    formData.sexo.trim().length > 0 &&
+                    formData.fone_celular.trim().length > 0 &&
+                    formData.fone_fixo.trim().length > 0
+                )
             )
         );
 
         const newErrors = {};
 
-        if (!inputPacienteNome.current.value.trim()) {
+        //TODO: jeito mais limpo / talvez componente
+        if (!formData.name) {
             newErrors.name = "Nome é obrigatório";
         }
-        if (!inputPacienteEmail.current.value.trim()) {
+        if (!formData.email) {
             newErrors.email = "Email é obrigatório";
-        } else if (!/\S+@\S+\.\S+/.test(inputPacienteEmail.current.value)) {
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
             newErrors.email = "Email é inválido";
         }
-        if (!inputPacientePassword.current.value.trim()) {
-            newErrors.password = 'Senha é obrigatória';
-        }
-        if (!inputPacienteDataNascimento.current.value.trim()) {
+        /*if (formData.password) {
+            newErrors.password = "Senha é obrigatória";
+        } */
+        if (!formData.data_nascimento) {
             newErrors.data_nascimento = "Data de nascimento é obrigatória";
         }
-        if (!inputPacienteSexo.current.value.trim()) {
+        if (!formData.sexo) {
             newErrors.sexo = "Sexo é obrigatório";
         }
-        if (!inputPacienteCPF.current.value.trim()) {
+        if (!formData.cpf) {
             newErrors.cpf = "CPF é obrigatório";
         }
-        if (
-            !inputPacienteAlunoMatricula.current?.value.trim() &&
-            inputPacienteTipoPaciente.current.value === "aluno"
-        ) {
+        if (!formData.aluno.matricula && formData.tipo_paciente === "aluno") {
             newErrors.aluno_matricula = "Matrícula é obrigatória para alunos";
-        }
-        if (
-            !inputPacienteFuncionarioTipoFuncionario.current?.value.trim() &&
-            inputPacienteTipoPaciente.current.value === "funcionario"
-        ) {
-            newErrors.funcionario_tipo =
-                "Tipo de funcionário é obrigatório para funcionários";
         }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
- */
+
     //FMLFML
     const onSubmit = async (e) => {
         e.preventDefault();
         console.log("submit");
-        const message = await editPaciente({});
-        setMessage(message);
-        await loadPacientes();
-        setTimeout(() => onClose(), 3000);
+
+        if (!validateForm()) {
+            return;
+        }
+
+        setIsSubmitting(true);
+        setFeedback({ type: "", message: "" });
+
+        try {
+            const pacienteData = {
+                id: formData.id,
+                name: formData.name,
+                email: formData.email,
+                cpf: formData.cpf,
+                data_nascimento: formData.data_nascimento,
+                sexo: formData.sexo,
+                fone_celular: formData.fone_celular,
+                fone_fixo: formData.fone_fixo,
+                tipo_paciente: formData.tipo_paciente,
+                matricula: formData.aluno.matricula,
+                turma: formData.aluno.turma,
+                campus: formData.aluno.campus,
+                curso: formData.aluno.curso,
+                semestre: formData.aluno.semestre,
+                ano: formData.aluno.ano,
+                fone_responsavel: formData.aluno.fone_responsavel,
+                tipo_funcionario: formData.funcionario.tipo_funcionario,
+                cargo: formData.funcionario.cargo,
+                setor: formData.funcionario.setor,
+                ramal: formData.funcionario.ramal,
+                turno: formData.funcionario.turno,
+            };
+
+            if (editedPaciente) {
+                await editPaciente(editedPaciente.id, pacienteData);
+                setFeedback({
+                    type: "success",
+                    message: "Paciente atualizado com sucesso!",
+                });
+            } else {
+                setFeedback({
+                    type: "error",
+                    message: "Erro ao atualizar paciente!",
+                });
+            }
+
+            onClose();
+        } catch (error) {
+            console.error("Erro ao salvar paciente: ", error);
+            setErrors((prev) => ({
+                ...prev,
+                submit: "Erro ao salvar o paciente. Tente novamente.",
+            }));
+        }
     };
 
     return (
@@ -363,8 +414,8 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                     }`}
                                 />
                                 {/* {errors.phone && (
-                  <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
-                )} */}
+									<p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+								)} */}
                             </div>
                         </div>
                         <div className="sm:col-span-3">
@@ -391,31 +442,31 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                     }`}
                                 />
                                 {/* {errors.phone && (
-                  <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
-                )} */}
+									<p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+								)} */}
                             </div>
                         </div>
 
                         {/* <div className="sm:col-span-6">
-              <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                Endereço
-              </label>
-              <div className="mt-1">
-                <input
-                  type="text"
-                  name="address"
-                  id="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                    errors.address ? 'border-red-300' : ''
-                  }`}
-                />
-                {errors.address && (
-                  <p className="mt-1 text-sm text-red-600">{errors.address}</p>
-                )}
-              </div>
-            </div> */}
+							<label htmlFor="address" className="block text-sm font-medium text-gray-700">
+								Endereço
+							</label>
+							<div className="mt-1">
+								<input
+									type="text"
+									name="address"
+									id="address"
+									value={formData.address}
+									onChange={handleChange}
+									className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+										errors.address ? 'border-red-300' : ''
+									}`}
+								/>
+								{errors.address && (
+									<p className="mt-1 text-sm text-red-600">{errors.address}</p>
+								)}
+							</div>
+						</div> */}
                         <div className="sm:col-span-3">
                             <label
                                 htmlFor="tipo_paciente"
@@ -463,8 +514,9 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                             value={formData.aluno.matricula}
                                             onChange={(e) =>
                                                 handleInputChange(
-                                                    "aluno_matricula",
-                                                    e.target.value
+                                                    "matricula",
+                                                    e.target.value,
+                                                    "aluno"
                                                 )
                                             }
                                             className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
@@ -495,8 +547,9 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                             value={formData.aluno.turma}
                                             onChange={(e) =>
                                                 handleInputChange(
-                                                    "aluno_turma",
-                                                    e.target.value
+                                                    "turma",
+                                                    e.target.value,
+                                                    "aluno"
                                                 )
                                             }
                                             className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
@@ -527,8 +580,9 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                             value={formData.aluno.campus}
                                             onChange={(e) =>
                                                 handleInputChange(
-                                                    "aluno_campus",
-                                                    e.target.value
+                                                    "campus",
+                                                    e.target.value,
+                                                    "aluno"
                                                 )
                                             }
                                             className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
@@ -559,8 +613,9 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                             value={formData.aluno.curso}
                                             onChange={(e) =>
                                                 handleInputChange(
-                                                    "aluno_curso",
-                                                    e.target.value
+                                                    "curso",
+                                                    e.target.value,
+                                                    "aluno"
                                                 )
                                             }
                                             className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
@@ -591,8 +646,9 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                             value={formData.aluno.semestre}
                                             onChange={(e) =>
                                                 handleInputChange(
-                                                    "aluno_semestre",
-                                                    e.target.value
+                                                    "semestre",
+                                                    e.target.value,
+                                                    "aluno"
                                                 )
                                             }
                                             className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
@@ -623,8 +679,9 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                             value={formData.aluno.ano}
                                             onChange={(e) =>
                                                 handleInputChange(
-                                                    "aluno_ano",
-                                                    e.target.value
+                                                    "ano",
+                                                    e.target.value,
+                                                    "aluno"
                                                 )
                                             }
                                             className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
@@ -657,8 +714,9 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                             }
                                             onChange={(e) =>
                                                 handleInputChange(
-                                                    "aluno_fone_responsavel",
-                                                    e.target.value
+                                                    "fone_responsavel",
+                                                    e.target.value,
+                                                    "aluno"
                                                 )
                                             }
                                             className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
@@ -687,6 +745,7 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                     </label>
                                     <div className="mt-1">
                                         <select
+                                            disabled
                                             id="funcionario_tipo_funcionario"
                                             name="funcionario_tipo_funcionario"
                                             value={
@@ -695,8 +754,9 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                             }
                                             onChange={(e) =>
                                                 handleInputChange(
-                                                    "funcionario_tipo_funcionario",
-                                                    e.target.value
+                                                    "tipo_funcionario",
+                                                    e.target.value,
+                                                    "funcionario"
                                                 )
                                             }
                                             className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
@@ -729,8 +789,9 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                             value={formData.funcionario.cargo}
                                             onChange={(e) =>
                                                 handleInputChange(
-                                                    "funcionario_cargo",
-                                                    e.target.value
+                                                    "cargo",
+                                                    e.target.value,
+                                                    "funcionario"
                                                 )
                                             }
                                             className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
@@ -761,8 +822,9 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                             value={formData.funcionario.setor}
                                             onChange={(e) =>
                                                 handleInputChange(
-                                                    "funcionario_setor",
-                                                    e.target.value
+                                                    "setor",
+                                                    e.target.value,
+                                                    "funcionario"
                                                 )
                                             }
                                             className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
@@ -793,8 +855,9 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                             value={formData.funcionario.ramal}
                                             onChange={(e) =>
                                                 handleInputChange(
-                                                    "funcionario_ramal",
-                                                    e.target.value
+                                                    "ramal",
+                                                    e.target.value,
+                                                    "funcionario"
                                                 )
                                             }
                                             className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
@@ -824,8 +887,9 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                             value={formData.funcionario.turno}
                                             onChange={(e) =>
                                                 handleInputChange(
-                                                    "funcionario_turno",
-                                                    e.target.value
+                                                    "turno",
+                                                    e.target.value,
+                                                    "funcionario"
                                                 )
                                             }
                                             className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
@@ -847,28 +911,28 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                         )}
 
                         {/* <div className="flex items-center justify-between px-6 py-4 border-b">
-                            <h2 className="text-xl font-semibold text-gray-800">
-                                Histórico Médico
-                            </h2>
-                        </div>
-                        <div className="sm:col-span-6">
-                            <label
-                                htmlFor="alergia"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Histórico Médico
-                            </label>
-                            <div className="mt-1">
-                                <textarea
-                                    id="alergias"
-                                    name="alergias"
-                                    rows={3}
-                                    ref={inputPacienteAlergias}
-                                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                    placeholder="Insira qualquer histórico médico relevante"
-                                />
-                            </div>
-                        </div> */}
+														<h2 className="text-xl font-semibold text-gray-800">
+																Histórico Médico
+														</h2>
+												</div>
+												<div className="sm:col-span-6">
+														<label
+																htmlFor="alergia"
+																className="block text-sm font-medium text-gray-700"
+														>
+																Histórico Médico
+														</label>
+														<div className="mt-1">
+																<textarea
+																		id="alergias"
+																		name="alergias"
+																		rows={3}
+																		ref={inputPacienteAlergias}
+																		className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+																		placeholder="Insira qualquer histórico médico relevante"
+																/>
+														</div>
+												</div> */}
                     </div>
 
                     <div className="mt-6 flex justify-end space-x-3">
