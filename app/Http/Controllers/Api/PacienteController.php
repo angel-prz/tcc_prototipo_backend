@@ -19,12 +19,7 @@ class PacienteController extends Controller
      */
     public function index()
     {
-        return new PacienteCollectionResource(Paciente::with(['user', 'aluno', 'funcionario'])
-            ->where(function ($query) {
-                $query->whereHas('aluno')
-                    ->orWhereHas('funcionario');
-            })
-            ->get());
+        return new PacienteCollectionResource(Paciente::all()->load('user', 'aluno', 'funcionario', 'saudeMedica', 'saudeOdontologica'));
     }
 
     /**
@@ -94,12 +89,13 @@ class PacienteController extends Controller
      */
     public function show(Paciente $paciente)
     {
-        return new PacienteResource($paciente::with(['user', 'aluno', 'funcionario'])
+        /* return new PacienteResource($paciente::with(['user', 'aluno', 'funcionario'])
             ->where(function ($query) {
                 $query->whereHas('aluno')
                     ->orWhereHas('funcionario');
             })
-            ->get());
+            ->get()); */
+        return new PacienteResource($paciente->load(['user', 'aluno', 'funcionario', 'saudeMedica', 'saudeOdontologica']));
     }
 
     /**

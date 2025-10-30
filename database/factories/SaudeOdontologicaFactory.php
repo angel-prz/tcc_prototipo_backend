@@ -17,7 +17,9 @@ class SaudeOdontologicaFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'gengivite' => $this->faker->optional()->sentence(),
+            'outras_patologias' => $this->faker->optional()->sentence(),
+            'periodontite' => $this->faker->optional()->sentence(),
         ];
     }
 }

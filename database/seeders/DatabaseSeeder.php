@@ -51,5 +51,8 @@ class DatabaseSeeder extends Seeder
 
         $seedSaudeMedica = new SaudeMedicaSeeder;
         $seedSaudeMedica->run();
+
+        $seedSaudeOdontologica = new SaudeOdontologicaSeeder;
+        $seedSaudeOdontologica->run();
     }
 }
