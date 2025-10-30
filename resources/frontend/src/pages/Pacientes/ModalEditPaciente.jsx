@@ -901,7 +901,7 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                                             <option value="noturno">
                                                 Noturno
                                             </option>
-                                            <option value="Vespertino">
+                                            <option value="vespertino">
                                                 Vespertino
                                             </option>
                                         </select>

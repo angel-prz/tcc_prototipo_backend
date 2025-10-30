@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('funcionarios', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
             $table->foreign('id')->references('id')->on('pacientes')->constrained()->cascadeOnDelete();
-            $table->enum('tipo_funcionario', ['terceirizado','docente', 'tecnico_administrativo'])->default('docente');
+            $table->enum('tipo_funcionario', ['terceirizado', 'docente', 'tecnico_administrativo'])->default('docente');
             $table->string('cargo')->nullable();
             $table->string('setor')->nullable();
             $table->string('ramal')->nullable();
