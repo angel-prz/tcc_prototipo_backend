@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Paciente extends Model
 {
     use HasFactory;
 
     protected $primaryKey = 'id';
+
     public $incrementing = false;
 
     protected $fillable = [
@@ -18,9 +18,8 @@ class Paciente extends Model
         'tipo_paciente',
     ];
 
-
-    //RELAÇÔES TERMINAR DEPOIS
-    //EXTENDS USER
+    // RELAÇÔES TERMINAR DEPOIS
+    // EXTENDS USER
     public function user()
     {
         return $this->belongsTo(User::class, 'id', 'id');
@@ -35,17 +34,29 @@ class Paciente extends Model
     {
         return $this->hasOne(Funcionario::class, 'id', 'id');
     }
-    //RELAÇÔES 1 PARA MUITOS (1toN)
+
+    // RELAÇÔES 1 PARA MUITOS (1toN)
     public function consultas()
     {
         return $this->hasMany(Consulta::class, 'paciente_id', 'id');
     }
 
-    //mas apenas uma dispensa por semestre(?)
+    public function saudeMedica()
+    {
+        return $this->hasOne(SaudeMedica::class, 'paciente_id', 'id');
+    }
+
+    public function saudeOdontologica()
+    {
+        return $this->hasOne(SaudeOdontologica::class, 'paciente_id', 'id');
+    }
+
+    // mas apenas uma dispensa por semestre(?)
     public function dispenca_educacao_fisica()
     {
         return $this->hasMany(DispensaEducacaoFisica::class, 'paciente_id', 'id');
     }
+
     public function alunoDispensa()
     {
         return $this->hasManyThrough(
@@ -57,5 +68,4 @@ class Paciente extends Model
             'id'
         );
     }
-
 }
