@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -12,44 +11,46 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //user admin
+        // user admin
         $this->call(UserAdminSeeder::class);
-        //user
-        $seedUser = new UserSeeder();
+        // user
+        $seedUser = new UserSeeder;
         $seedUser->run();
 
-        //profissional
-        $seedProfissional = new ProfissionalSeeder();
+        // profissional
+        $seedProfissional = new ProfissionalSeeder;
         $seedProfissional->run();
-        //horarios
-        $seedHorarios = new HorariosProfissionalSeeder();
+        // horarios
+        $seedHorarios = new HorariosProfissionalSeeder;
         $seedHorarios->run();
 
-
-        //paciente
-        $seedPaciente = new PacienteSeeder();
+        // paciente
+        $seedPaciente = new PacienteSeeder;
         $seedPaciente->run();
 
-        //aluno
-        $seedAluno = new AlunoSeeder();
+        // aluno
+        $seedAluno = new AlunoSeeder;
         $seedAluno->run();
 
-
-        //funcionario
-        $seedFuncionario = new FuncionarioSeeder();
+        // funcionario
+        $seedFuncionario = new FuncionarioSeeder;
         $seedFuncionario->run();
 
-        //consulta
-        $seedConsulta = new ConsultaSeeder();
+        // consulta
+        $seedConsulta = new ConsultaSeeder;
         $seedConsulta->run();
 
-        //dispensa
-        $seedAlunoDispensa = new DispensaEducacaoFisicaSeeder();
+        // dispensa
+        $seedAlunoDispensa = new DispensaEducacaoFisicaSeeder;
         $seedAlunoDispensa->run();
 
-        $this->call([
-            PacienteTestSeeder::class,
-            ProfissionalTestSeeder::class,
-        ]);
+        $seedSaudeMedica = new SaudeMedicaSeeder;
+        $seedSaudeMedica->run();
+
+        $seedSaudeOdontologica = new SaudeOdontologicaSeeder;
+        $seedSaudeOdontologica->run();
+
+        $this->call(PacienteTestSeeder::class);
+        $this->call(ProfissionalTestSeeder::class);
     }
 }

@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Paciente;
+use App\Models\SaudeOdontologica;
 use Illuminate\Database\Seeder;
 
 class SaudeOdontologicaSeeder extends Seeder
@@ -12,6 +13,12 @@ class SaudeOdontologicaSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $pacientes = Paciente::all();
+
+        foreach ($pacientes as $paciente) {
+            SaudeOdontologica::factory()->create([
+                'paciente_id' => $paciente->id,
+            ]);
+        }
     }
 }

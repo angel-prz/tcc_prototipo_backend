@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('saude_odontologicas', function (Blueprint $table) {
+        Schema::create('saude_odontologica', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('paciente_id')->references('id')->on('pacientes')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('gengivite')->nullable();
+            $table->string('outras_patologias')->nullable();
+            $table->string('periodontite')->nullable();
+            $table->string('tratamentos_anteriores')->nullable();
+            $table->string('proteses_aparelhos')->nullable();
             $table->timestamps();
         });
     }
@@ -22,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('saude_odontologicas');
+        Schema::dropIfExists('saude_odontologica');
     }
 };

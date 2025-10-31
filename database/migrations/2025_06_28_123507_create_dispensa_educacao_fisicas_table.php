@@ -20,7 +20,7 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
             $table->string('turma');
-            $table->string('motivo');
+            $table->text('motivo');
             $table->date('comeco');
             $table->date('fim');
             $table->integer('numero_dias');

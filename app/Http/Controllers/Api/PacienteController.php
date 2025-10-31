@@ -10,6 +10,8 @@ use App\Http\Resources\PacienteStoredResource;
 use App\Models\Aluno;
 use App\Models\Funcionario;
 use App\Models\Paciente;
+use App\Models\SaudeMedica;
+use App\Models\SaudeOdontologica;
 use App\Models\User;
 
 class PacienteController extends Controller
@@ -19,12 +21,7 @@ class PacienteController extends Controller
      */
     public function index()
     {
-        return new PacienteCollectionResource(Paciente::with(['user', 'aluno', 'funcionario'])
-            ->where(function ($query) {
-                $query->whereHas('aluno')
-                    ->orWhereHas('funcionario');
-            })
-            ->get());
+        return new PacienteCollectionResource(Paciente::all()->load('user', 'aluno', 'funcionario', 'saudeMedica', 'saudeOdontologica'));
     }
 
     /**
@@ -80,6 +77,14 @@ class PacienteController extends Controller
                 ]);
             }
 
+            SaudeMedica::create([
+                'paciente_id' => $paciente->id,
+            ]);
+
+            SaudeOdontologica::create([
+                'paciente_id' => $paciente->id,
+            ]);
+
             $paciente->load(['user', 'aluno', 'funcionario']);
 
             return new PacienteStoredResource($paciente);
@@ -94,12 +99,13 @@ class PacienteController extends Controller
      */
     public function show(Paciente $paciente)
     {
-        return new PacienteResource($paciente::with(['user', 'aluno', 'funcionario'])
+        /* return new PacienteResource($paciente::with(['user', 'aluno', 'funcionario'])
             ->where(function ($query) {
                 $query->whereHas('aluno')
                     ->orWhereHas('funcionario');
             })
-            ->get());
+            ->get()); */
+        return new PacienteResource($paciente->load(['user', 'aluno', 'funcionario', 'saudeMedica', 'saudeOdontologica']));
     }
 
     /**
@@ -143,6 +149,30 @@ class PacienteController extends Controller
                     'turno' => $request->turno,
                 ]);
             }
+
+            $paciente->saudeMedica->update([
+                'alergias' => $request->alergias,
+                'ulcera' => $request->ulcera,
+                'cirurgias' => $request->cirurgias,
+                'tonturas_convulsoes_desmaios' => $request->tonturas_convulsoes_demaios,
+                'medicacao' => $request->medicacao,
+                'problema_cardiaco' => $request->problema_cardiaco,
+                'problema_coagulacao' => $request->problema_coagulacao,
+                'febre_reumatica' => $request->febre_reumatica,
+                'psicopatias' => $request->psicopatias,
+                'medico' => $request->medico,
+                'hepatite' => $request->hepatite,
+                'diabete' => $request->diabete,
+                'problemas_respiratorios' => $request->problemas_respiratorios,
+            ]);
+
+            $paciente->saudeOdontologica->update([
+                'gengivite' => $request->gengivite,
+                'outras_patologias' => $request->outras_patologias,
+                'periodontite' => $request->periodontite,
+                'tratamentos_anteriores' => $request->tratamentos_anteriores,
+                'proteses_aparelhos' => $request->proteses_aparelhos,
+            ]);
 
             return new PacienteResource($paciente);
 

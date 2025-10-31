@@ -10,6 +10,7 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [feedback, setFeedback] = useState({ type: "", message: "" });
+    const [activeTab, setActiveTab] = useState("informacao");
 
     const [formData, setFormData] = useState({
         id: "",
@@ -38,6 +39,30 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
             setor: "",
             ramal: "",
             turno: "",
+        },
+
+        saude_medica: {
+            alergias: "",
+            ulcera: "",
+            cirurgias: "",
+            tonturas_convulsoes_desmaios: "",
+            medicacao: "",
+            problema_cardiaco: "",
+            problema_coagulacao: "",
+            febre_reumatica: "",
+            psicopatias: "",
+            medico: "",
+            hepatite: "",
+            diabete: "",
+            problemas_respiratorios: "",
+        },
+
+        saude_odontologica: {
+            gengivite: "",
+            outras_patologias: "",
+            periodontite: "",
+            tratamentos_anteriores: "",
+            proteses_aparelhos: "",
         },
     });
 
@@ -86,6 +111,42 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                           turno: editedPaciente.funcionario.turno || "",
                       }
                     : formData.funcionario,
+
+            saude_medica: {
+                alergias: editedPaciente?.saude_mediga?.alergias || "",
+                ulcera: editedPaciente?.saude_mediga?.ulcera || "",
+                cirurgias: editedPaciente?.saude_medica?.cirurgias || "",
+                tonturas_convulsoes_desmaios:
+                    editPaciente?.saude_medica?.tonturas_convulsoes_desmaios ||
+                    "",
+                medicacao: editedPaciente?.saude_medica?.medicacao || "",
+                problema_cardiaco:
+                    editedPaciente?.saude_medica?.problema_cardiaco || "",
+                problema_coagulacao:
+                    editPaciente?.saude_medica?.problema_coagulacao || "",
+                febre_reumatica:
+                    editedPaciente?.saude_medica?.febre_reumatica || "",
+                psicopatias: editPaciente?.saude_medica?.psicopatias || "",
+                medico: editedPaciente?.saude_medica?.medico || "",
+                hepatite: editedPaciente?.saude_medica?.hepatite || "",
+                diabete: editedPaciente?.saude_medica?.diabete || "",
+                problemas_respiratorios:
+                    editedPaciente?.saude_medica?.problemas_respiratorios || "",
+            },
+
+            saude_odontologica: {
+                gengivite: editedPaciente?.saude_odontologica?.gengivite || "",
+                outras_patologias:
+                    editedPaciente?.saude_odontologica?.outras_patologias || "",
+                periodontite:
+                    editedPaciente?.saude_odontologica?.periodontite || "",
+                tratamentos_anteriores:
+                    editedPaciente?.saude_odontologica
+                        ?.tratamentos_anteriores || "",
+                proteses_aparelhos:
+                    editedPaciente?.saude_odontologica?.proteses_aparelhos ||
+                    "",
+            },
         });
 
         setShowAlunoFields(tipoPaciente === "aluno");
@@ -191,6 +252,29 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                 setor: formData.funcionario.setor,
                 ramal: formData.funcionario.ramal,
                 turno: formData.funcionario.turno,
+                alergias: formData.saude_medica.alergias,
+                ulcera: formData.saude_medica.ulcera,
+                cirurgias: formData.saude_medica.cirurgias,
+                tonturas_convulsoes_desmaios:
+                    formData.saude_medica.tonturas_convulsoes_desmaios,
+                medicacao: formData.saude_medica.medicacao,
+                problema_cardiaco: formData.saude_medica.problema_cardiaco,
+                problema_coagulacao: formData.saude_medica.problema_coagulacao,
+                febre_reumatica: formData.saude_medica.febre_reumatica,
+                psicopatias: formData.saude_medica.psicopatias,
+                medico: formData.saude_medica.medico,
+                hepatite: formData.saude_medica.hepatite,
+                diabete: formData.saude_medica.diabete,
+                problemas_respiratorios:
+                    formData.saude_medica.problemas_respiratorios,
+                gengivite: formData.saude_odontologica.gengivite,
+                outras_patologias:
+                    formData.saude_odontologica.outras_patologias,
+                periodontite: formData.saude_odontologica.periodontite,
+                tratamentos_anteriores:
+                    formData.saude_odontologica.tratamentos_anteriores,
+                proteses_aparelhos:
+                    formData.saude_odontologica.proteses_aparelhos,
             };
 
             if (editedPaciente) {
@@ -231,6 +315,41 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                         <X className="h-6 w-6" />
                     </button>
                 </div>
+                {/* Tabs */}
+                <div className="border-b border-gray-200">
+                    <nav className="flex -mb-px px-6">
+                        <button
+                            onClick={() => setActiveTab("informacao")}
+                            className={`mr-8 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                                activeTab === "informacao"
+                                    ? "border-blue-500 text-blue-600"
+                                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            }`}
+                        >
+                            Informações Gerais
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("medica")}
+                            className={`mr-8 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                                activeTab === "medica"
+                                    ? "border-blue-500 text-blue-600"
+                                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            }`}
+                        >
+                            Saúde Médica
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("odontologica")}
+                            className={`mr-8 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                                activeTab === "odontologica"
+                                    ? "border-blue-500 text-blue-600"
+                                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            }`}
+                        >
+                            Saúde Bucal
+                        </button>
+                    </nav>
+                </div>
 
                 <form
                     action=""
@@ -238,216 +357,220 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
                     onSubmit={onSubmit}
                     className="p-6"
                 >
-                    <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="name"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Nome
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    type="text"
-                                    name="name"
-                                    id="name"
-                                    value={formData.name}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            "name",
-                                            e.target.value
-                                        )
-                                    }
-                                    className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                        errors.name ? "border-red-300" : ""
-                                    }`}
-                                />
-                                {errors.name && (
-                                    <p className="mt-1 text-sm text-red-600">
-                                        {errors.name}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Email
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    type="text"
-                                    name="email"
-                                    id="email"
-                                    value={formData.email}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            "email",
-                                            e.target.value
-                                        )
-                                    }
-                                    className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                        errors.email ? "border-red-300" : ""
-                                    }`}
-                                />
-                                {errors.email && (
-                                    <p className="mt-1 text-sm text-red-600">
-                                        {errors.email}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="data_nascimento"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Data de Nascimento
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    type="date"
-                                    name="data_nascimento"
-                                    id="data_nascimento"
-                                    value={formData.data_nascimento}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            "data_nascimento",
-                                            e.target.value
-                                        )
-                                    }
-                                    className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                        errors.data_nascimento
-                                            ? "border-red-300"
-                                            : ""
-                                    }`}
-                                />
-                                {errors.data_nascimento && (
-                                    <p className="mt-1 text-sm text-red-600">
-                                        {errors.data_nascimento}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="sexo"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Sexo
-                            </label>
-                            <div className="mt-1">
-                                <select
-                                    id="sexo"
-                                    name="sexo"
-                                    value={formData.sexo || ""}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            "sexo",
-                                            e.target.value
-                                        )
-                                    }
-                                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    {activeTab === "informacao" && (
+                        <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="name"
+                                    className="block text-sm font-medium text-gray-700"
                                 >
-                                    <option value="">Selecione</option>
-                                    <option value="m">Masculino</option>
-                                    <option value="f">Feminino</option>
-                                    <option value="o">Outro</option>
-                                </select>
+                                    Nome
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        id="name"
+                                        value={formData.name}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "name",
+                                                e.target.value
+                                            )
+                                        }
+                                        className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                            errors.name ? "border-red-300" : ""
+                                        }`}
+                                    />
+                                    {errors.name && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.name}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="cpf"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                CPF
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    type="text"
-                                    name="cpf"
-                                    id="cpf"
-                                    value={formData.cpf}
-                                    onChange={(e) =>
-                                        handleInputChange("cpf", e.target.value)
-                                    }
-                                    className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                        errors.cpf ? "border-red-300" : ""
-                                    }`}
-                                />
-                                {errors.cpf && (
-                                    <p className="mt-1 text-sm text-red-600">
-                                        {errors.cpf}
-                                    </p>
-                                )}
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="email"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Email
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="email"
+                                        id="email"
+                                        value={formData.email}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "email",
+                                                e.target.value
+                                            )
+                                        }
+                                        className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                            errors.email ? "border-red-300" : ""
+                                        }`}
+                                    />
+                                    {errors.email && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.email}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="fone_fixo"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Número de telefone
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    type="text"
-                                    name="fone_fixo"
-                                    id="fone_fixo"
-                                    value={formData.fone_fixo}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            "fone_fixo",
-                                            e.target.value
-                                        )
-                                    }
-                                    className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                        errors.phone ? "border-red-300" : ""
-                                    }`}
-                                />
-                                {/* {errors.phone && (
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="data_nascimento"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Data de Nascimento
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="date"
+                                        name="data_nascimento"
+                                        id="data_nascimento"
+                                        value={formData.data_nascimento}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "data_nascimento",
+                                                e.target.value
+                                            )
+                                        }
+                                        className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                            errors.data_nascimento
+                                                ? "border-red-300"
+                                                : ""
+                                        }`}
+                                    />
+                                    {errors.data_nascimento && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.data_nascimento}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="sexo"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Sexo
+                                </label>
+                                <div className="mt-1">
+                                    <select
+                                        id="sexo"
+                                        name="sexo"
+                                        value={formData.sexo || ""}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "sexo",
+                                                e.target.value
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                    >
+                                        <option value="">Selecione</option>
+                                        <option value="m">Masculino</option>
+                                        <option value="f">Feminino</option>
+                                        <option value="o">Outro</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="cpf"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    CPF
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="cpf"
+                                        id="cpf"
+                                        value={formData.cpf}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "cpf",
+                                                e.target.value
+                                            )
+                                        }
+                                        className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                            errors.cpf ? "border-red-300" : ""
+                                        }`}
+                                    />
+                                    {errors.cpf && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.cpf}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="fone_fixo"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Número de telefone
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="fone_fixo"
+                                        id="fone_fixo"
+                                        value={formData.fone_fixo}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "fone_fixo",
+                                                e.target.value
+                                            )
+                                        }
+                                        className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                            errors.phone ? "border-red-300" : ""
+                                        }`}
+                                    />
+                                    {/* {errors.phone && (
 									<p className="mt-1 text-sm text-red-600">{errors.phone}</p>
 								)} */}
+                                </div>
                             </div>
-                        </div>
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="fone_celular"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Número de telefone celular
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    type="text"
-                                    name="fone_celular"
-                                    id="fone_celular"
-                                    value={formData.fone_celular}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            "fone_celular",
-                                            e.target.value
-                                        )
-                                    }
-                                    className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                        errors.phone ? "border-red-300" : ""
-                                    }`}
-                                />
-                                {/* {errors.phone && (
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="fone_celular"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Número de telefone celular
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="fone_celular"
+                                        id="fone_celular"
+                                        value={formData.fone_celular}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "fone_celular",
+                                                e.target.value
+                                            )
+                                        }
+                                        className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                            errors.phone ? "border-red-300" : ""
+                                        }`}
+                                    />
+                                    {/* {errors.phone && (
 									<p className="mt-1 text-sm text-red-600">{errors.phone}</p>
 								)} */}
+                                </div>
                             </div>
-                        </div>
 
-                        {/* <div className="sm:col-span-6">
+                            {/* <div className="sm:col-span-6">
 							<label htmlFor="address" className="block text-sm font-medium text-gray-700">
 								Endereço
 							</label>
@@ -467,450 +590,465 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
 								)}
 							</div>
 						</div> */}
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="tipo_paciente"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Tipo de Paciente
-                            </label>
-                            <div className="mt-1">
-                                <select
-                                    disabled
-                                    id="tipo_paciente"
-                                    name="tipo_paciente"
-                                    value={formData.tipo_paciente}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            "tipo_paciente",
-                                            e.target.value
-                                        )
-                                    }
-                                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md cursor-not-allowed"
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="tipo_paciente"
+                                    className="block text-sm font-medium text-gray-700"
                                 >
-                                    <option value="">Selecione</option>
-                                    <option value="aluno">Aluno</option>
-                                    <option value="funcionario">
-                                        Funcionario
-                                    </option>
-                                </select>
+                                    Tipo de Paciente
+                                </label>
+                                <div className="mt-1">
+                                    <select
+                                        disabled
+                                        id="tipo_paciente"
+                                        name="tipo_paciente"
+                                        value={formData.tipo_paciente}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "tipo_paciente",
+                                                e.target.value
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md cursor-not-allowed"
+                                    >
+                                        <option value="">Selecione</option>
+                                        <option value="aluno">Aluno</option>
+                                        <option value="funcionario">
+                                            Funcionario
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        {showAlunoFields && (
-                            <>
-                                <div className="sm:col-span-3">
-                                    <label
-                                        htmlFor="aluno_matricula"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Matrícula do Aluno
-                                    </label>
-                                    <div className="mt-1">
-                                        <input
-                                            type="text"
-                                            name="aluno_matricula"
-                                            id="aluno_matricula"
-                                            placeholder="213214421"
-                                            value={formData.aluno.matricula}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    "matricula",
-                                                    e.target.value,
-                                                    "aluno"
-                                                )
-                                            }
-                                            className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                                errors.aluno_matricula
-                                                    ? "border-red-300"
-                                                    : ""
-                                            }`}
-                                        />
-                                        {errors.aluno_matricula && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {errors.aluno_matricula}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-3">
-                                    <label
-                                        htmlFor="aluno_turma"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Turma
-                                    </label>
-                                    <div className="mt-1">
-                                        <input
-                                            type="text"
-                                            name="aluno_turma"
-                                            id="aluno_turma"
-                                            value={formData.aluno.turma}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    "turma",
-                                                    e.target.value,
-                                                    "aluno"
-                                                )
-                                            }
-                                            className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                                errors.aluno_matricula
-                                                    ? "border-red-300"
-                                                    : ""
-                                            }`}
-                                        />
-                                        {errors.aluno_turma && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {errors.aluno_turma}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-3">
-                                    <label
-                                        htmlFor="aluno_campus"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Campus
-                                    </label>
-                                    <div className="mt-1">
-                                        <input
-                                            type="text"
-                                            name="aluno_campus"
-                                            id="aluno_campus"
-                                            value={formData.aluno.campus}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    "campus",
-                                                    e.target.value,
-                                                    "aluno"
-                                                )
-                                            }
-                                            className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                                errors.aluno_matricula
-                                                    ? "border-red-300"
-                                                    : ""
-                                            }`}
-                                        />
-                                        {errors.aluno_campus && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {errors.aluno_campus}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-3">
-                                    <label
-                                        htmlFor="aluno_curso"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Curso
-                                    </label>
-                                    <div className="mt-1">
-                                        <input
-                                            type="text"
-                                            name="aluno_curso"
-                                            id="aluno_curso"
-                                            value={formData.aluno.curso}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    "curso",
-                                                    e.target.value,
-                                                    "aluno"
-                                                )
-                                            }
-                                            className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                                errors.aluno_matricula
-                                                    ? "border-red-300"
-                                                    : ""
-                                            }`}
-                                        />
-                                        {errors.aluno_curso && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {errors.aluno_curso}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-3">
-                                    <label
-                                        htmlFor="aluno_semestre"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Semestre
-                                    </label>
-                                    <div className="mt-1">
-                                        <input
-                                            type="text"
-                                            name="aluno_semestre"
-                                            id="aluno_semestre"
-                                            value={formData.aluno.semestre}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    "semestre",
-                                                    e.target.value,
-                                                    "aluno"
-                                                )
-                                            }
-                                            className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                                errors.aluno_matricula
-                                                    ? "border-red-300"
-                                                    : ""
-                                            }`}
-                                        />
-                                        {errors.aluno_semestre && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {errors.aluno_semestre}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-3">
-                                    <label
-                                        htmlFor="aluno_ano"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Ano
-                                    </label>
-                                    <div className="mt-1">
-                                        <input
-                                            type="text"
-                                            name="aluno_ano"
-                                            id="aluno_ano"
-                                            value={formData.aluno.ano}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    "ano",
-                                                    e.target.value,
-                                                    "aluno"
-                                                )
-                                            }
-                                            className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                                errors.aluno_matricula
-                                                    ? "border-red-300"
-                                                    : ""
-                                            }`}
-                                        />
-                                        {errors.aluno_ano && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {errors.aluno_ano}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-3">
-                                    <label
-                                        htmlFor="aluno_fone_responsavel"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Telefone do Responsável
-                                    </label>
-                                    <div className="mt-1">
-                                        <input
-                                            type="text"
-                                            name="aluno_fone_responsavel"
-                                            id="aluno_fone_responsavel"
-                                            value={
-                                                formData.aluno.fone_responsavel
-                                            }
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    "fone_responsavel",
-                                                    e.target.value,
-                                                    "aluno"
-                                                )
-                                            }
-                                            className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                                errors.aluno_matricula
-                                                    ? "border-red-300"
-                                                    : ""
-                                            }`}
-                                        />
-                                        {errors.aluno_fone_responsavel && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {errors.aluno_fone_responsavel}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                        {showFuncionarioFields && (
-                            <>
-                                <div className="sm:col-span-3">
-                                    <label
-                                        htmlFor="funcionario_tipo_funcionario"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Tipo de Funcionario
-                                    </label>
-                                    <div className="mt-1">
-                                        <select
-                                            disabled
-                                            id="funcionario_tipo_funcionario"
-                                            name="funcionario_tipo_funcionario"
-                                            value={
-                                                formData.funcionario
-                                                    .tipo_funcionario
-                                            }
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    "tipo_funcionario",
-                                                    e.target.value,
-                                                    "funcionario"
-                                                )
-                                            }
-                                            className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                            {showAlunoFields && (
+                                <>
+                                    <div className="sm:col-span-3">
+                                        <label
+                                            htmlFor="aluno_matricula"
+                                            className="block text-sm font-medium text-gray-700"
                                         >
-                                            <option value="">Selecione</option>
-                                            <option value="docente">
-                                                Docente
-                                            </option>
-                                            <option value="tecnico_administrativo">
-                                                Tecnico Administrativo
-                                            </option>
-                                            <option value="terceirizado">
-                                                Terceirizado
-                                            </option>
-                                        </select>
+                                            Matrícula do Aluno
+                                        </label>
+                                        <div className="mt-1">
+                                            <input
+                                                type="text"
+                                                name="aluno_matricula"
+                                                id="aluno_matricula"
+                                                placeholder="213214421"
+                                                value={formData.aluno.matricula}
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "matricula",
+                                                        e.target.value,
+                                                        "aluno"
+                                                    )
+                                                }
+                                                className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                                    errors.aluno_matricula
+                                                        ? "border-red-300"
+                                                        : ""
+                                                }`}
+                                            />
+                                            {errors.aluno_matricula && (
+                                                <p className="mt-1 text-sm text-red-600">
+                                                    {errors.aluno_matricula}
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="sm:col-span-3">
-                                    <label
-                                        htmlFor="funcionario_cargo"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Cargo do Funcionario
-                                    </label>
-                                    <div className="mt-1">
-                                        <input
-                                            type="text"
-                                            name="funcionario_cargo"
-                                            id="funcionario_cargo"
-                                            value={formData.funcionario.cargo}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    "cargo",
-                                                    e.target.value,
-                                                    "funcionario"
-                                                )
-                                            }
-                                            className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                                errors.funcionario_tipo
-                                                    ? "border-red-300"
-                                                    : ""
-                                            }`}
-                                        />
-                                        {errors.funcionario_cargo && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {errors.funcionario_cargo}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-3">
-                                    <label
-                                        htmlFor="funcionario_setor"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Setor do Funcionario
-                                    </label>
-                                    <div className="mt-1">
-                                        <input
-                                            type="text"
-                                            name="funcionario_setor"
-                                            id="funcionario_setor"
-                                            value={formData.funcionario.setor}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    "setor",
-                                                    e.target.value,
-                                                    "funcionario"
-                                                )
-                                            }
-                                            className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                                errors.funcionario_tipo
-                                                    ? "border-red-300"
-                                                    : ""
-                                            }`}
-                                        />
-                                        {errors.funcionario_setor && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {errors.funcionario_setor}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-3">
-                                    <label
-                                        htmlFor="funcionario_ramal"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Ramal
-                                    </label>
-                                    <div className="mt-1">
-                                        <input
-                                            type="text"
-                                            name="funcionario_ramal"
-                                            id="funcionario_ramal"
-                                            value={formData.funcionario.ramal}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    "ramal",
-                                                    e.target.value,
-                                                    "funcionario"
-                                                )
-                                            }
-                                            className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                                                errors.funcionario_tipo
-                                                    ? "border-red-300"
-                                                    : ""
-                                            }`}
-                                        />
-                                        {errors.funcionario_ramal && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {errors.funcionario_ramal}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-3">
-                                    <label
-                                        htmlFor="funcionario_turno"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Turno
-                                    </label>
-                                    <div className="mt-1">
-                                        <select
-                                            id="funcionario_turno"
-                                            name="funcionario_turno"
-                                            value={formData.funcionario.turno}
-                                            onChange={(e) =>
-                                                handleInputChange(
-                                                    "turno",
-                                                    e.target.value,
-                                                    "funcionario"
-                                                )
-                                            }
-                                            className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                    <div className="sm:col-span-3">
+                                        <label
+                                            htmlFor="aluno_turma"
+                                            className="block text-sm font-medium text-gray-700"
                                         >
-                                            <option value="">Selecione</option>
-                                            <option value="matutino">
-                                                Matutino
-                                            </option>
-                                            <option value="noturno">
-                                                Noturno
-                                            </option>
-                                            <option value="vespertino">
-                                                Vespertino
-                                            </option>
-                                        </select>
+                                            Turma
+                                        </label>
+                                        <div className="mt-1">
+                                            <input
+                                                type="text"
+                                                name="aluno_turma"
+                                                id="aluno_turma"
+                                                value={formData.aluno.turma}
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "turma",
+                                                        e.target.value,
+                                                        "aluno"
+                                                    )
+                                                }
+                                                className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                                    errors.aluno_matricula
+                                                        ? "border-red-300"
+                                                        : ""
+                                                }`}
+                                            />
+                                            {errors.aluno_turma && (
+                                                <p className="mt-1 text-sm text-red-600">
+                                                    {errors.aluno_turma}
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                            </>
-                        )}
+                                    <div className="sm:col-span-3">
+                                        <label
+                                            htmlFor="aluno_campus"
+                                            className="block text-sm font-medium text-gray-700"
+                                        >
+                                            Campus
+                                        </label>
+                                        <div className="mt-1">
+                                            <input
+                                                type="text"
+                                                name="aluno_campus"
+                                                id="aluno_campus"
+                                                value={formData.aluno.campus}
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "campus",
+                                                        e.target.value,
+                                                        "aluno"
+                                                    )
+                                                }
+                                                className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                                    errors.aluno_matricula
+                                                        ? "border-red-300"
+                                                        : ""
+                                                }`}
+                                            />
+                                            {errors.aluno_campus && (
+                                                <p className="mt-1 text-sm text-red-600">
+                                                    {errors.aluno_campus}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="sm:col-span-3">
+                                        <label
+                                            htmlFor="aluno_curso"
+                                            className="block text-sm font-medium text-gray-700"
+                                        >
+                                            Curso
+                                        </label>
+                                        <div className="mt-1">
+                                            <input
+                                                type="text"
+                                                name="aluno_curso"
+                                                id="aluno_curso"
+                                                value={formData.aluno.curso}
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "curso",
+                                                        e.target.value,
+                                                        "aluno"
+                                                    )
+                                                }
+                                                className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                                    errors.aluno_matricula
+                                                        ? "border-red-300"
+                                                        : ""
+                                                }`}
+                                            />
+                                            {errors.aluno_curso && (
+                                                <p className="mt-1 text-sm text-red-600">
+                                                    {errors.aluno_curso}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="sm:col-span-3">
+                                        <label
+                                            htmlFor="aluno_semestre"
+                                            className="block text-sm font-medium text-gray-700"
+                                        >
+                                            Semestre
+                                        </label>
+                                        <div className="mt-1">
+                                            <input
+                                                type="text"
+                                                name="aluno_semestre"
+                                                id="aluno_semestre"
+                                                value={formData.aluno.semestre}
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "semestre",
+                                                        e.target.value,
+                                                        "aluno"
+                                                    )
+                                                }
+                                                className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                                    errors.aluno_matricula
+                                                        ? "border-red-300"
+                                                        : ""
+                                                }`}
+                                            />
+                                            {errors.aluno_semestre && (
+                                                <p className="mt-1 text-sm text-red-600">
+                                                    {errors.aluno_semestre}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="sm:col-span-3">
+                                        <label
+                                            htmlFor="aluno_ano"
+                                            className="block text-sm font-medium text-gray-700"
+                                        >
+                                            Ano
+                                        </label>
+                                        <div className="mt-1">
+                                            <input
+                                                type="text"
+                                                name="aluno_ano"
+                                                id="aluno_ano"
+                                                value={formData.aluno.ano}
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "ano",
+                                                        e.target.value,
+                                                        "aluno"
+                                                    )
+                                                }
+                                                className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                                    errors.aluno_matricula
+                                                        ? "border-red-300"
+                                                        : ""
+                                                }`}
+                                            />
+                                            {errors.aluno_ano && (
+                                                <p className="mt-1 text-sm text-red-600">
+                                                    {errors.aluno_ano}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="sm:col-span-3">
+                                        <label
+                                            htmlFor="aluno_fone_responsavel"
+                                            className="block text-sm font-medium text-gray-700"
+                                        >
+                                            Telefone do Responsável
+                                        </label>
+                                        <div className="mt-1">
+                                            <input
+                                                type="text"
+                                                name="aluno_fone_responsavel"
+                                                id="aluno_fone_responsavel"
+                                                value={
+                                                    formData.aluno
+                                                        .fone_responsavel
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "fone_responsavel",
+                                                        e.target.value,
+                                                        "aluno"
+                                                    )
+                                                }
+                                                className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                                    errors.aluno_matricula
+                                                        ? "border-red-300"
+                                                        : ""
+                                                }`}
+                                            />
+                                            {errors.aluno_fone_responsavel && (
+                                                <p className="mt-1 text-sm text-red-600">
+                                                    {
+                                                        errors.aluno_fone_responsavel
+                                                    }
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                            {showFuncionarioFields && (
+                                <>
+                                    <div className="sm:col-span-3">
+                                        <label
+                                            htmlFor="funcionario_tipo_funcionario"
+                                            className="block text-sm font-medium text-gray-700"
+                                        >
+                                            Tipo de Funcionario
+                                        </label>
+                                        <div className="mt-1">
+                                            <select
+                                                disabled
+                                                id="funcionario_tipo_funcionario"
+                                                name="funcionario_tipo_funcionario"
+                                                value={
+                                                    formData.funcionario
+                                                        .tipo_funcionario
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "tipo_funcionario",
+                                                        e.target.value,
+                                                        "funcionario"
+                                                    )
+                                                }
+                                                className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                            >
+                                                <option value="">
+                                                    Selecione
+                                                </option>
+                                                <option value="docente">
+                                                    Docente
+                                                </option>
+                                                <option value="tecnico_administrativo">
+                                                    Tecnico Administrativo
+                                                </option>
+                                                <option value="terceirizado">
+                                                    Terceirizado
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="sm:col-span-3">
+                                        <label
+                                            htmlFor="funcionario_cargo"
+                                            className="block text-sm font-medium text-gray-700"
+                                        >
+                                            Cargo do Funcionario
+                                        </label>
+                                        <div className="mt-1">
+                                            <input
+                                                type="text"
+                                                name="funcionario_cargo"
+                                                id="funcionario_cargo"
+                                                value={
+                                                    formData.funcionario.cargo
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "cargo",
+                                                        e.target.value,
+                                                        "funcionario"
+                                                    )
+                                                }
+                                                className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                                    errors.funcionario_tipo
+                                                        ? "border-red-300"
+                                                        : ""
+                                                }`}
+                                            />
+                                            {errors.funcionario_cargo && (
+                                                <p className="mt-1 text-sm text-red-600">
+                                                    {errors.funcionario_cargo}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="sm:col-span-3">
+                                        <label
+                                            htmlFor="funcionario_setor"
+                                            className="block text-sm font-medium text-gray-700"
+                                        >
+                                            Setor do Funcionario
+                                        </label>
+                                        <div className="mt-1">
+                                            <input
+                                                type="text"
+                                                name="funcionario_setor"
+                                                id="funcionario_setor"
+                                                value={
+                                                    formData.funcionario.setor
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "setor",
+                                                        e.target.value,
+                                                        "funcionario"
+                                                    )
+                                                }
+                                                className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                                    errors.funcionario_tipo
+                                                        ? "border-red-300"
+                                                        : ""
+                                                }`}
+                                            />
+                                            {errors.funcionario_setor && (
+                                                <p className="mt-1 text-sm text-red-600">
+                                                    {errors.funcionario_setor}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="sm:col-span-3">
+                                        <label
+                                            htmlFor="funcionario_ramal"
+                                            className="block text-sm font-medium text-gray-700"
+                                        >
+                                            Ramal
+                                        </label>
+                                        <div className="mt-1">
+                                            <input
+                                                type="text"
+                                                name="funcionario_ramal"
+                                                id="funcionario_ramal"
+                                                value={
+                                                    formData.funcionario.ramal
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "ramal",
+                                                        e.target.value,
+                                                        "funcionario"
+                                                    )
+                                                }
+                                                className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                                                    errors.funcionario_tipo
+                                                        ? "border-red-300"
+                                                        : ""
+                                                }`}
+                                            />
+                                            {errors.funcionario_ramal && (
+                                                <p className="mt-1 text-sm text-red-600">
+                                                    {errors.funcionario_ramal}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="sm:col-span-3">
+                                        <label
+                                            htmlFor="funcionario_turno"
+                                            className="block text-sm font-medium text-gray-700"
+                                        >
+                                            Turno
+                                        </label>
+                                        <div className="mt-1">
+                                            <select
+                                                id="funcionario_turno"
+                                                name="funcionario_turno"
+                                                value={
+                                                    formData.funcionario.turno
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "turno",
+                                                        e.target.value,
+                                                        "funcionario"
+                                                    )
+                                                }
+                                                className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                            >
+                                                <option value="">
+                                                    Selecione
+                                                </option>
+                                                <option value="matutino">
+                                                    Matutino
+                                                </option>
+                                                <option value="noturno">
+                                                    Noturno
+                                                </option>
+                                                <option value="vespertino">
+                                                    Vespertino
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
 
-                        {/* <div className="flex items-center justify-between px-6 py-4 border-b">
+                            {/* <div className="flex items-center justify-between px-6 py-4 border-b">
 														<h2 className="text-xl font-semibold text-gray-800">
 																Histórico Médico
 														</h2>
@@ -933,7 +1071,516 @@ const ModalEditPaciente = ({ editedPaciente, onClose }) => {
 																/>
 														</div>
 												</div> */}
-                    </div>
+                        </div>
+                    )}
+
+                    {activeTab === "medica" && (
+                        <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                            <div className="sm:col-span-6">
+                                <label
+                                    htmlFor="alergias"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Alergias
+                                </label>
+                                <div className="mt-1">
+                                    <textarea
+                                        id="alergias"
+                                        name="alergias"
+                                        rows={3}
+                                        value={formData.saude_medica.alergias}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "alergias",
+                                                e.target.value,
+                                                "saude_medica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Liste quaisquer alergias conhecidas"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-6">
+                                <label
+                                    htmlFor="medicacao"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Medicação em Uso
+                                </label>
+                                <div className="mt-1">
+                                    <textarea
+                                        id="medicacao"
+                                        name="medicacao"
+                                        rows={3}
+                                        value={formData.saude_medica.medicacao}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "medicacao",
+                                                e.target.value,
+                                                "saude_medica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Liste medicações em uso regular"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-6">
+                                <label
+                                    htmlFor="cirurgias"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Cirurgias Anteriores
+                                </label>
+                                <div className="mt-1">
+                                    <textarea
+                                        id="cirurgias"
+                                        name="cirurgias"
+                                        rows={3}
+                                        value={formData.saude_medica.cirurgias}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "cirurgias",
+                                                e.target.value,
+                                                "saude_medica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Descreva cirurgias realizadas anteriormente"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="problema_cardiaco"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Problemas Cardíacos
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="problema_cardiaco"
+                                        id="problema_cardiaco"
+                                        value={
+                                            formData.saude_medica
+                                                .problema_cardiaco
+                                        }
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "problema_cardiaco",
+                                                e.target.value,
+                                                "saude_medica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Ex: Hipertensão, Arritmia..."
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="diabete"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Diabetes
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="diabete"
+                                        id="diabete"
+                                        value={formData.saude_medica.diabete}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "diabete",
+                                                e.target.value,
+                                                "saude_medica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Tipo e controle"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="hepatite"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Hepatite
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="hepatite"
+                                        id="hepatite"
+                                        value={formData.saude_medica.hepatite}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "hepatite",
+                                                e.target.value,
+                                                "saude_medica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Tipo e situação"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="problemas_respiratorios"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Problemas Respiratórios
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="problemas_respiratorios"
+                                        id="problemas_respiratorios"
+                                        value={
+                                            formData.saude_medica
+                                                .problemas_respiratorios
+                                        }
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "problemas_respiratorios",
+                                                e.target.value,
+                                                "saude_medica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Ex: Asma, Bronquite..."
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="ulcera"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Úlcera
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="ulcera"
+                                        id="ulcera"
+                                        value={formData.saude_medica.ulcera}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "ulcera",
+                                                e.target.value,
+                                                "saude_medica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Situação atual"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="problema_coagulacao"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Problemas de Coagulação
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="problema_coagulacao"
+                                        id="problema_coagulacao"
+                                        value={
+                                            formData.saude_medica
+                                                .problema_coagulacao
+                                        }
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "problema_coagulacao",
+                                                e.target.value,
+                                                "saude_medica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Ex: Hemofilia..."
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="febre_reumatica"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Febre Reumática
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="febre_reumatica"
+                                        id="febre_reumatica"
+                                        value={
+                                            formData.saude_medica
+                                                .febre_reumatica
+                                        }
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "febre_reumatica",
+                                                e.target.value,
+                                                "saude_medica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Histórico e situação"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-3">
+                                <label
+                                    htmlFor="psicopatias"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Psicopatias
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="psicopatias"
+                                        id="psicopatias"
+                                        value={
+                                            formData.saude_medica.psicopatias
+                                        }
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "psicopatias",
+                                                e.target.value,
+                                                "saude_medica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Condições psicológicas/psiquiátricas"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-6">
+                                <label
+                                    htmlFor="tonturas_convulsoes_desmaios"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Tonturas, Convulsões ou Desmaios
+                                </label>
+                                <div className="mt-1">
+                                    <textarea
+                                        id="tonturas_convulsoes_desmaios"
+                                        name="tonturas_convulsoes_desmaios"
+                                        rows={3}
+                                        value={
+                                            formData.saude_medica
+                                                .tonturas_convulsoes_desmaios
+                                        }
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "tonturas_convulsoes_desmaios",
+                                                e.target.value,
+                                                "saude_medica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Descreva frequência e características"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-6">
+                                <label
+                                    htmlFor="medico"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Médico Responsável
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="medico"
+                                        id="medico"
+                                        value={formData.saude_medica.medico}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "medico",
+                                                e.target.value,
+                                                "saude_medica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Nome do médico de referência"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === "odontologica" && (
+                        <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                            <div className="sm:col-span-6">
+                                <label
+                                    htmlFor="gengivite"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Gengivite
+                                </label>
+                                <div className="mt-1">
+                                    <textarea
+                                        id="gengivite"
+                                        name="gengivite"
+                                        rows={3}
+                                        value={
+                                            formData.saude_odontologica
+                                                .gengivite
+                                        }
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "gengivite",
+                                                e.target.value,
+                                                "saude_odontologica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Descreva condições gengivais"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-6">
+                                <label
+                                    htmlFor="periodontite"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Periodontite
+                                </label>
+                                <div className="mt-1">
+                                    <textarea
+                                        id="periodontite"
+                                        name="periodontite"
+                                        rows={3}
+                                        value={
+                                            formData.saude_odontologica
+                                                .periodontite
+                                        }
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "periodontite",
+                                                e.target.value,
+                                                "saude_odontologica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Descreva condições periodontais"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-6">
+                                <label
+                                    htmlFor="tratamentos_anteriores"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Tratamentos Anteriores
+                                </label>
+                                <div className="mt-1">
+                                    <textarea
+                                        id="tratamentos_anteriores"
+                                        name="tratamentos_anteriores"
+                                        rows={3}
+                                        value={
+                                            formData.saude_odontologica
+                                                .tratamentos_anteriores
+                                        }
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "tratamentos_anteriores",
+                                                e.target.value,
+                                                "saude_odontologica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Liste tratamentos odontológicos realizados anteriormente"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-6">
+                                <label
+                                    htmlFor="proteses_aparelhos"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Próteses e Aparelhos
+                                </label>
+                                <div className="mt-1">
+                                    <textarea
+                                        id="proteses_aparelhos"
+                                        name="proteses_aparelhos"
+                                        rows={3}
+                                        value={
+                                            formData.saude_odontologica
+                                                .proteses_aparelhos
+                                        }
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "proteses_aparelhos",
+                                                e.target.value,
+                                                "saude_odontologica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Descreva próteses, aparelhos ortodônticos ou outros dispositivos"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-6">
+                                <label
+                                    htmlFor="outras_patologias"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Outras Patologias Bucais
+                                </label>
+                                <div className="mt-1">
+                                    <textarea
+                                        id="outras_patologias"
+                                        name="outras_patologias"
+                                        rows={3}
+                                        value={
+                                            formData.saude_odontologica
+                                                .outras_patologias
+                                        }
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "outras_patologias",
+                                                e.target.value,
+                                                "saude_odontologica"
+                                            )
+                                        }
+                                        className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                        placeholder="Descreva outras condições bucais relevantes"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     <div className="mt-6 flex justify-end space-x-3">
                         <button
