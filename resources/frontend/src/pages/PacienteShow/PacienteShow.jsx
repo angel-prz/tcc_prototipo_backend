@@ -443,13 +443,13 @@ const PacienteShow = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    {/* <div className="mt-4 bg-gray-50 p-4 rounded-lg">
+                                    <div className="mt-4 bg-gray-50 p-4 rounded-lg">
                                         <h5 className="text-sm font-semibold text-gray-700 mb-2">
                                             Tratamentos Anteriores
                                         </h5>
                                         <p className="text-sm text-gray-600 whitespace-pre-line">
-                                            {paciente.dentalHealth
-                                                ?.previousTreatments ||
+                                            {paciente?.saudeOdontologica
+                                                ?.tratamentos_anteriores ||
                                                 "Nenhum tratamento anterior registrado"}
                                         </p>
                                     </div>
@@ -458,12 +458,12 @@ const PacienteShow = () => {
                                             Próteses/Aparelhos
                                         </h5>
                                         <p className="text-sm text-gray-600 whitespace-pre-line">
-                                            {paciente.dentalHealth
-                                                ?.prosthetics ||
+                                            {paciente?.saudeOdontologica
+                                                ?.proteses_aparelhos ||
                                                 "Nenhuma prótese ou aparelho registrado"}
                                         </p>
                                     </div>
-                                    <div className="mt-4 bg-gray-50 p-4 rounded-lg">
+                                    {/* <div className="mt-4 bg-gray-50 p-4 rounded-lg">
                                         <h5 className="text-sm font-semibold text-gray-700 mb-2">
                                             Observações Adicionais
                                         </h5>

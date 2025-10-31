@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('gengivite')->nullable();
             $table->string('outras_patologias')->nullable();
             $table->string('periodontite')->nullable();
+            $table->string('tratamentos_anteriores')->nullable();
+            $table->string('proteses_aparelhos')->nullable();
             $table->timestamps();
         });
     }

@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Paciente;
+use App\Models\SaudeMedica;
+use App\Models\SaudeOdontologica;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Paciente;
-
 
 class PacienteTestSeeder extends Seeder
 {
@@ -38,6 +38,22 @@ class PacienteTestSeeder extends Seeder
         $pacienteFuncionario = Paciente::factory()->create([
             'id' => $pacienteFuncionarioUser->id,
             'tipo_paciente' => 'funcionario',
+        ]);
+
+        SaudeMedica::factory()->create([
+            'paciente_id' => $pacienteAlunoUser->id,
+        ]);
+
+        SaudeOdontologica::factory()->create([
+            'paciente_id' => $pacienteAlunoUser->id,
+        ]);
+
+        SaudeMedica::factory()->create([
+            'paciente_id' => $pacienteFuncionarioUser->id,
+        ]);
+
+        SaudeOdontologica::factory()->create([
+            'paciente_id' => $pacienteFuncionarioUser->id,
         ]);
     }
 }

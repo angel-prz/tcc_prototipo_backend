@@ -13,9 +13,12 @@ class SaudeOdontologica extends Model
     protected $table = 'saude_odontologica';
 
     protected $fillable = [
+        'paciente_id',
         'gengivite',
         'outras_patologias',
         'periodontite',
+        'tratamentos_anteriores',
+        'proteses_aparelhos',
     ];
 
     public function paciente()

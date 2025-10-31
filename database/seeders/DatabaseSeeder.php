@@ -49,5 +49,8 @@ class DatabaseSeeder extends Seeder
 
         $seedSaudeOdontologica = new SaudeOdontologicaSeeder;
         $seedSaudeOdontologica->run();
+
+        $this->call(PacienteTestSeeder::class);
+        $this->call(ProfissionalTestSeeder::class);
     }
 }

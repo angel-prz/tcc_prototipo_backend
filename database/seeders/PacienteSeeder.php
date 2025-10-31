@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\Paciente;
+use App\Models\SaudeMedica;
+use App\Models\SaudeOdontologica;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class PacienteSeeder extends Seeder
 {
@@ -16,14 +17,20 @@ class PacienteSeeder extends Seeder
     {
         $pacientes = User::where('tipo_usuario', 'paciente')->get();
 
-
-        foreach ($pacientes as $paciente)
-        {
+        foreach ($pacientes as $paciente) {
             Paciente::factory()->create([
                 'id' => $paciente->id,
             ]);
+
+            SaudeMedica::factory()->create([
+                'paciente_id' => $paciente->id,
+            ]);
+
+            SaudeOdontologica::factory()->create([
+                'paciente_id' => $paciente->id,
+            ]);
         }
 
-        echo "Pacientes: " . $pacientes->count() . "\n";
+        echo 'Pacientes: '.$pacientes->count()."\n";
     }
 }

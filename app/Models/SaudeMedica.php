@@ -13,6 +13,7 @@ class SaudeMedica extends Model
     protected $table = 'saude_medica';
 
     protected $fillable = [
+        'paciente_id',
         'alergias',
         'ulcera',
         'cirurgias',
