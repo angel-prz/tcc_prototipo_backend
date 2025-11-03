@@ -51,16 +51,24 @@ const ConsultaShow = () => {
 
     useEffect(() => {
         if (isLoaded && data) {
-            const foundConsulta = data.find(
-                (consulta) => consulta.id === parseInt(id)
-            );
+            const foundConsulta = Array.isArray(data)
+                ? data.find((consulta) => consulta.id === parseInt(id))
+                : data?.data?.find((consulta) => consulta.id === parseInt(id));
             setConsulta(foundConsulta);
         }
     }, [isLoaded, data, id]);
 
-    const handleStatusChange = (status) => {
-        editConsulta(id, { status });
-        setData({ ...consulta, status });
+    const handleStatusChange = async (status) => {
+        try {
+            const updatedConsulta = { ...consulta, status };
+            const message = await editConsulta(consulta.id, updatedConsulta);
+            console.log(message || "Consulta atualizada com sucesso!");
+
+            setData(updatedConsulta);
+        } catch (error) {
+            console.error("Erro ao atualizar a consulta:", error);
+            alert("Erro ao atualizar a consulta");
+        }
     };
 
     console.log(consulta);
@@ -205,7 +213,7 @@ const ConsultaShow = () => {
                             <div className="flex flex-wrap gap-3">
                                 <button
                                     onClick={() =>
-                                        handleStatusChange("completed")
+                                        handleStatusChange("finalizada")
                                     }
                                     className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                                 >
@@ -214,7 +222,7 @@ const ConsultaShow = () => {
                                 </button>
                                 <button
                                     onClick={() =>
-                                        handleStatusChange("cancelled")
+                                        handleStatusChange("cancelada")
                                     }
                                     className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                                 >
