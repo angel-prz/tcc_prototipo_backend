@@ -1,0 +1,6 @@
+Bolsista/Atendente pode criar usuário, com informações de usuario, o bolsista apesar de inserir os dados do usuário na primeira
+consulta, ele só tem acesso ao número de telefone, email, nome, sexo, e idade.
+Bolsista pode criar consulta, depois só tem acesso ao horario, nome do paciente e nome do profissional da consulta.
+Bolsista pode editar e ver o seu próprio perfil apenas.
+
+
