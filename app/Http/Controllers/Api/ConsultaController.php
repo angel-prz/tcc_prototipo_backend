@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\ConsultaAtendimentoRequest;
 use App\Http\Requests\ConsultaStoreRequest;
 use App\Http\Requests\ConsultaUpdateRequest;
 use App\Http\Resources\ConsultaCollectionResource;
@@ -112,5 +113,5 @@ class ConsultaController extends Controller
         }
     }
 
-    public function atendimento() {}
+    public function atendimento(ConsultaAtendimentoRequest $request, Consulta $consulta) {}
 }
