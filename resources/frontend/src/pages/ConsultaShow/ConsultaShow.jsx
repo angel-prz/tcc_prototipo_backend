@@ -19,6 +19,7 @@ import { ConsultasContext } from "../../contexts/ConsultaProvider";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import ConsultaForm from "../../components/ConsultaForm/ConsultaForm";
 import { getHora, getData } from "../../utils/dataHora";
+import { PacientesContext } from "../../contexts/PacienteProvider";
 
 const statusColors = {
     agendada: "bg-blue-100 text-blue-800",
@@ -41,8 +42,41 @@ const ConsultaShow = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [consulta, setConsulta] = useState(location.state?.consulta ?? null);
+    const { editPaciente } = useContext(PacientesContext);
+
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isAtendimento, setIsAtendimento] = useState(false);
+    const [atendimentoTab, setatendimentoTab] = useState("atendimento");
+
+    const [atendimentoData, setAtendimentoData] = useState({
+        bloodPressure: "",
+        heartRate: "",
+        temperature: "",
+        weight: "",
+        height: "",
+        symptoms: "",
+        diagnosis: "",
+        prescription: "",
+        notes: "",
+    });
+    const [saudeMedicaData, setSaudeMedicaData] = useState({
+        allergies: "",
+        chronicDiseases: "",
+        currentMedications: "",
+        previousSurgeries: "",
+        familyHistory: "",
+        notes: "",
+    });
+    const [saudeOdontologicaData, setSudeOdontologicaData] = useState({
+        lastVisit: "",
+        brushingFrequency: "",
+        flossing: "",
+        currentIssues: "",
+        previousTreatments: "",
+        prosthetics: "",
+        notes: "",
+    });
     /*const [message, setMessage] = useState(null); */
     useEffect(() => {
         loadConsultas();
@@ -69,6 +103,18 @@ const ConsultaShow = () => {
             console.error("Erro ao atualizar a consulta:", error);
             alert("Erro ao atualizar a consulta");
         }
+    };
+
+    const handleAtendimentoDataChange = (field, value) => {
+        setAtendimentoData((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const handleSaudeMedicaChange = (field, value) => {
+        setSaudeMedicaData((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const handleSaudeOdontologicaDataChange = (field, value) => {
+        setSudeOdontologicaData((prev) => ({ ...prev, [field]: value }));
     };
 
     console.log(consulta);
@@ -212,13 +258,11 @@ const ConsultaShow = () => {
                             </h3>
                             <div className="flex flex-wrap gap-3">
                                 <button
-                                    onClick={() =>
-                                        handleStatusChange("finalizada")
-                                    }
+                                    onClick={() => setIsAtendimento(true)}
                                     className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                                 >
                                     <CheckCircle className="-ml-1 mr-2 h-4 w-4" />
-                                    Finalizar consulta
+                                    Atender consulta
                                 </button>
                                 <button
                                     onClick={() =>
@@ -242,6 +286,568 @@ const ConsultaShow = () => {
                                 <AlertTriangle className="-ml-1 mr-2 h-4 w-4" />
                                 Atualizar status
                             </button>
+                        </div>
+                    )}
+
+                    {/* Medical Data Form */}
+                    {isAtendimento && (
+                        <div className="mt-6 border-t border-gray-200 pt-6">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-lg font-medium text-gray-900">
+                                    Atendimento da Consulta
+                                </h3>
+                                <button
+                                    onClick={() => setIsAtendimento(false)}
+                                    className="text-sm text-gray-500 hover:text-gray-700"
+                                >
+                                    Cancelar atendimento
+                                </button>
+                            </div>
+
+                            <div className="border-b border-gray-200 mb-6">
+                                <nav className="flex -mb-px">
+                                    <button
+                                        onClick={() =>
+                                            setatendimentoTab("atendimento")
+                                        }
+                                        className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                                            atendimentoTab === "atendimento"
+                                                ? "border-blue-500 text-blue-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        }`}
+                                    >
+                                        Consulta
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            setatendimentoTab("saudeMedica")
+                                        }
+                                        className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                                            atendimentoTab === "saudeMedica"
+                                                ? "border-blue-500 text-blue-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        }`}
+                                    >
+                                        Saúde Médica
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            setatendimentoTab(
+                                                "saudeOdontologica"
+                                            )
+                                        }
+                                        className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                                            atendimentoTab ===
+                                            "saudeOdontologica"
+                                                ? "border-blue-500 text-blue-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        }`}
+                                    >
+                                        Saúde Bucal
+                                    </button>
+                                </nav>
+                            </div>
+
+                            <div className="bg-gray-50 p-6 rounded-lg space-y-6">
+                                {/* CONSULTATION TAB */}
+                                {atendimentoTab === "atendimento" && (
+                                    <>
+                                        {/* Vital Signs */}
+                                        <div>
+                                            <h4 className="text-md font-medium text-gray-900 mb-4">
+                                                Sinais Vitais
+                                            </h4>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        Pressão Arterial
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="120/80 mmHg"
+                                                        value={
+                                                            atendimentoData.bloodPressure
+                                                        }
+                                                        onChange={(e) =>
+                                                            handleAtendimentoDataChange(
+                                                                "bloodPressure",
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        Frequência Cardíaca
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="75 bpm"
+                                                        value={
+                                                            atendimentoData.heartRate
+                                                        }
+                                                        onChange={(e) =>
+                                                            handleatendimentoDataChange(
+                                                                "heartRate",
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        Temperatura
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="36.5°C"
+                                                        value={
+                                                            atendimentoData.temperature
+                                                        }
+                                                        onChange={(e) =>
+                                                            handleatendimentoDataChange(
+                                                                "temperature",
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        Peso
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="70 kg"
+                                                        value={
+                                                            atendimentoData.weight
+                                                        }
+                                                        onChange={(e) =>
+                                                            handleatendimentoDataChange(
+                                                                "weight",
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Symptoms */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Sintomas
+                                            </label>
+                                            <textarea
+                                                rows="3"
+                                                placeholder="Descreva os sintomas apresentados pelo paciente..."
+                                                value={atendimentoData.symptoms}
+                                                onChange={(e) =>
+                                                    handleatendimentoDataChange(
+                                                        "symptoms",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        {/* Diagnosis */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Diagnóstico
+                                            </label>
+                                            <textarea
+                                                rows="3"
+                                                placeholder="Diagnóstico médico..."
+                                                value={
+                                                    atendimentoData.diagnosis
+                                                }
+                                                onChange={(e) =>
+                                                    handleatendimentoDataChange(
+                                                        "diagnosis",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        {/* Prescription */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Prescrição Médica
+                                            </label>
+                                            <textarea
+                                                rows="4"
+                                                placeholder="Medicamentos prescritos, dosagem, duração do tratamento..."
+                                                value={
+                                                    atendimentoData.prescription
+                                                }
+                                                onChange={(e) =>
+                                                    handleatendimentoDataChange(
+                                                        "prescription",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        {/* Additional Notes */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Observações Adicionais
+                                            </label>
+                                            <textarea
+                                                rows="3"
+                                                placeholder="Outras observações sobre a consulta..."
+                                                value={atendimentoData.notes}
+                                                onChange={(e) =>
+                                                    handleatendimentoDataChange(
+                                                        "notes",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        {/* Action Buttons */}
+                                        <div className="flex justify-end gap-3 pt-4">
+                                            <button
+                                                onClick={() =>
+                                                    setIsAtendimento(false)
+                                                }
+                                                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <button
+                                                onClick={
+                                                    handleFinalizeConsultation
+                                                }
+                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                            >
+                                                <CheckCircle className="-ml-1 mr-2 h-4 w-4" />
+                                                Finalizar Consulta
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* MEDICAL HEALTH TAB */}
+                                {atendimentoTab === "saudeMedica" && (
+                                    <div className="space-y-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Alergias
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva alergias conhecidas..."
+                                                value={
+                                                    saudeMedicaData.allergies
+                                                }
+                                                onChange={(e) =>
+                                                    handleSaudeMedicaDataChange(
+                                                        "allergies",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Doenças Crônicas
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Doenças crônicas do paciente..."
+                                                value={
+                                                    saudeMedicaData.chronicDiseases
+                                                }
+                                                onChange={(e) =>
+                                                    handleSaudeMedicaDataChange(
+                                                        "chronicDiseases",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Medicamentos em Uso
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Medicamentos atuais..."
+                                                value={
+                                                    saudeMedicaData.currentMedications
+                                                }
+                                                onChange={(e) =>
+                                                    handleSaudeMedicaDataChange(
+                                                        "currentMedications",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Cirurgias Anteriores
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Histórico de cirurgias..."
+                                                value={
+                                                    saudeMedicaData.previousSurgeries
+                                                }
+                                                onChange={(e) =>
+                                                    handleSaudeMedicaDataChange(
+                                                        "previousSurgeries",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Histórico Familiar
+                                            </label>
+                                            <textarea
+                                                rows="3"
+                                                placeholder="Histórico médico familiar..."
+                                                value={
+                                                    saudeMedicaData.familyHistory
+                                                }
+                                                onChange={(e) =>
+                                                    handleSaudeMedicaDataChange(
+                                                        "familyHistory",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Observações
+                                            </label>
+                                            <textarea
+                                                rows="3"
+                                                placeholder="Observações adicionais..."
+                                                value={saudeMedicaData.notes}
+                                                onChange={(e) =>
+                                                    handleSaudeMedicaDataChange(
+                                                        "notes",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div className="flex justify-end gap-3 pt-4">
+                                            <button
+                                                onClick={() =>
+                                                    setIsAtendimento(false)
+                                                }
+                                                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <button
+                                                onClick={
+                                                    handleFinalizeConsultation
+                                                }
+                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                            >
+                                                <CheckCircle className="-ml-1 mr-2 h-4 w-4" />
+                                                Finalizar Consulta
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* DENTAL HEALTH TAB */}
+                                {atendimentoTab === "saudeOdontologica" && (
+                                    <div className="space-y-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Última Consulta Odontológica
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Ex: 15/08/2024"
+                                                value={
+                                                    saudeOdontologicaData.lastVisit
+                                                }
+                                                onChange={(e) =>
+                                                    handlesaudeOdontologicaDataChange(
+                                                        "lastVisit",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Frequência de Escovação
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Ex: 3 vezes ao dia"
+                                                value={
+                                                    saudeOdontologicaData.brushingFrequency
+                                                }
+                                                onChange={(e) =>
+                                                    handlesaudeOdontologicaDataChange(
+                                                        "brushingFrequency",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Uso de Fio Dental
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Ex: Diariamente, Ocasionalmente"
+                                                value={
+                                                    saudeOdontologicaData.flossing
+                                                }
+                                                onChange={(e) =>
+                                                    handlesaudeOdontologicaDataChange(
+                                                        "flossing",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Problemas Dentários Atuais
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Problemas dentários atuais..."
+                                                value={
+                                                    saudeOdontologicaData.currentIssues
+                                                }
+                                                onChange={(e) =>
+                                                    handlesaudeOdontologicaDataChange(
+                                                        "currentIssues",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Tratamentos Anteriores
+                                            </label>
+                                            <textarea
+                                                rows="3"
+                                                placeholder="Histórico de tratamentos dentários..."
+                                                value={
+                                                    saudeOdontologicaData.previousTreatments
+                                                }
+                                                onChange={(e) =>
+                                                    handlesaudeOdontologicaDataChange(
+                                                        "previousTreatments",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Próteses/Aparelhos
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Próteses, aparelhos ou implantes..."
+                                                value={
+                                                    saudeOdontologicaData.prosthetics
+                                                }
+                                                onChange={(e) =>
+                                                    handlesaudeOdontologicaDataChange(
+                                                        "prosthetics",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Observações
+                                            </label>
+                                            <textarea
+                                                rows="3"
+                                                placeholder="Observações adicionais..."
+                                                value={
+                                                    saudeOdontologicaData.notes
+                                                }
+                                                onChange={(e) =>
+                                                    handlesaudeOdontologicaDataChange(
+                                                        "notes",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div className="flex justify-end gap-3 pt-4">
+                                            <button
+                                                onClick={() =>
+                                                    setIsAtendimento(false)
+                                                }
+                                                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <button
+                                                onClick={
+                                                    handleFinalizeConsultation
+                                                }
+                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                            >
+                                                <CheckCircle className="-ml-1 mr-2 h-4 w-4" />
+                                                Finalizar Consulta
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>

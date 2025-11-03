@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Api\Controller;
-use App\Models\Consulta;
-use Illuminate\Http\Request;
+use App\Http\Requests\ConsultaStoreRequest;
+use App\Http\Requests\ConsultaUpdateRequest;
 use App\Http\Resources\ConsultaCollectionResource;
 use App\Http\Resources\ConsultaResource;
 use App\Http\Resources\ConsultaStoredResource;
-use App\Http\Requests\ConsultaUpdateRequest;
-use App\Http\Requests\ConsultaStoreRequest;
-
+use App\Models\Consulta;
 
 class ConsultaController extends Controller
 {
@@ -21,7 +18,7 @@ class ConsultaController extends Controller
     {
         return new ConsultaCollectionResource(
             /* Consulta::with(['paciente.user','profissional.user'])->get() */
-          Consulta::all()->load('paciente.user','profissional.user'));
+            Consulta::all()->load('paciente.user', 'profissional.user'));
 
         /*$consultas = Consulta::with([
         'paciente.user' => function($query) {
@@ -34,7 +31,7 @@ class ConsultaController extends Controller
     ])->get();
 
     return new ConsultaCollectionResource($consultas);*/
-}
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -44,7 +41,7 @@ class ConsultaController extends Controller
         try {
             return new ConsultaStoredResource(Consulta::create($request->validated()));
         } catch (\Exception $e) {
-            return $this->errorHandler('Erro ao criar Consulta',$e);
+            return $this->errorHandler('Erro ao criar Consulta', $e);
         }
     }
 
@@ -63,11 +60,12 @@ class ConsultaController extends Controller
     {
         try {
             $consulta->update($request->validated());
+
             return (new ConsultaResource($consulta))->additional([
-                    'message' => 'Consulta atualizada com sucesso!'
+                'message' => 'Consulta atualizada com sucesso!',
             ]);
         } catch (\Exception $e) {
-            return $this->errorHandler('Erro ao atualizar Consulta',$e);
+            return $this->errorHandler('Erro ao atualizar Consulta', $e);
         }
     }
 
@@ -78,38 +76,41 @@ class ConsultaController extends Controller
     {
         try {
             $consulta->delete();
+
             return (new ConsultaResource($consulta))->additional([
-                    'message' => 'Consulta excluida com sucesso!'
-                ]);
+                'message' => 'Consulta excluida com sucesso!',
+            ]);
         } catch (\Exception $e) {
-            return $this->errorHandler('Erro ao excluir Consulta',$e);
+            return $this->errorHandler('Erro ao excluir Consulta', $e);
         }
     }
 
     public function count()
     {
         try {
-        $statuses = ['agendada', 'concluida', 'cancelada', 'em_espera'];
+            $statuses = ['agendada', 'concluida', 'cancelada', 'em_espera'];
 
-        $counts = \App\Models\Consulta::select('status')
-            ->selectRaw('COUNT(*) as total')
-            ->groupBy('status')
-            ->pluck('total', 'status');
+            $counts = \App\Models\Consulta::select('status')
+                ->selectRaw('COUNT(*) as total')
+                ->groupBy('status')
+                ->pluck('total', 'status');
 
-        // Garante que todos os status apareçam, mesmo se não houver registros
-        $result = collect($statuses)->mapWithKeys(function ($status) use ($counts) {
-            return [$status => $counts[$status] ?? 0];
-        });
+            // Garante que todos os status apareçam, mesmo se não houver registros
+            $result = collect($statuses)->mapWithKeys(function ($status) use ($counts) {
+                return [$status => $counts[$status] ?? 0];
+            });
 
-        return response()->json([
-            'total' => $result->sum(),
-            'por_status' => $result
-        ]);
+            return response()->json([
+                'total' => $result->sum(),
+                'por_status' => $result,
+            ]);
         } catch (\Throwable $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ], 500);
+            return response()->json([
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ], 500);
+        }
     }
-    }
+
+    public function atendimento() {}
 }
