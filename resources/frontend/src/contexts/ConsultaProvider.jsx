@@ -11,6 +11,7 @@ export const ConsultasContext = createContext({
     editConsulta: () => {},
     deleteConsulta: () => {},
     createConsulta: () => {},
+    createAtendimento: () => {},
 });
 
 const ConsultaProvider = ({ children }) => {
@@ -108,6 +109,30 @@ const ConsultaProvider = ({ children }) => {
         }
     };
 
+    const createAtendimento = async (id, consulta) => {
+        try {
+            console.log(`Atualizar atendimento da consulta id: ${id}`, {
+                consulta,
+            });
+            const { data } = await axiosClient.put(
+                `/consultas/${id}/atendimento`
+            );
+
+            if (!data) throw new Error("Error ao atualizar consulta");
+            const _data = data?.data;
+            const { message } = data;
+
+            console.log({ _data, message });
+            loadConsultas();
+            return message;
+        } catch (error) {
+            console.error(error);
+            return (
+                error?.response?.data?.message || "Erro ao atualizar a consulta"
+            );
+        }
+    };
+
     useEffect(() => {
         data && setIsLoaded(true);
         return () => setIsLoaded(false);
@@ -125,6 +150,7 @@ const ConsultaProvider = ({ children }) => {
                 editConsulta,
                 deleteConsulta,
                 createConsulta,
+                createAtendimento,
             }}
         >
             {children}

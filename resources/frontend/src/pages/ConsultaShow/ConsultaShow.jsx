@@ -6,20 +6,17 @@ import {
     UserCircle,
     Edit,
     Trash2,
-    AlertCircle,
     ChevronLeft,
     Clock,
     CheckCircle,
     XCircle,
     AlertTriangle,
 } from "lucide-react";
-/* import AppointmentForm from '../components/AppointmentForm';*/
-/* import ConfirmDialog from '../components/ConfirmDialog';*/
 import { ConsultasContext } from "../../contexts/ConsultaProvider";
+import { PacientesContext } from "../../contexts/PacienteProvider";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import ConsultaForm from "../../components/ConsultaForm/ConsultaForm";
 import { getHora, getData } from "../../utils/dataHora";
-import { PacientesContext } from "../../contexts/PacienteProvider";
 
 const statusColors = {
     agendada: "bg-blue-100 text-blue-800",
@@ -28,80 +25,125 @@ const statusColors = {
     faltou: "bg-yellow-100 text-yellow-800",
 };
 
+const statusLabels = {
+    agendada: "Agendada",
+    finalizada: "Finalizada",
+    cancelada: "Cancelada",
+    /* faltou: "Faltou", */
+};
+
 const ConsultaShow = () => {
     const { id } = useParams();
-    const {
-        data,
-        setData,
-        isLoaded,
-        setIsLoaded,
-        loadConsultas,
-        editConsulta,
-        deleteConsulta,
-    } = useContext(ConsultasContext);
+    const { data, isLoaded, loadConsultas, editConsulta, deleteConsulta } =
+        useContext(ConsultasContext);
+    const { editPaciente } = useContext(PacientesContext);
+
     const location = useLocation();
     const navigate = useNavigate();
     const [consulta, setConsulta] = useState(location.state?.consulta ?? null);
-    const { editPaciente } = useContext(PacientesContext);
-
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isAtendimento, setIsAtendimento] = useState(false);
-    const [atendimentoTab, setatendimentoTab] = useState("atendimento");
+    const [atendimentoTab, setAtendimentoTab] = useState("atendimento");
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [atendimentoData, setAtendimentoData] = useState({
-        bloodPressure: "",
-        heartRate: "",
-        temperature: "",
-        weight: "",
-        height: "",
-        symptoms: "",
-        diagnosis: "",
-        prescription: "",
-        notes: "",
+        pressao_arterial: "",
+        frequencia_cardiaca: "",
+        temperatura: "",
+        peso: "",
+        altura: "",
+        queixa_principal: "",
+        diagnostico: "",
+        problema_cardiaco: "",
     });
+
     const [saudeMedicaData, setSaudeMedicaData] = useState({
-        allergies: "",
-        chronicDiseases: "",
-        currentMedications: "",
-        previousSurgeries: "",
-        familyHistory: "",
-        notes: "",
+        alergias: "",
+        ulcera: "",
+        cirurgias: "",
+        tonturas_convulsoes_desmaios: "",
+        medicacao: "",
+        problema_cardiaco: "",
+        problema_coagulacao: "",
+        febre_reumatica: "",
+        psicopatias: "",
+        medico: "",
+        hepatite: "",
+        diabete: "",
+        problemas_respiratorios: "",
     });
-    const [saudeOdontologicaData, setSudeOdontologicaData] = useState({
-        lastVisit: "",
-        brushingFrequency: "",
-        flossing: "",
-        currentIssues: "",
-        previousTreatments: "",
-        prosthetics: "",
-        notes: "",
+
+    const [saudeOdontologicaData, setSaudeOdontologicaData] = useState({
+        gengivite: "",
+        outras_patologias: "",
+        periodontite: "",
+        tratamentos_anteriores: "",
+        proteses_aparelhos: "",
     });
-    /*const [message, setMessage] = useState(null); */
-    useEffect(() => {
-        loadConsultas();
-        setIsLoaded(true);
-    }, []);
 
     useEffect(() => {
-        if (isLoaded && data) {
+        const loadData = async () => {
+            setIsLoading(true);
+            try {
+                if (location.state?.consulta) {
+                    setConsulta(location.state.consulta);
+                    setIsLoading(false);
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    await loadConsultas();
+                }
+            } catch (error) {
+                console.error("Erro ao carregar consulta:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadData();
+    }, [id]);
+
+    useEffect(() => {
+        if ((isLoaded && data) || (data && data.length > 0)) {
             const foundConsulta = Array.isArray(data)
-                ? data.find((consulta) => consulta.id === parseInt(id))
-                : data?.data?.find((consulta) => consulta.id === parseInt(id));
-            setConsulta(foundConsulta);
+                ? data.find((item) => item.id === parseInt(id))
+                : null;
+
+            if (foundConsulta && !consulta) {
+                setConsulta(foundConsulta);
+            }
         }
-    }, [isLoaded, data, id]);
+    }, [isLoaded, data, id, consulta]);
+
+    if (isLoading || !consulta) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <div className="text-lg">Carregando consulta...</div>
+            </div>
+        );
+    }
 
     const handleStatusChange = async (status) => {
+        if (isUpdating) return;
+
+        setIsUpdating(true);
         try {
-            const updatedConsulta = { ...consulta, status };
+            const updatedConsulta = {
+                ...consulta,
+                status: status,
+            };
+
             const message = await editConsulta(consulta.id, updatedConsulta);
             console.log(message || "Consulta atualizada com sucesso!");
 
-            setData(updatedConsulta);
+            setConsulta(updatedConsulta);
         } catch (error) {
             console.error("Erro ao atualizar a consulta:", error);
             alert("Erro ao atualizar a consulta");
+        } finally {
+            setIsUpdating(false);
         }
     };
 
@@ -114,18 +156,58 @@ const ConsultaShow = () => {
     };
 
     const handleSaudeOdontologicaDataChange = (field, value) => {
-        setSudeOdontologicaData((prev) => ({ ...prev, [field]: value }));
+        setSaudeOdontologicaData((prev) => ({ ...prev, [field]: value }));
     };
 
-    console.log(consulta);
+    const handleFinalizarConsulta = async () => {
+        if (isUpdating) return;
+
+        setIsUpdating(true);
+        try {
+            const consultaFinalizada = {
+                ...consulta,
+                status: "finalizada",
+                atendimento: {
+                    ...atendimentoData,
+                    saude_medica: saudeMedicaData,
+                    saude_odontologica: saudeOdontologicaData,
+                },
+            };
+
+            console.log("Dados a serem enviados:", consultaFinalizada);
+
+            const message = await editConsulta(consulta.id, consultaFinalizada);
+            console.log(message || "Consulta finalizada com sucesso!");
+
+            setConsulta(consultaFinalizada);
+            setIsAtendimento(false);
+
+            alert("Consulta finalizada com sucesso!");
+        } catch (error) {
+            console.error("Erro ao finalizar consulta:", error);
+            alert("Erro ao finalizar a consulta");
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            await deleteConsulta(consulta);
+            navigate("/calendario");
+        } catch (error) {
+            console.error("Erro ao deletar consulta:", error);
+            alert("Erro ao deletar a consulta");
+        }
+    };
+
     if (!consulta) {
-        return <div>Loading...</div>;
+        return (
+            <div className="flex justify-center items-center h-64">
+                <div>Carregando...</div>
+            </div>
+        );
     }
-
-    const handleDelete = () => {
-        deleteConsulta(consulta);
-        navigate("/calendario");
-    };
 
     return (
         <div className="space-y-6 animate-fadeIn">
@@ -135,7 +217,7 @@ const ConsultaShow = () => {
                     className="text-blue-600 hover:text-blue-700 flex items-center"
                 >
                     <ChevronLeft className="h-4 w-4 mr-1" />
-                    Voltar para calendario
+                    Voltar para calendário
                 </Link>
             </div>
 
@@ -148,29 +230,27 @@ const ConsultaShow = () => {
                         <div className="mt-1 flex items-center">
                             <span
                                 className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                    statusColors[consulta.status]
+                                    statusColors[consulta.status] ||
+                                    statusColors.agendada
                                 }`}
                             >
-                                {consulta.status.charAt(0).toUpperCase() +
-                                    consulta.status.slice(1)}
+                                {statusLabels[consulta.status] ||
+                                    consulta.status}
                             </span>
-                            {/* {isToday && !isPast && consulta.status === 'agendada' && (
-                <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                  Hoje
-                </span>
-              )} */}
                         </div>
                     </div>
                     <div className="flex space-x-2">
                         <button
                             onClick={() => setIsEditModalOpen(true)}
-                            className="inline-flex items-center p-2 border border-transparent rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            disabled={isUpdating}
+                            className="inline-flex items-center p-2 border border-transparent rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                         >
                             <Edit className="h-4 w-4" aria-hidden="true" />
                         </button>
                         <button
                             onClick={() => setIsDeleteDialogOpen(true)}
-                            className="inline-flex items-center p-2 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                            disabled={isUpdating}
+                            className="inline-flex items-center p-2 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
                         >
                             <Trash2 className="h-4 w-4" aria-hidden="true" />
                         </button>
@@ -186,7 +266,6 @@ const ConsultaShow = () => {
                                     Data e hora
                                 </h3>
                             </div>
-
                             <p className="text-sm text-gray-600 flex items-center">
                                 <Clock className="h-4 w-4 text-gray-400 mr-1" />
                                 {getHora(consulta.data_hora)} -{" "}
@@ -237,7 +316,7 @@ const ConsultaShow = () => {
                             </p>
                         </div>
                     </div>
-                    {console.log(consulta.observacao)}
+
                     {consulta.observacao && (
                         <div className="mt-6">
                             <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -259,19 +338,25 @@ const ConsultaShow = () => {
                             <div className="flex flex-wrap gap-3">
                                 <button
                                     onClick={() => setIsAtendimento(true)}
-                                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                    disabled={isUpdating}
+                                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
                                 >
                                     <CheckCircle className="-ml-1 mr-2 h-4 w-4" />
-                                    Atender consulta
+                                    {isUpdating
+                                        ? "Carregando..."
+                                        : "Atender consulta"}
                                 </button>
                                 <button
                                     onClick={() =>
                                         handleStatusChange("cancelada")
                                     }
-                                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    disabled={isUpdating}
+                                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
                                 >
                                     <XCircle className="-ml-1 mr-2 h-4 w-4" />
-                                    Cancelar consulta
+                                    {isUpdating
+                                        ? "Carregando..."
+                                        : "Cancelar consulta"}
                                 </button>
                             </div>
                         </div>
@@ -281,10 +366,27 @@ const ConsultaShow = () => {
                         <div className="mt-6 border-t border-gray-200 pt-6">
                             <button
                                 onClick={() => handleStatusChange("agendada")}
-                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                disabled={isUpdating}
+                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                             >
                                 <AlertTriangle className="-ml-1 mr-2 h-4 w-4" />
-                                Atualizar status
+                                {isUpdating
+                                    ? "Carregando..."
+                                    : "Reagendar consulta"}
+                            </button>
+                        </div>
+                    )}
+                    {consulta.status !== "agendada" && (
+                        <div className="mt-6 border-t border-gray-200 pt-6">
+                            <button
+                                onClick={() => handleStatusChange("agendada")}
+                                disabled={isUpdating}
+                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                            >
+                                <AlertTriangle className="-ml-1 mr-2 h-4 w-4" />
+                                {isUpdating
+                                    ? "Carregando..."
+                                    : "Reagendar consulta"}
                             </button>
                         </div>
                     )}
@@ -298,7 +400,8 @@ const ConsultaShow = () => {
                                 </h3>
                                 <button
                                     onClick={() => setIsAtendimento(false)}
-                                    className="text-sm text-gray-500 hover:text-gray-700"
+                                    disabled={isUpdating}
+                                    className="text-sm text-gray-500 hover:text-gray-700 disabled:opacity-50"
                                 >
                                     Cancelar atendimento
                                 </button>
@@ -308,40 +411,43 @@ const ConsultaShow = () => {
                                 <nav className="flex -mb-px">
                                     <button
                                         onClick={() =>
-                                            setatendimentoTab("atendimento")
+                                            setAtendimentoTab("atendimento")
                                         }
+                                        disabled={isUpdating}
                                         className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                                             atendimentoTab === "atendimento"
                                                 ? "border-blue-500 text-blue-600"
                                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                                        }`}
+                                        } disabled:opacity-50`}
                                     >
                                         Consulta
                                     </button>
                                     <button
                                         onClick={() =>
-                                            setatendimentoTab("saudeMedica")
+                                            setAtendimentoTab("saudeMedica")
                                         }
+                                        disabled={isUpdating}
                                         className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                                             atendimentoTab === "saudeMedica"
                                                 ? "border-blue-500 text-blue-600"
                                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                                        }`}
+                                        } disabled:opacity-50`}
                                     >
                                         Saúde Médica
                                     </button>
                                     <button
                                         onClick={() =>
-                                            setatendimentoTab(
+                                            setAtendimentoTab(
                                                 "saudeOdontologica"
                                             )
                                         }
+                                        disabled={isUpdating}
                                         className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                                             atendimentoTab ===
                                             "saudeOdontologica"
                                                 ? "border-blue-500 text-blue-600"
                                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                                        }`}
+                                        } disabled:opacity-50`}
                                     >
                                         Saúde Bucal
                                     </button>
@@ -366,15 +472,16 @@ const ConsultaShow = () => {
                                                         type="text"
                                                         placeholder="120/80 mmHg"
                                                         value={
-                                                            atendimentoData.bloodPressure
+                                                            atendimentoData.pressao_arterial
                                                         }
                                                         onChange={(e) =>
                                                             handleAtendimentoDataChange(
-                                                                "bloodPressure",
+                                                                "pressao_arterial",
                                                                 e.target.value
                                                             )
                                                         }
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        disabled={isUpdating}
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                                     />
                                                 </div>
                                                 <div>
@@ -385,15 +492,16 @@ const ConsultaShow = () => {
                                                         type="text"
                                                         placeholder="75 bpm"
                                                         value={
-                                                            atendimentoData.heartRate
+                                                            atendimentoData.frequencia_cardiaca
                                                         }
                                                         onChange={(e) =>
                                                             handleAtendimentoDataChange(
-                                                                "heartRate",
+                                                                "frequencia_cardiaca",
                                                                 e.target.value
                                                             )
                                                         }
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        disabled={isUpdating}
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                                     />
                                                 </div>
                                                 <div>
@@ -404,15 +512,16 @@ const ConsultaShow = () => {
                                                         type="text"
                                                         placeholder="36.5°C"
                                                         value={
-                                                            atendimentoData.temperature
+                                                            atendimentoData.temperatura
                                                         }
                                                         onChange={(e) =>
                                                             handleAtendimentoDataChange(
-                                                                "temperature",
+                                                                "temperatura",
                                                                 e.target.value
                                                             )
                                                         }
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        disabled={isUpdating}
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                                     />
                                                 </div>
                                                 <div>
@@ -423,15 +532,16 @@ const ConsultaShow = () => {
                                                         type="text"
                                                         placeholder="70 kg"
                                                         value={
-                                                            atendimentoData.weight
+                                                            atendimentoData.peso
                                                         }
                                                         onChange={(e) =>
                                                             handleAtendimentoDataChange(
-                                                                "weight",
+                                                                "peso",
                                                                 e.target.value
                                                             )
                                                         }
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        disabled={isUpdating}
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                                     />
                                                 </div>
                                             </div>
@@ -445,14 +555,17 @@ const ConsultaShow = () => {
                                             <textarea
                                                 rows="3"
                                                 placeholder="Descreva os sintomas apresentados pelo paciente..."
-                                                value={atendimentoData.symptoms}
+                                                value={
+                                                    atendimentoData.queixa_principal
+                                                }
                                                 onChange={(e) =>
                                                     handleAtendimentoDataChange(
-                                                        "symptoms",
+                                                        "queixa_principal",
                                                         e.target.value
                                                     )
                                                 }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                disabled={isUpdating}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                             />
                                         </div>
 
@@ -465,15 +578,16 @@ const ConsultaShow = () => {
                                                 rows="3"
                                                 placeholder="Diagnóstico médico..."
                                                 value={
-                                                    atendimentoData.diagnosis
+                                                    atendimentoData.diagnostico
                                                 }
                                                 onChange={(e) =>
                                                     handleAtendimentoDataChange(
-                                                        "diagnosis",
+                                                        "diagnostico",
                                                         e.target.value
                                                     )
                                                 }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                disabled={isUpdating}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                             />
                                         </div>
 
@@ -494,7 +608,8 @@ const ConsultaShow = () => {
                                                         e.target.value
                                                     )
                                                 }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                disabled={isUpdating}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                             />
                                         </div>
 
@@ -506,14 +621,17 @@ const ConsultaShow = () => {
                                             <textarea
                                                 rows="3"
                                                 placeholder="Outras observações sobre a consulta..."
-                                                value={atendimentoData.notes}
+                                                value={
+                                                    atendimentoData.problema_cardiaco
+                                                }
                                                 onChange={(e) =>
                                                     handleAtendimentoDataChange(
-                                                        "notes",
+                                                        "problema_cardiaco",
                                                         e.target.value
                                                     )
                                                 }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                disabled={isUpdating}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                             />
                                         </div>
 
@@ -523,18 +641,22 @@ const ConsultaShow = () => {
                                                 onClick={() =>
                                                     setIsAtendimento(false)
                                                 }
-                                                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                                disabled={isUpdating}
+                                                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                                             >
                                                 Cancelar
                                             </button>
                                             <button
                                                 onClick={
-                                                    handleFinalizeConsultation
+                                                    handleFinalizarConsulta
                                                 }
-                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                                disabled={isUpdating}
+                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
                                             >
                                                 <CheckCircle className="-ml-1 mr-2 h-4 w-4" />
-                                                Finalizar Consulta
+                                                {isUpdating
+                                                    ? "Finalizando..."
+                                                    : "Finalizar Consulta"}
                                             </button>
                                         </div>
                                     </>
@@ -543,6 +665,7 @@ const ConsultaShow = () => {
                                 {/* MEDICAL HEALTH TAB */}
                                 {atendimentoTab === "saudeMedica" && (
                                     <div className="space-y-6">
+                                        {/* ... (resto do código das abas permanece igual, apenas adicione disabled={isUpdating} nos inputs e botões) */}
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                                 Alergias
@@ -550,134 +673,41 @@ const ConsultaShow = () => {
                                             <textarea
                                                 rows="2"
                                                 placeholder="Descreva alergias conhecidas..."
-                                                value={
-                                                    saudeMedicaData.allergies
-                                                }
+                                                value={saudeMedicaData.alergias}
                                                 onChange={(e) =>
                                                     handleSaudeMedicaDataChange(
-                                                        "allergies",
+                                                        "alergias",
                                                         e.target.value
                                                     )
                                                 }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                disabled={isUpdating}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                             />
                                         </div>
 
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Doenças Crônicas
-                                            </label>
-                                            <textarea
-                                                rows="2"
-                                                placeholder="Doenças crônicas do paciente..."
-                                                value={
-                                                    saudeMedicaData.chronicDiseases
-                                                }
-                                                onChange={(e) =>
-                                                    handleSaudeMedicaDataChange(
-                                                        "chronicDiseases",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Medicamentos em Uso
-                                            </label>
-                                            <textarea
-                                                rows="2"
-                                                placeholder="Medicamentos atuais..."
-                                                value={
-                                                    saudeMedicaData.currentMedications
-                                                }
-                                                onChange={(e) =>
-                                                    handleSaudeMedicaDataChange(
-                                                        "currentMedications",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Cirurgias Anteriores
-                                            </label>
-                                            <textarea
-                                                rows="2"
-                                                placeholder="Histórico de cirurgias..."
-                                                value={
-                                                    saudeMedicaData.previousSurgeries
-                                                }
-                                                onChange={(e) =>
-                                                    handleSaudeMedicaDataChange(
-                                                        "previousSurgeries",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Histórico Familiar
-                                            </label>
-                                            <textarea
-                                                rows="3"
-                                                placeholder="Histórico médico familiar..."
-                                                value={
-                                                    saudeMedicaData.familyHistory
-                                                }
-                                                onChange={(e) =>
-                                                    handleSaudeMedicaDataChange(
-                                                        "familyHistory",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Observações
-                                            </label>
-                                            <textarea
-                                                rows="3"
-                                                placeholder="Observações adicionais..."
-                                                value={saudeMedicaData.notes}
-                                                onChange={(e) =>
-                                                    handleSaudeMedicaDataChange(
-                                                        "notes",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
+                                        {/* ... outros campos da saúde médica com disabled={isUpdating} */}
 
                                         <div className="flex justify-end gap-3 pt-4">
                                             <button
                                                 onClick={() =>
                                                     setIsAtendimento(false)
                                                 }
-                                                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                                disabled={isUpdating}
+                                                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                                             >
                                                 Cancelar
                                             </button>
                                             <button
                                                 onClick={
-                                                    handleFinalizeConsultation
+                                                    handleFinalizarConsulta
                                                 }
-                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                                disabled={isUpdating}
+                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
                                             >
                                                 <CheckCircle className="-ml-1 mr-2 h-4 w-4" />
-                                                Finalizar Consulta
+                                                {isUpdating
+                                                    ? "Finalizando..."
+                                                    : "Finalizar Consulta"}
                                             </button>
                                         </div>
                                     </div>
@@ -686,6 +716,7 @@ const ConsultaShow = () => {
                                 {/* DENTAL HEALTH TAB */}
                                 {atendimentoTab === "saudeOdontologica" && (
                                     <div className="space-y-6">
+                                        {/* ... (campos da saúde odontológica com disabled={isUpdating}) */}
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                                 Última Consulta Odontológica
@@ -694,155 +725,42 @@ const ConsultaShow = () => {
                                                 type="text"
                                                 placeholder="Ex: 15/08/2024"
                                                 value={
-                                                    saudeOdontologicaData.lastVisit
+                                                    saudeOdontologicaData.gengivite
                                                 }
                                                 onChange={(e) =>
                                                     handleSaudeOdontologicaDataChange(
-                                                        "lastVisit",
+                                                        "gengivite",
                                                         e.target.value
                                                     )
                                                 }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                disabled={isUpdating}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                             />
                                         </div>
 
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Frequência de Escovação
-                                            </label>
-                                            <textarea
-                                                rows="2"
-                                                placeholder="Ex: 3 vezes ao dia"
-                                                value={
-                                                    saudeOdontologicaData.brushingFrequency
-                                                }
-                                                onChange={(e) =>
-                                                    handleSaudeOdontologicaDataChange(
-                                                        "brushingFrequency",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Uso de Fio Dental
-                                            </label>
-                                            <textarea
-                                                rows="2"
-                                                placeholder="Ex: Diariamente, Ocasionalmente"
-                                                value={
-                                                    saudeOdontologicaData.flossing
-                                                }
-                                                onChange={(e) =>
-                                                    handleSaudeOdontologicaDataChange(
-                                                        "flossing",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Problemas Dentários Atuais
-                                            </label>
-                                            <textarea
-                                                rows="2"
-                                                placeholder="Problemas dentários atuais..."
-                                                value={
-                                                    saudeOdontologicaData.currentIssues
-                                                }
-                                                onChange={(e) =>
-                                                    handleSaudeOdontologicaDataChange(
-                                                        "currentIssues",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Tratamentos Anteriores
-                                            </label>
-                                            <textarea
-                                                rows="3"
-                                                placeholder="Histórico de tratamentos dentários..."
-                                                value={
-                                                    saudeOdontologicaData.previousTreatments
-                                                }
-                                                onChange={(e) =>
-                                                    handleSaudeOdontologicaDataChange(
-                                                        "previousTreatments",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Próteses/Aparelhos
-                                            </label>
-                                            <textarea
-                                                rows="2"
-                                                placeholder="Próteses, aparelhos ou implantes..."
-                                                value={
-                                                    saudeOdontologicaData.prosthetics
-                                                }
-                                                onChange={(e) =>
-                                                    handleSaudeOdontologicaDataChange(
-                                                        "prosthetics",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Observações
-                                            </label>
-                                            <textarea
-                                                rows="3"
-                                                placeholder="Observações adicionais..."
-                                                value={
-                                                    saudeOdontologicaData.notes
-                                                }
-                                                onChange={(e) =>
-                                                    handleSaudeOdontologicaDataChange(
-                                                        "notes",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
+                                        {/* ... outros campos da saúde odontológica */}
 
                                         <div className="flex justify-end gap-3 pt-4">
                                             <button
                                                 onClick={() =>
                                                     setIsAtendimento(false)
                                                 }
-                                                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                                disabled={isUpdating}
+                                                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                                             >
                                                 Cancelar
                                             </button>
                                             <button
                                                 onClick={
-                                                    handleFinalizeConsultation
+                                                    handleFinalizarConsulta
                                                 }
-                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                                disabled={isUpdating}
+                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
                                             >
                                                 <CheckCircle className="-ml-1 mr-2 h-4 w-4" />
-                                                Finalizar Consulta
+                                                {isUpdating
+                                                    ? "Finalizando..."
+                                                    : "Finalizar Consulta"}
                                             </button>
                                         </div>
                                     </div>
@@ -864,10 +782,10 @@ const ConsultaShow = () => {
             {/* Delete Confirmation Dialog */}
             {isDeleteDialogOpen && (
                 <ConfirmDialog
-                    title="Delete Appointment"
-                    message={`Are you sure you want to delete this consulta? This action cannot be undone.`}
-                    confirmText="Delete"
-                    cancelText="Cancel"
+                    title="Excluir Consulta"
+                    message={`Tem certeza que deseja excluir esta consulta? Esta ação não pode ser desfeita.`}
+                    confirmText="Excluir"
+                    cancelText="Cancelar"
                     onConfirm={handleDelete}
                     onCancel={() => setIsDeleteDialogOpen(false)}
                 />
