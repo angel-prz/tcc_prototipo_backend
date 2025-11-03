@@ -109,7 +109,7 @@ const ConsultaShow = () => {
         setAtendimentoData((prev) => ({ ...prev, [field]: value }));
     };
 
-    const handleSaudeMedicaChange = (field, value) => {
+    const handleSaudeMedicaDataChange = (field, value) => {
         setSaudeMedicaData((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -388,7 +388,7 @@ const ConsultaShow = () => {
                                                             atendimentoData.heartRate
                                                         }
                                                         onChange={(e) =>
-                                                            handleatendimentoDataChange(
+                                                            handleAtendimentoDataChange(
                                                                 "heartRate",
                                                                 e.target.value
                                                             )
@@ -407,7 +407,7 @@ const ConsultaShow = () => {
                                                             atendimentoData.temperature
                                                         }
                                                         onChange={(e) =>
-                                                            handleatendimentoDataChange(
+                                                            handleAtendimentoDataChange(
                                                                 "temperature",
                                                                 e.target.value
                                                             )
@@ -426,7 +426,7 @@ const ConsultaShow = () => {
                                                             atendimentoData.weight
                                                         }
                                                         onChange={(e) =>
-                                                            handleatendimentoDataChange(
+                                                            handleAtendimentoDataChange(
                                                                 "weight",
                                                                 e.target.value
                                                             )
@@ -447,7 +447,7 @@ const ConsultaShow = () => {
                                                 placeholder="Descreva os sintomas apresentados pelo paciente..."
                                                 value={atendimentoData.symptoms}
                                                 onChange={(e) =>
-                                                    handleatendimentoDataChange(
+                                                    handleAtendimentoDataChange(
                                                         "symptoms",
                                                         e.target.value
                                                     )
@@ -468,7 +468,7 @@ const ConsultaShow = () => {
                                                     atendimentoData.diagnosis
                                                 }
                                                 onChange={(e) =>
-                                                    handleatendimentoDataChange(
+                                                    handleAtendimentoDataChange(
                                                         "diagnosis",
                                                         e.target.value
                                                     )
@@ -489,7 +489,7 @@ const ConsultaShow = () => {
                                                     atendimentoData.prescription
                                                 }
                                                 onChange={(e) =>
-                                                    handleatendimentoDataChange(
+                                                    handleAtendimentoDataChange(
                                                         "prescription",
                                                         e.target.value
                                                     )
@@ -508,7 +508,7 @@ const ConsultaShow = () => {
                                                 placeholder="Outras observações sobre a consulta..."
                                                 value={atendimentoData.notes}
                                                 onChange={(e) =>
-                                                    handleatendimentoDataChange(
+                                                    handleAtendimentoDataChange(
                                                         "notes",
                                                         e.target.value
                                                     )
@@ -697,7 +697,7 @@ const ConsultaShow = () => {
                                                     saudeOdontologicaData.lastVisit
                                                 }
                                                 onChange={(e) =>
-                                                    handlesaudeOdontologicaDataChange(
+                                                    handleSaudeOdontologicaDataChange(
                                                         "lastVisit",
                                                         e.target.value
                                                     )
@@ -717,7 +717,7 @@ const ConsultaShow = () => {
                                                     saudeOdontologicaData.brushingFrequency
                                                 }
                                                 onChange={(e) =>
-                                                    handlesaudeOdontologicaDataChange(
+                                                    handleSaudeOdontologicaDataChange(
                                                         "brushingFrequency",
                                                         e.target.value
                                                     )
@@ -737,7 +737,7 @@ const ConsultaShow = () => {
                                                     saudeOdontologicaData.flossing
                                                 }
                                                 onChange={(e) =>
-                                                    handlesaudeOdontologicaDataChange(
+                                                    handleSaudeOdontologicaDataChange(
                                                         "flossing",
                                                         e.target.value
                                                     )
@@ -757,7 +757,7 @@ const ConsultaShow = () => {
                                                     saudeOdontologicaData.currentIssues
                                                 }
                                                 onChange={(e) =>
-                                                    handlesaudeOdontologicaDataChange(
+                                                    handleSaudeOdontologicaDataChange(
                                                         "currentIssues",
                                                         e.target.value
                                                     )
@@ -777,7 +777,7 @@ const ConsultaShow = () => {
                                                     saudeOdontologicaData.previousTreatments
                                                 }
                                                 onChange={(e) =>
-                                                    handlesaudeOdontologicaDataChange(
+                                                    handleSaudeOdontologicaDataChange(
                                                         "previousTreatments",
                                                         e.target.value
                                                     )
@@ -797,7 +797,7 @@ const ConsultaShow = () => {
                                                     saudeOdontologicaData.prosthetics
                                                 }
                                                 onChange={(e) =>
-                                                    handlesaudeOdontologicaDataChange(
+                                                    handleSaudeOdontologicaDataChange(
                                                         "prosthetics",
                                                         e.target.value
                                                     )
@@ -817,7 +817,7 @@ const ConsultaShow = () => {
                                                     saudeOdontologicaData.notes
                                                 }
                                                 onChange={(e) =>
-                                                    handlesaudeOdontologicaDataChange(
+                                                    handleSaudeOdontologicaDataChange(
                                                         "notes",
                                                         e.target.value
                                                     )
