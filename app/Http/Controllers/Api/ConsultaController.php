@@ -19,7 +19,7 @@ class ConsultaController extends Controller
     {
         return new ConsultaCollectionResource(
             /* Consulta::with(['paciente.user','profissional.user'])->get() */
-            Consulta::all()->load('paciente.user', 'profissional.user'));
+            Consulta::all()->load('paciente.user', 'profissional.user', 'paciente.saudeMedica', 'paciente.saudeOdontologica'));
 
         /*$consultas = Consulta::with([
         'paciente.user' => function($query) {
@@ -51,7 +51,7 @@ class ConsultaController extends Controller
      */
     public function show(Consulta $consulta)
     {
-        return new ConsultaResource($consulta);
+        return new ConsultaResource($consulta->load('paciente.user', 'profissional.user', 'paciente.saudeMedica', 'paciente.saudeOdontologica'));
     }
 
     /**
