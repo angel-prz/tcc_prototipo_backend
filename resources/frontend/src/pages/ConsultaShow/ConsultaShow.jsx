@@ -47,6 +47,13 @@ const ConsultaShow = () => {
     const [atendimentoTab, setAtendimentoTab] = useState("atendimento");
     const [isUpdating, setIsUpdating] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [feedback, setFeedback] = useState({ type: "", message: "" });
+    const [isReadOnly, setIsReadOnly] = useState(true);
+
+    const toggleReadOnly = () => {
+        setIsReadOnly(!isReadOnly);
+    };
 
     const [formData, setFormData] = useState({
         status: "",
@@ -58,6 +65,7 @@ const ConsultaShow = () => {
             altura: "",
             queixa_principal: "",
             diagnostico: "",
+            prescricao: "",
         },
         saude_medica: {
             alergias: "",
@@ -130,46 +138,48 @@ const ConsultaShow = () => {
                     consulta?.atendimento?.frequencia_cardiaca || "",
                 temperatura: consulta?.atendimento?.temperatura || "",
                 peso: consulta?.atendimento?.peso || "",
-                altura: consulta?.atendimento?.temperatura || "",
+                altura: consulta?.atendimento?.altura || "",
                 queixa_principal: consulta?.atendimento?.queixa_principal || "",
                 diagnostico: consulta?.atendimento?.diagnostico || "",
+                prescricao: consulta?.atendimento?.prescricao || "",
             },
-            saudeMedica: {
-                alergias: consulta?.paciente?.saudeMedica?.alergias || "",
-                ulcera: consulta?.paciente?.saudeMedica?.ulcera || "",
-                cirurgias: consulta?.paciente?.saudeMedica?.cirurgias || "",
+            saude_medica: {
+                alergias: consulta?.paciente?.saude_medica?.alergias || "",
+                ulcera: consulta?.paciente?.saude_medica?.ulcera || "",
+                cirurgias: consulta?.paciente?.saude_medica?.cirurgias || "",
                 tonturas_convulsoes_desmaios:
-                    consulta?.paciente?.saudeMedica
+                    consulta?.paciente?.saude_medica
                         ?.tonturas_convulsoes_desmaios || "",
-                medicacao: consulta?.paciente?.saudeMedica?.medicacao || "",
+                medicacao: consulta?.paciente?.saude_medica?.medicacao || "",
                 problema_cardiaco:
-                    consulta?.paciente?.saudeMedica?.problema_cardiaco || "",
+                    consulta?.paciente?.saude_medica?.problema_cardiaco || "",
                 problema_coagulacao:
-                    consulta?.paciente?.saudeMedica?.problema_coagulacao || "",
+                    consulta?.paciente?.saude_medica?.problema_coagulacao || "",
                 febre_reumatica:
-                    consulta?.paciente?.saudeMedica?.febre_reumatica || "",
-                psicopatias: consulta?.paciente?.saudeMedica?.psicopatias || "",
-                medico: consulta?.paciente?.saudeMedica?.medico || "",
-                hepatite: consulta?.paciente?.saudeMedica?.hepatite || "",
-                diabete: consulta?.paciente?.saudeMedica?.diabete || "",
+                    consulta?.paciente?.saude_medica?.febre_reumatica || "",
+                psicopatias:
+                    consulta?.paciente?.saude_medica?.psicopatias || "",
+                medico: consulta?.paciente?.saude_medica?.medico || "",
+                hepatite: consulta?.paciente?.saude_medica?.hepatite || "",
+                diabete: consulta?.paciente?.saude_medica?.diabete || "",
                 problemas_respiratorios:
-                    consulta?.paciente?.saudeMedica?.problemas_respiratorios ||
+                    consulta?.paciente?.saude_medica?.problemas_respiratorios ||
                     "",
             },
-            saudeOdontologica: {
+            saude_odontologica: {
                 gengivite:
-                    consulta?.paciente?.saudeOdontologica?.gengivite || "",
+                    consulta?.paciente?.saude_odontologica?.gengivite || "",
                 outras_patologias:
-                    consulta?.paciente?.saudeOdontologica?.outras_patologias ||
+                    consulta?.paciente?.saude_odontologica?.outras_patologias ||
                     "",
                 periodontite:
-                    consulta?.paciente?.saudeOdontologica?.periodontite || "",
+                    consulta?.paciente?.saude_odontologica?.periodontite || "",
                 tratamentos_anteriores:
-                    consulta?.paciente?.saudeOdontologica
+                    consulta?.paciente?.saude_odontologica
                         ?.tratamentos_anteriores || "",
                 proteses_aparelhos:
-                    consulta?.paciente?.saudeOdontologica?.proteses_aparelhos ||
-                    "",
+                    consulta?.paciente?.saude_odontologica
+                        ?.proteses_aparelhos || "",
             },
         });
     }, [consulta]);
@@ -221,7 +231,8 @@ const ConsultaShow = () => {
         }
     };
 
-    const handleFinalizarConsulta = async () => {
+    const handleFinalizarConsulta = async (e) => {
+        e.preventDefault();
         if (isUpdating) return;
 
         setIsUpdating(true);
@@ -230,9 +241,43 @@ const ConsultaShow = () => {
                 ...consulta,
                 status: "finalizada",
                 atendimento: {
-                    ...atendimentoData,
-                    saude_medica: saudeMedicaData,
-                    saude_odontologica: saudeOdontologicaData,
+                    pressao_arterial: formData.atendimento.pressao_arterial,
+                    frequencia_cardiaca:
+                        formData.atendimento.frequencia_cardiaca,
+                    temperatura: formData.atendimento.temperatura,
+                    peso: formData.atendimento.peso,
+                    altura: formData.atendimento.altura,
+                    queixa_principal: formData.atendimento.queixa_principal,
+                    diagnostico: formData.atendimento.diagnostico,
+                    prescricao: formData.atendimento.prescricao,
+                },
+                saude_medica: {
+                    alergias: formData.saude_medica.alergias,
+                    ulcera: formData.saude_medica.ulcera,
+                    cirurgias: formData.saude_medica.cirurgias,
+                    tonturas_convulsoes_desmaios:
+                        formData.saude_medica.tonturas_convulsoes_desmaios,
+                    medicacao: formData.saude_medica.medicacao,
+                    problema_cardiaco: formData.saude_medica.problema_cardiaco,
+                    problema_coagulacao:
+                        formData.saude_medica.problema_coagulacao,
+                    febre_reumatica: formData.saude_medica.febre_reumatica,
+                    psicopatias: formData.saude_medica.psicopatias,
+                    medico: formData.saude_medica.medico,
+                    hepatite: formData.saude_medica.hepatite,
+                    diabete: formData.saude_medica.diabete,
+                    problemas_respiratorios:
+                        formData.saude_medica.problemas_respiratorios,
+                },
+                saude_odontologica: {
+                    gengivite: formData.saude_odontologica.gengivite,
+                    outras_patologias:
+                        formData.saude_odontologica.outras_patologias,
+                    periodontite: formData.saude_odontologica.periodontite,
+                    tratamentos_anteriores:
+                        formData.saude_odontologica.tratamentos_anteriores,
+                    proteses_aparelhos:
+                        formData.saude_odontologica.proteses_aparelhos,
                 },
             };
 
@@ -270,6 +315,16 @@ const ConsultaShow = () => {
             </div>
         );
     }
+
+    const getFeedbackStyles = () => {
+        if (feedback.type === "success") {
+            return "bg-green-100 border-green-400 text-green-700";
+        }
+        if (feedback.type === "error") {
+            return "bg-red-100 border-red-400 text-red-700";
+        }
+        return "";
+    };
 
     return (
         <div className="space-y-6 animate-fadeIn">
@@ -424,7 +479,7 @@ const ConsultaShow = () => {
                         </div>
                     )}
 
-                    {consulta.status !== "agendada" && (
+                    {/* {consulta.status !== "agendada" && (
                         <div className="mt-6 border-t border-gray-200 pt-6">
                             <button
                                 onClick={() => handleStatusChange("agendada")}
@@ -451,9 +506,8 @@ const ConsultaShow = () => {
                                     : "Reagendar consulta"}
                             </button>
                         </div>
-                    )}
+                    )} */}
 
-                    {/* Medical Data Form */}
                     {isAtendimento && (
                         <div className="mt-6 border-t border-gray-200 pt-6">
                             <div className="flex items-center justify-between mb-4">
@@ -486,11 +540,11 @@ const ConsultaShow = () => {
                                     </button>
                                     <button
                                         onClick={() =>
-                                            setAtendimentoTab("saudeMedica")
+                                            setAtendimentoTab("saude_medica")
                                         }
                                         disabled={isUpdating}
                                         className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                                            atendimentoTab === "saudeMedica"
+                                            atendimentoTab === "saude_medica"
                                                 ? "border-blue-500 text-blue-600"
                                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                                         } disabled:opacity-50`}
@@ -500,13 +554,13 @@ const ConsultaShow = () => {
                                     <button
                                         onClick={() =>
                                             setAtendimentoTab(
-                                                "saudeOdontologica"
+                                                "saude_odontologica"
                                             )
                                         }
                                         disabled={isUpdating}
                                         className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                                             atendimentoTab ===
-                                            "saudeOdontologica"
+                                            "saude_odontologica"
                                                 ? "border-blue-500 text-blue-600"
                                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                                         } disabled:opacity-50`}
@@ -517,10 +571,8 @@ const ConsultaShow = () => {
                             </div>
 
                             <div className="bg-gray-50 p-6 rounded-lg space-y-6">
-                                {/* CONSULTATION TAB */}
                                 {atendimentoTab === "atendimento" && (
                                     <>
-                                        {/* Vital Signs */}
                                         <div>
                                             <h4 className="text-md font-medium text-gray-900 mb-4">
                                                 Sinais Vitais
@@ -534,16 +586,19 @@ const ConsultaShow = () => {
                                                         type="text"
                                                         placeholder="120/80 mmHg"
                                                         value={
-                                                            atendimentoData.pressao_arterial
+                                                            formData.atendimento
+                                                                .pressao_arterial
                                                         }
                                                         onChange={(e) =>
-                                                            handleAtendimentoDataChange(
+                                                            handleInputChange(
                                                                 "pressao_arterial",
-                                                                e.target.value
+                                                                e.target.value,
+                                                                "atendimento"
                                                             )
                                                         }
                                                         disabled={isUpdating}
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                        readOnly={isReadOnly}
+                                                        className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                                     />
                                                 </div>
                                                 <div>
@@ -554,16 +609,18 @@ const ConsultaShow = () => {
                                                         type="text"
                                                         placeholder="75 bpm"
                                                         value={
-                                                            atendimentoData.frequencia_cardiaca
+                                                            formData.atendimento
+                                                                .frequencia_cardiaca
                                                         }
                                                         onChange={(e) =>
-                                                            handleAtendimentoDataChange(
+                                                            handleInputChange(
                                                                 "frequencia_cardiaca",
-                                                                e.target.value
+                                                                e.target.value,
+                                                                "atendimento"
                                                             )
                                                         }
                                                         disabled={isUpdating}
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                        className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                                     />
                                                 </div>
                                                 <div>
@@ -574,16 +631,18 @@ const ConsultaShow = () => {
                                                         type="text"
                                                         placeholder="36.5°C"
                                                         value={
-                                                            atendimentoData.temperatura
+                                                            formData.atendimento
+                                                                .temperatura
                                                         }
                                                         onChange={(e) =>
-                                                            handleAtendimentoDataChange(
+                                                            handleInputChange(
                                                                 "temperatura",
-                                                                e.target.value
+                                                                e.target.value,
+                                                                "atendimento"
                                                             )
                                                         }
                                                         disabled={isUpdating}
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                        className=" bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                                     />
                                                 </div>
                                                 <div>
@@ -594,22 +653,23 @@ const ConsultaShow = () => {
                                                         type="text"
                                                         placeholder="70 kg"
                                                         value={
-                                                            atendimentoData.peso
+                                                            formData.atendimento
+                                                                .peso
                                                         }
                                                         onChange={(e) =>
-                                                            handleAtendimentoDataChange(
+                                                            handleInputChange(
                                                                 "peso",
-                                                                e.target.value
+                                                                e.target.value,
+                                                                "atendimento"
                                                             )
                                                         }
                                                         disabled={isUpdating}
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                        className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                                     />
                                                 </div>
                                             </div>
                                         </div>
 
-                                        {/* Symptoms */}
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                                 Sintomas
@@ -618,20 +678,21 @@ const ConsultaShow = () => {
                                                 rows="3"
                                                 placeholder="Descreva os sintomas apresentados pelo paciente..."
                                                 value={
-                                                    atendimentoData.queixa_principal
+                                                    formData.atendimento
+                                                        .queixa_principal
                                                 }
                                                 onChange={(e) =>
-                                                    handleAtendimentoDataChange(
+                                                    handleInputChange(
                                                         "queixa_principal",
-                                                        e.target.value
+                                                        e.target.value,
+                                                        "atendimento"
                                                     )
                                                 }
                                                 disabled={isUpdating}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                             />
                                         </div>
 
-                                        {/* Diagnosis */}
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                                 Diagnóstico
@@ -640,20 +701,21 @@ const ConsultaShow = () => {
                                                 rows="3"
                                                 placeholder="Diagnóstico médico..."
                                                 value={
-                                                    atendimentoData.diagnostico
+                                                    formData.atendimento
+                                                        .diagnostico
                                                 }
                                                 onChange={(e) =>
-                                                    handleAtendimentoDataChange(
+                                                    handleInputChange(
                                                         "diagnostico",
-                                                        e.target.value
+                                                        e.target.value,
+                                                        "atendimento"
                                                     )
                                                 }
                                                 disabled={isUpdating}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                             />
                                         </div>
 
-                                        {/* Prescription */}
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                                 Prescrição Médica
@@ -662,20 +724,20 @@ const ConsultaShow = () => {
                                                 rows="4"
                                                 placeholder="Medicamentos prescritos, dosagem, duração do tratamento..."
                                                 value={
-                                                    atendimentoData.prescription
+                                                    formData.atendimento
+                                                        .prescricao
                                                 }
                                                 onChange={(e) =>
-                                                    handleAtendimentoDataChange(
-                                                        "prescription",
-                                                        e.target.value
+                                                    handleInputChange(
+                                                        "prescricao",
+                                                        e.target.value,
+                                                        "atendimento"
                                                     )
                                                 }
                                                 disabled={isUpdating}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                             />
                                         </div>
-
-                                        {/* Additional Notes */}
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                                 Observações Adicionais
@@ -684,20 +746,21 @@ const ConsultaShow = () => {
                                                 rows="3"
                                                 placeholder="Outras observações sobre a consulta..."
                                                 value={
-                                                    atendimentoData.problema_cardiaco
+                                                    formData.atendimento
+                                                        .observacao
                                                 }
                                                 onChange={(e) =>
-                                                    handleAtendimentoDataChange(
-                                                        "problema_cardiaco",
-                                                        e.target.value
+                                                    handleInputChange(
+                                                        "observacao",
+                                                        e.target.value,
+                                                        "atendimento"
                                                     )
                                                 }
                                                 disabled={isUpdating}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                             />
                                         </div>
 
-                                        {/* Action Buttons */}
                                         <div className="flex justify-end gap-3 pt-4">
                                             <button
                                                 onClick={() =>
@@ -724,10 +787,8 @@ const ConsultaShow = () => {
                                     </>
                                 )}
 
-                                {/* MEDICAL HEALTH TAB */}
-                                {atendimentoTab === "saudeMedica" && (
+                                {atendimentoTab === "saude_medica" && (
                                     <div className="space-y-6">
-                                        {/* ... (resto do código das abas permanece igual, apenas adicione disabled={isUpdating} nos inputs e botões) */}
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                                 Alergias
@@ -735,19 +796,307 @@ const ConsultaShow = () => {
                                             <textarea
                                                 rows="2"
                                                 placeholder="Descreva alergias conhecidas..."
-                                                value={saudeMedicaData.alergias}
+                                                value={
+                                                    formData.saude_medica
+                                                        .alergias
+                                                }
                                                 onChange={(e) =>
-                                                    handleSaudeMedicaDataChange(
+                                                    handleInputChange(
                                                         "alergias",
-                                                        e.target.value
+                                                        e.target.value,
+                                                        "saude_medica"
                                                     )
                                                 }
                                                 disabled={isUpdating}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                             />
                                         </div>
-
-                                        {/* ... outros campos da saúde médica com disabled={isUpdating} */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Ulcera
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="ulcera"
+                                                value={
+                                                    formData.saude_medica.ulcera
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "ulcera",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Cirurgias
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder=" Histórico de Cirurgias"
+                                                value={
+                                                    formData.saude_medica
+                                                        .cirurgias
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "cirurgias",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Tonturas / Convulsões ou
+                                                Desmaios
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .tonturas_convulsoes_desmaios
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "tonturas_convulsoes_desmaios",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Tonturas / Convulsões ou
+                                                Desmaios
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .tonturas_convulsoes_desmaios
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "tonturas_convulsoes_desmaios",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Medicação Atual
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .medicacao
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "medicacao",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Problema cardiaco
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .problema_cardiaco
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "problema_cardiaco",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Problema de coagulação
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .problema_coagulacao
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "problema_coagulacao",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Febre reumatica
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .febre_reumatica
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "febre_reumatica",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Psicopatias
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .psicopatias
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "psicopatias",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Medico
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica.medico
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "medico",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Hepatite
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .hepatite
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "hepatite",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Diabete
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .diabete
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "diabete",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Problemas respiratorios
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .problemas_respiratorios
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "problemas_respiratorios",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
 
                                         <div className="flex justify-end gap-3 pt-4">
                                             <button
@@ -775,32 +1124,118 @@ const ConsultaShow = () => {
                                     </div>
                                 )}
 
-                                {/* DENTAL HEALTH TAB */}
-                                {atendimentoTab === "saudeOdontologica" && (
+                                {atendimentoTab === "saude_odontologica" && (
                                     <div className="space-y-6">
-                                        {/* ... (campos da saúde odontológica com disabled={isUpdating}) */}
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Última Consulta Odontológica
+                                                Gengivite
                                             </label>
                                             <input
                                                 type="text"
-                                                placeholder="Ex: 15/08/2024"
+                                                placeholder="Texto"
                                                 value={
-                                                    saudeOdontologicaData.gengivite
+                                                    formData.saude_odontologica
+                                                        .gengivite
                                                 }
                                                 onChange={(e) =>
-                                                    handleSaudeOdontologicaDataChange(
+                                                    handleInputChange(
                                                         "gengivite",
-                                                        e.target.value
+                                                        e.target.value,
+                                                        "saude_odontologica"
                                                     )
                                                 }
                                                 disabled={isUpdating}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                             />
                                         </div>
-
-                                        {/* ... outros campos da saúde odontológica */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Outras patologias
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Texto"
+                                                value={
+                                                    formData.saude_odontologica
+                                                        .outras_patologias
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "outras_patologias",
+                                                        e.target.value,
+                                                        "saude_odontologica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Periodontite
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Texto"
+                                                value={
+                                                    formData.saude_odontologica
+                                                        .periodontite
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "periodontite",
+                                                        e.target.value,
+                                                        "saude_odontologica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Tratamentos anteriores
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Texto"
+                                                value={
+                                                    formData.saude_odontologica
+                                                        .tratamentos_anteriores
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "tratamentos_anteriores",
+                                                        e.target.value,
+                                                        "saude_odontologica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Proteses ou aparelhos
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Texto"
+                                                value={
+                                                    formData.saude_odontologica
+                                                        .proteses_aparelhos
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "proteses_aparelhos",
+                                                        e.target.value,
+                                                        "saude_odontologica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
 
                                         <div className="flex justify-end gap-3 pt-4">
                                             <button
