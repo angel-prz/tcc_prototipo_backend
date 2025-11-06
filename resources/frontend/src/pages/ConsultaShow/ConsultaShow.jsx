@@ -48,39 +48,39 @@ const ConsultaShow = () => {
     const [isUpdating, setIsUpdating] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    const [atendimentoData, setAtendimentoData] = useState({
-        pressao_arterial: "",
-        frequencia_cardiaca: "",
-        temperatura: "",
-        peso: "",
-        altura: "",
-        queixa_principal: "",
-        diagnostico: "",
-        problema_cardiaco: "",
-    });
-
-    const [saudeMedicaData, setSaudeMedicaData] = useState({
-        alergias: "",
-        ulcera: "",
-        cirurgias: "",
-        tonturas_convulsoes_desmaios: "",
-        medicacao: "",
-        problema_cardiaco: "",
-        problema_coagulacao: "",
-        febre_reumatica: "",
-        psicopatias: "",
-        medico: "",
-        hepatite: "",
-        diabete: "",
-        problemas_respiratorios: "",
-    });
-
-    const [saudeOdontologicaData, setSaudeOdontologicaData] = useState({
-        gengivite: "",
-        outras_patologias: "",
-        periodontite: "",
-        tratamentos_anteriores: "",
-        proteses_aparelhos: "",
+    const [formData, setFormData] = useState({
+        status: "",
+        atendimento: {
+            pressao_arterial: "",
+            frequencia_cardiaca: "",
+            temperatura: "",
+            peso: "",
+            altura: "",
+            queixa_principal: "",
+            diagnostico: "",
+        },
+        saude_medica: {
+            alergias: "",
+            ulcera: "",
+            cirurgias: "",
+            tonturas_convulsoes_desmaios: "",
+            medicacao: "",
+            problema_cardiaco: "",
+            problema_coagulacao: "",
+            febre_reumatica: "",
+            psicopatias: "",
+            medico: "",
+            hepatite: "",
+            diabete: "",
+            problemas_respiratorios: "",
+        },
+        saude_odontologica: {
+            gengivite: "",
+            outras_patologias: "",
+            periodontite: "",
+            tratamentos_anteriores: "",
+            proteses_aparelhos: "",
+        },
     });
 
     useEffect(() => {
@@ -117,6 +117,63 @@ const ConsultaShow = () => {
         }
     }, [isLoaded, data, id, consulta]);
 
+    console.log("teste: ", consulta);
+    useEffect(() => {
+        if (!consulta) return;
+
+        setFormData({
+            ...formData,
+            status: consulta.status || "",
+            atendimento: {
+                pressao_arterial: consulta?.atendimento?.pressao_arterial || "",
+                frequencia_cardiaca:
+                    consulta?.atendimento?.frequencia_cardiaca || "",
+                temperatura: consulta?.atendimento?.temperatura || "",
+                peso: consulta?.atendimento?.peso || "",
+                altura: consulta?.atendimento?.temperatura || "",
+                queixa_principal: consulta?.atendimento?.queixa_principal || "",
+                diagnostico: consulta?.atendimento?.diagnostico || "",
+            },
+            saudeMedica: {
+                alergias: consulta?.paciente?.saudeMedica?.alergias || "",
+                ulcera: consulta?.paciente?.saudeMedica?.ulcera || "",
+                cirurgias: consulta?.paciente?.saudeMedica?.cirurgias || "",
+                tonturas_convulsoes_desmaios:
+                    consulta?.paciente?.saudeMedica
+                        ?.tonturas_convulsoes_desmaios || "",
+                medicacao: consulta?.paciente?.saudeMedica?.medicacao || "",
+                problema_cardiaco:
+                    consulta?.paciente?.saudeMedica?.problema_cardiaco || "",
+                problema_coagulacao:
+                    consulta?.paciente?.saudeMedica?.problema_coagulacao || "",
+                febre_reumatica:
+                    consulta?.paciente?.saudeMedica?.febre_reumatica || "",
+                psicopatias: consulta?.paciente?.saudeMedica?.psicopatias || "",
+                medico: consulta?.paciente?.saudeMedica?.medico || "",
+                hepatite: consulta?.paciente?.saudeMedica?.hepatite || "",
+                diabete: consulta?.paciente?.saudeMedica?.diabete || "",
+                problemas_respiratorios:
+                    consulta?.paciente?.saudeMedica?.problemas_respiratorios ||
+                    "",
+            },
+            saudeOdontologica: {
+                gengivite:
+                    consulta?.paciente?.saudeOdontologica?.gengivite || "",
+                outras_patologias:
+                    consulta?.paciente?.saudeOdontologica?.outras_patologias ||
+                    "",
+                periodontite:
+                    consulta?.paciente?.saudeOdontologica?.periodontite || "",
+                tratamentos_anteriores:
+                    consulta?.paciente?.saudeOdontologica
+                        ?.tratamentos_anteriores || "",
+                proteses_aparelhos:
+                    consulta?.paciente?.saudeOdontologica?.proteses_aparelhos ||
+                    "",
+            },
+        });
+    }, [consulta]);
+
     if (isLoading || !consulta) {
         return (
             <div className="flex justify-center items-center h-64">
@@ -147,16 +204,21 @@ const ConsultaShow = () => {
         }
     };
 
-    const handleAtendimentoDataChange = (field, value) => {
-        setAtendimentoData((prev) => ({ ...prev, [field]: value }));
-    };
-
-    const handleSaudeMedicaDataChange = (field, value) => {
-        setSaudeMedicaData((prev) => ({ ...prev, [field]: value }));
-    };
-
-    const handleSaudeOdontologicaDataChange = (field, value) => {
-        setSaudeOdontologicaData((prev) => ({ ...prev, [field]: value }));
+    const handleInputChange = (field, value, section = null) => {
+        if (section) {
+            setFormData((prev) => ({
+                ...prev,
+                [section]: {
+                    ...prev[section],
+                    [field]: value,
+                },
+            }));
+        } else {
+            setFormData((prev) => ({
+                ...prev,
+                [field]: value,
+            }));
+        }
     };
 
     const handleFinalizarConsulta = async () => {
