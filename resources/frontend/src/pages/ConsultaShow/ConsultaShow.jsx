@@ -49,11 +49,11 @@ const ConsultaShow = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [feedback, setFeedback] = useState({ type: "", message: "" });
-    const [isReadOnly, setIsReadOnly] = useState(true);
+    const [isReadOnly, setIsReadOnly] = useState(false);
 
-    const toggleReadOnly = () => {
+    /* const toggleReadOnly = () => {
         setIsReadOnly(!isReadOnly);
-    };
+    }; */
 
     const [formData, setFormData] = useState({
         status: "",
@@ -129,6 +129,9 @@ const ConsultaShow = () => {
     useEffect(() => {
         if (!consulta) return;
 
+        console.log(isReadOnly);
+        console.log(consulta.status);
+        if (consulta.status === "finalizada") setIsReadOnly(true);
         setFormData({
             ...formData,
             status: consulta.status || "",
@@ -288,6 +291,8 @@ const ConsultaShow = () => {
 
             setConsulta(consultaFinalizada);
             setIsAtendimento(false);
+            setIsReadOnly(true);
+            setAtendimentoTab("atendimento");
 
             alert("Consulta finalizada com sucesso!");
         } catch (error) {
@@ -447,7 +452,7 @@ const ConsultaShow = () => {
                         </div>
                     )}
 
-                    {consulta.status === "agendada" && (
+                    {consulta.status === "agendada" && !isReadOnly && (
                         <div className="mt-6 border-t border-gray-200 pt-6">
                             <h3 className="text-lg font-medium text-gray-900 mb-3">
                                 Atualizar Status
@@ -475,6 +480,523 @@ const ConsultaShow = () => {
                                         ? "Carregando..."
                                         : "Cancelar consulta"}
                                 </button>
+                            </div>
+                        </div>
+                    )}
+                    {/* View Mode - Readonly Consultation Data */}
+                    {isReadOnly && consulta.status === "finalizada" && (
+                        <div className="mt-6 border-t border-gray-200 pt-6">
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-lg font-medium text-gray-900">
+                                    Informações da Consulta Finalizada
+                                </h3>
+                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    Consulta Finalizada
+                                </span>
+                            </div>
+
+                            <div className="border-b border-gray-200 mb-6">
+                                <nav className="flex -mb-px">
+                                    <button
+                                        onClick={() =>
+                                            setAtendimentoTab("atendimento")
+                                        }
+                                        className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer ${
+                                            atendimentoTab === "atendimento"
+                                                ? "border-blue-500 text-blue-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        }`}
+                                    >
+                                        Consulta
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            setAtendimentoTab("saude_medica")
+                                        }
+                                        className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer ${
+                                            atendimentoTab === "saude_medica"
+                                                ? "border-blue-500 text-blue-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        }`}
+                                    >
+                                        Saúde Médica
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            setAtendimentoTab("odontologica")
+                                        }
+                                        className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer ${
+                                            atendimentoTab === "odontologica"
+                                                ? "border-blue-500 text-blue-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        }`}
+                                    >
+                                        Saúde Bucal
+                                    </button>
+                                </nav>
+                            </div>
+                            {/* READ ONLY : TODO: componente*/}
+                            <div className="bg-gray-50 p-6 rounded-lg space-y-6">
+                                {atendimentoTab === "atendimento" && (
+                                    <div className="space-y-6">
+                                        {formData.atendimento
+                                            .pressao_arterial ||
+                                        formData.atendimento
+                                            .frequencia_cardiaca ||
+                                        formData.atendimento.temperatura ||
+                                        formData.atendimento.peso ||
+                                        formData.atendimento.altura ||
+                                        formData.atendimento.queixa_principal ||
+                                        formData.atendimento.diagnostico ||
+                                        formData.atendimento.prescricao ||
+                                        formData.atendimento.observacao ? (
+                                            <div>
+                                                <h4 className="text-md font-medium text-gray-900 mb-4">
+                                                    Sinais Vitais
+                                                </h4>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                                    {formData.atendimento
+                                                        .pressao_arterial && (
+                                                        <div className="bg-white p-3 rounded-md">
+                                                            <p className="text-xs font-medium text-gray-500 uppercase">
+                                                                Pressão Arterial
+                                                            </p>
+                                                            <p className="mt-2 text-sm font-medium text-gray-900">
+                                                                {
+                                                                    formData
+                                                                        .atendimento
+                                                                        .pressao_arterial
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                    {formData.atendimento
+                                                        .frequencia_cardiaca && (
+                                                        <div className="bg-white p-3 rounded-md">
+                                                            <p className="text-xs font-medium text-gray-500 uppercase">
+                                                                Frequência
+                                                                Cardíaca
+                                                            </p>
+                                                            <p className="mt-2 text-sm font-medium text-gray-900">
+                                                                {
+                                                                    formData
+                                                                        .atendimento
+                                                                        .frequencia_cardiaca
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                    {formData.atendimento
+                                                        .temperatura && (
+                                                        <div className="bg-white p-3 rounded-md">
+                                                            <p className="text-xs font-medium text-gray-500 uppercase">
+                                                                Temperatura
+                                                            </p>
+                                                            <p className="mt-2 text-sm font-medium text-gray-900">
+                                                                {
+                                                                    formData
+                                                                        .atendimento
+                                                                        .temperatura
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                    {formData.atendimento
+                                                        .peso && (
+                                                        <div className="bg-white p-3 rounded-md">
+                                                            <p className="text-xs font-medium text-gray-500 uppercase">
+                                                                Peso
+                                                            </p>
+                                                            <p className="mt-2 text-sm font-medium text-gray-900">
+                                                                {
+                                                                    formData
+                                                                        .atendimento
+                                                                        .peso
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ) : null}
+
+                                        {formData.atendimento
+                                            .queixa_principal && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Queixa Principal
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData.atendimento
+                                                                .queixa_principal
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {formData.atendimento.diagnostico && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Diagnóstico
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData.atendimento
+                                                                .diagnostico
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {formData.atendimento.prescricao && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Prescrição Médica
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData.atendimento
+                                                                .prescricao
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {formData.atendimento.observacao && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Observações Adicionais
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData.atendimento
+                                                                .observacao
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* MEDICAL HEALTH TAB - READONLY */}
+                                {atendimentoTab === "saude_medica" && (
+                                    <div className="space-y-6">
+                                        {formData.saude_medica.alergias && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Alergias
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .alergias
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.ulcera && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Ulcera
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .ulcera
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.cirurgias && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Cirurgias anteriores
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .cirurgias
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica
+                                            .tonturas_convulsoes_desmaios && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Tonturas / Convulsões ou
+                                                    Desmaios
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .tonturas_convulsoes_desmaios
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.medicacao && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Medicação Atual
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .medicacao
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica
+                                            .problema_cardiaco && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Problema cardiaco
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .problema_cardiaco
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica
+                                            .problema_coagulacao && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Problema de coagulação
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .problema_coagulacao
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica
+                                            .febre_reumatica && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Febre reumatica
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .febre_reumatica
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.psicopatias && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Psicopatias
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .psicopatias
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.medico && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Medico
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .medico
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.hepatite && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Hepatite
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .hepatite
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.diabete && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Diabete
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .diabete
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica
+                                            .problemas_respiratorios && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Problemas respiratorios
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .problemas_respiratorios
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* DENTAL HEALTH TAB - READONLY */}
+                                {atendimentoTab === "odontologica" && (
+                                    <div className="space-y-6">
+                                        {formData.saude_odontologica
+                                            .gengivite && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Gengivite
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900">
+                                                        {
+                                                            formData
+                                                                .saude_odontologica
+                                                                .gengivite
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_odontologica
+                                            .outras_patologias && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Outras patologias
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_odontologica
+                                                                .outras_patologias
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_odontologica
+                                            .periodontite && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Periodontite
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_odontologica
+                                                                .periodontite
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_odontologica
+                                            .tratamentos_anteriores && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Tratamentos anteriores
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_odontologica
+                                                                .tratamentos_anteriores
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_odontologica
+                                            .proteses_aparelhos && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Proteses ou aparelhos
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_odontologica
+                                                                .proteses_aparelhos
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
@@ -877,29 +1399,7 @@ const ConsultaShow = () => {
                                                 className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                                             />
                                         </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Tonturas / Convulsões ou
-                                                Desmaios
-                                            </label>
-                                            <textarea
-                                                rows="2"
-                                                placeholder="Descreva as ocorrências"
-                                                value={
-                                                    formData.saude_medica
-                                                        .tonturas_convulsoes_desmaios
-                                                }
-                                                onChange={(e) =>
-                                                    handleInputChange(
-                                                        "tonturas_convulsoes_desmaios",
-                                                        e.target.value,
-                                                        "saude_medica"
-                                                    )
-                                                }
-                                                disabled={isUpdating}
-                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-                                            />
-                                        </div>
+
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                                 Medicação Atual
