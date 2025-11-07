@@ -5,17 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
 class Atendimento extends Model
 {
     /** @use HasFactory<\Database\Factories\AtendimentoFactory> */
     use HasFactory;
 
     protected $fillable = [
-        'exame',
-        'tipo_exame',
-        'quantidae',
-        'consulta_id',
+        'queixa_principal',
+        'historico_doenca',
+        'diagnostico',
+        'observacoes',
+        'pressao_arterial',
+        'frequencia_cardiaca',
+        'temperatura',
+        'peso',
+        'altura',
     ];
 
     public function consulta()
@@ -23,7 +27,8 @@ class Atendimento extends Model
         return $this->belongsTo(Consulta::class, 'consulta_id', 'id');
     }
 
-    public function paciente(){
+    public function paciente()
+    {
         return $this->belongsToThrough(
             Paciente::class,
             Consulta::class,
@@ -34,16 +39,18 @@ class Atendimento extends Model
         );
     }
 
-    public function DocumentosAtestados (){
+    public function DocumentosAtestados()
+    {
         return $this->hasMany(DocumentosAtestados::class, 'atendimento_id', 'id');
     }
 
-    public function ExameProcedimentos() {
+    public function ExameProcedimentos()
+    {
         return $this->hasMany(ExameProcedimentos::class, 'atendimento_id', 'id');
     }
 
-    public function PrescricaoMedicamentos() {
+    public function PrescricaoMedicamentos()
+    {
         return $this->hasMany(PrescricaoMedicamentos::class, 'atendimento_id', 'id');
     }
 }
-

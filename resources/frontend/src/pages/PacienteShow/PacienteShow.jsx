@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { PacientesContext } from "../../contexts/PacienteProvider";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import ModalEditPaciente from "../Pacientes/ModalEditPaciente";
+import { useAuthContext } from "../../contexts/AuthProvider";
 
 import {
     Calendar,
@@ -31,6 +32,8 @@ const PacienteShow = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
+
+    const { user } = useAuthContext();
 
     const [activeTab, setActiveTab] = useState("informacao");
 
@@ -180,7 +183,10 @@ const PacienteShow = () => {
                                     : "Feminino"}
                             </p>
                             <p className="text-sm text-gray-500 mt-2">
-                                CPF: {paciente.user.cpf}
+                                CPF:{" "}
+                                {user.id === paciente.user.id
+                                    ? paciente.user.cpf
+                                    : "************"}
                             </p>
                         </div>
                     </div>
@@ -207,16 +213,18 @@ const PacienteShow = () => {
                             >
                                 Saúde Médica
                             </button>
-                            <button
-                                onClick={() => setActiveTab("odontologica")}
-                                className={`mr-8 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                                    activeTab === "odontologica"
-                                        ? "border-blue-500 text-blue-600"
-                                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                                }`}
-                            >
-                                Saúde Bucal
-                            </button>
+                            {user.tipo_usuario !== "bolsista" && (
+                                <button
+                                    onClick={() => setActiveTab("odontologica")}
+                                    className={`mr-8 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                                        activeTab === "odontologica"
+                                            ? "border-blue-500 text-blue-600"
+                                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                    }`}
+                                >
+                                    Saúde Bucal
+                                </button>
+                            )}
                         </nav>
                     </div>
 

@@ -6,16 +6,14 @@ import {
     UserCircle,
     Edit,
     Trash2,
-    AlertCircle,
     ChevronLeft,
     Clock,
     CheckCircle,
     XCircle,
     AlertTriangle,
 } from "lucide-react";
-/* import AppointmentForm from '../components/AppointmentForm';*/
-/* import ConfirmDialog from '../components/ConfirmDialog';*/
 import { ConsultasContext } from "../../contexts/ConsultaProvider";
+import { PacientesContext } from "../../contexts/PacienteProvider";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import ConsultaForm from "../../components/ConsultaForm/ConsultaForm";
 import { getHora, getData } from "../../utils/dataHora";
@@ -27,50 +25,310 @@ const statusColors = {
     faltou: "bg-yellow-100 text-yellow-800",
 };
 
+const statusLabels = {
+    agendada: "Agendada",
+    finalizada: "Finalizada",
+    cancelada: "Cancelada",
+    /* faltou: "Faltou", */
+};
+
 const ConsultaShow = () => {
     const { id } = useParams();
-    const {
-        data,
-        setData,
-        isLoaded,
-        setIsLoaded,
-        loadConsultas,
-        editConsulta,
-        deleteConsulta,
-    } = useContext(ConsultasContext);
+    const { data, isLoaded, loadConsultas, editConsulta, deleteConsulta } =
+        useContext(ConsultasContext);
+    const { editPaciente } = useContext(PacientesContext);
+
     const location = useLocation();
     const navigate = useNavigate();
     const [consulta, setConsulta] = useState(location.state?.consulta ?? null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    /*const [message, setMessage] = useState(null); */
-    useEffect(() => {
-        loadConsultas();
-        setIsLoaded(true);
-    }, []);
+    const [isAtendimento, setIsAtendimento] = useState(false);
+    const [atendimentoTab, setAtendimentoTab] = useState("atendimento");
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [feedback, setFeedback] = useState({ type: "", message: "" });
+    const [isReadOnly, setIsReadOnly] = useState(false);
+
+    /* const toggleReadOnly = () => {
+        setIsReadOnly(!isReadOnly);
+    }; */
+
+    const [formData, setFormData] = useState({
+        status: "",
+        atendimento: {
+            pressao_arterial: "",
+            frequencia_cardiaca: "",
+            temperatura: "",
+            peso: "",
+            altura: "",
+            queixa_principal: "",
+            diagnostico: "",
+            prescricao: "",
+        },
+        saude_medica: {
+            alergias: "",
+            ulcera: "",
+            cirurgias: "",
+            tonturas_convulsoes_desmaios: "",
+            medicacao: "",
+            problema_cardiaco: "",
+            problema_coagulacao: "",
+            febre_reumatica: "",
+            psicopatias: "",
+            medico: "",
+            hepatite: "",
+            diabete: "",
+            problemas_respiratorios: "",
+        },
+        saude_odontologica: {
+            gengivite: "",
+            outras_patologias: "",
+            periodontite: "",
+            tratamentos_anteriores: "",
+            proteses_aparelhos: "",
+        },
+    });
 
     useEffect(() => {
-        if (isLoaded && data) {
-            const foundConsulta = data.find(
-                (consulta) => consulta.id === parseInt(id)
-            );
-            setConsulta(foundConsulta);
+        const loadData = async () => {
+            setIsLoading(true);
+            try {
+                if (location.state?.consulta) {
+                    setConsulta(location.state.consulta);
+                    setIsLoading(false);
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    await loadConsultas();
+                }
+            } catch (error) {
+                console.error("Erro ao carregar consulta:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadData();
+    }, [id]);
+
+    useEffect(() => {
+        if ((isLoaded && data) || (data && data.length > 0)) {
+            const foundConsulta = Array.isArray(data)
+                ? data.find((item) => item.id === parseInt(id))
+                : null;
+
+            if (foundConsulta && !consulta) {
+                setConsulta(foundConsulta);
+            }
         }
-    }, [isLoaded, data, id]);
+    }, [isLoaded, data, id, consulta]);
 
-    const handleStatusChange = (status) => {
-        editConsulta(id, { status });
-        setData({ ...consulta, status });
-    };
+    console.log("teste: ", consulta);
+    useEffect(() => {
+        if (!consulta) return;
 
-    console.log(consulta);
-    if (!consulta) {
-        return <div>Loading...</div>;
+        console.log(isReadOnly);
+        console.log(consulta.status);
+        if (consulta.status === "finalizada") setIsReadOnly(true);
+        setFormData({
+            ...formData,
+            status: consulta.status || "",
+            atendimento: {
+                pressao_arterial: consulta?.atendimento?.pressao_arterial || "",
+                frequencia_cardiaca:
+                    consulta?.atendimento?.frequencia_cardiaca || "",
+                temperatura: consulta?.atendimento?.temperatura || "",
+                peso: consulta?.atendimento?.peso || "",
+                altura: consulta?.atendimento?.altura || "",
+                queixa_principal: consulta?.atendimento?.queixa_principal || "",
+                diagnostico: consulta?.atendimento?.diagnostico || "",
+                prescricao: consulta?.atendimento?.prescricao || "",
+            },
+            saude_medica: {
+                alergias: consulta?.paciente?.saude_medica?.alergias || "",
+                ulcera: consulta?.paciente?.saude_medica?.ulcera || "",
+                cirurgias: consulta?.paciente?.saude_medica?.cirurgias || "",
+                tonturas_convulsoes_desmaios:
+                    consulta?.paciente?.saude_medica
+                        ?.tonturas_convulsoes_desmaios || "",
+                medicacao: consulta?.paciente?.saude_medica?.medicacao || "",
+                problema_cardiaco:
+                    consulta?.paciente?.saude_medica?.problema_cardiaco || "",
+                problema_coagulacao:
+                    consulta?.paciente?.saude_medica?.problema_coagulacao || "",
+                febre_reumatica:
+                    consulta?.paciente?.saude_medica?.febre_reumatica || "",
+                psicopatias:
+                    consulta?.paciente?.saude_medica?.psicopatias || "",
+                medico: consulta?.paciente?.saude_medica?.medico || "",
+                hepatite: consulta?.paciente?.saude_medica?.hepatite || "",
+                diabete: consulta?.paciente?.saude_medica?.diabete || "",
+                problemas_respiratorios:
+                    consulta?.paciente?.saude_medica?.problemas_respiratorios ||
+                    "",
+            },
+            saude_odontologica: {
+                gengivite:
+                    consulta?.paciente?.saude_odontologica?.gengivite || "",
+                outras_patologias:
+                    consulta?.paciente?.saude_odontologica?.outras_patologias ||
+                    "",
+                periodontite:
+                    consulta?.paciente?.saude_odontologica?.periodontite || "",
+                tratamentos_anteriores:
+                    consulta?.paciente?.saude_odontologica
+                        ?.tratamentos_anteriores || "",
+                proteses_aparelhos:
+                    consulta?.paciente?.saude_odontologica
+                        ?.proteses_aparelhos || "",
+            },
+        });
+    }, [consulta]);
+
+    if (isLoading || !consulta) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <div className="text-lg">Carregando consulta...</div>
+            </div>
+        );
     }
 
-    const handleDelete = () => {
-        deleteConsulta(consulta);
-        navigate("/calendario");
+    const handleStatusChange = async (status) => {
+        if (isUpdating) return;
+
+        setIsUpdating(true);
+        try {
+            const updatedConsulta = {
+                ...consulta,
+                status: status,
+            };
+
+            const message = await editConsulta(consulta.id, updatedConsulta);
+            console.log(message || "Consulta atualizada com sucesso!");
+
+            setConsulta(updatedConsulta);
+        } catch (error) {
+            console.error("Erro ao atualizar a consulta:", error);
+            alert("Erro ao atualizar a consulta");
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
+    const handleInputChange = (field, value, section = null) => {
+        if (section) {
+            setFormData((prev) => ({
+                ...prev,
+                [section]: {
+                    ...prev[section],
+                    [field]: value,
+                },
+            }));
+        } else {
+            setFormData((prev) => ({
+                ...prev,
+                [field]: value,
+            }));
+        }
+    };
+
+    const handleFinalizarConsulta = async (e) => {
+        e.preventDefault();
+        if (isUpdating) return;
+
+        setIsUpdating(true);
+        try {
+            const consultaFinalizada = {
+                ...consulta,
+                status: "finalizada",
+                atendimento: {
+                    pressao_arterial: formData.atendimento.pressao_arterial,
+                    frequencia_cardiaca:
+                        formData.atendimento.frequencia_cardiaca,
+                    temperatura: formData.atendimento.temperatura,
+                    peso: formData.atendimento.peso,
+                    altura: formData.atendimento.altura,
+                    queixa_principal: formData.atendimento.queixa_principal,
+                    diagnostico: formData.atendimento.diagnostico,
+                    prescricao: formData.atendimento.prescricao,
+                },
+                saude_medica: {
+                    alergias: formData.saude_medica.alergias,
+                    ulcera: formData.saude_medica.ulcera,
+                    cirurgias: formData.saude_medica.cirurgias,
+                    tonturas_convulsoes_desmaios:
+                        formData.saude_medica.tonturas_convulsoes_desmaios,
+                    medicacao: formData.saude_medica.medicacao,
+                    problema_cardiaco: formData.saude_medica.problema_cardiaco,
+                    problema_coagulacao:
+                        formData.saude_medica.problema_coagulacao,
+                    febre_reumatica: formData.saude_medica.febre_reumatica,
+                    psicopatias: formData.saude_medica.psicopatias,
+                    medico: formData.saude_medica.medico,
+                    hepatite: formData.saude_medica.hepatite,
+                    diabete: formData.saude_medica.diabete,
+                    problemas_respiratorios:
+                        formData.saude_medica.problemas_respiratorios,
+                },
+                saude_odontologica: {
+                    gengivite: formData.saude_odontologica.gengivite,
+                    outras_patologias:
+                        formData.saude_odontologica.outras_patologias,
+                    periodontite: formData.saude_odontologica.periodontite,
+                    tratamentos_anteriores:
+                        formData.saude_odontologica.tratamentos_anteriores,
+                    proteses_aparelhos:
+                        formData.saude_odontologica.proteses_aparelhos,
+                },
+            };
+
+            console.log("Dados a serem enviados:", consultaFinalizada);
+
+            const message = await editConsulta(consulta.id, consultaFinalizada);
+            console.log(message || "Consulta finalizada com sucesso!");
+
+            setConsulta(consultaFinalizada);
+            setIsAtendimento(false);
+            setIsReadOnly(true);
+            setAtendimentoTab("atendimento");
+
+            alert("Consulta finalizada com sucesso!");
+        } catch (error) {
+            console.error("Erro ao finalizar consulta:", error);
+            alert("Erro ao finalizar a consulta");
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            await deleteConsulta(consulta);
+            navigate("/calendario");
+        } catch (error) {
+            console.error("Erro ao deletar consulta:", error);
+            alert("Erro ao deletar a consulta");
+        }
+    };
+
+    if (!consulta) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <div>Carregando...</div>
+            </div>
+        );
+    }
+
+    const getFeedbackStyles = () => {
+        if (feedback.type === "success") {
+            return "bg-green-100 border-green-400 text-green-700";
+        }
+        if (feedback.type === "error") {
+            return "bg-red-100 border-red-400 text-red-700";
+        }
+        return "";
     };
 
     return (
@@ -81,7 +339,7 @@ const ConsultaShow = () => {
                     className="text-blue-600 hover:text-blue-700 flex items-center"
                 >
                     <ChevronLeft className="h-4 w-4 mr-1" />
-                    Voltar para calendario
+                    Voltar para calendário
                 </Link>
             </div>
 
@@ -94,29 +352,27 @@ const ConsultaShow = () => {
                         <div className="mt-1 flex items-center">
                             <span
                                 className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                    statusColors[consulta.status]
+                                    statusColors[consulta.status] ||
+                                    statusColors.agendada
                                 }`}
                             >
-                                {consulta.status.charAt(0).toUpperCase() +
-                                    consulta.status.slice(1)}
+                                {statusLabels[consulta.status] ||
+                                    consulta.status}
                             </span>
-                            {/* {isToday && !isPast && consulta.status === 'agendada' && (
-                <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                  Hoje
-                </span>
-              )} */}
                         </div>
                     </div>
                     <div className="flex space-x-2">
                         <button
                             onClick={() => setIsEditModalOpen(true)}
-                            className="inline-flex items-center p-2 border border-transparent rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            disabled={isUpdating}
+                            className="inline-flex items-center p-2 border border-transparent rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                         >
                             <Edit className="h-4 w-4" aria-hidden="true" />
                         </button>
                         <button
                             onClick={() => setIsDeleteDialogOpen(true)}
-                            className="inline-flex items-center p-2 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                            disabled={isUpdating}
+                            className="inline-flex items-center p-2 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
                         >
                             <Trash2 className="h-4 w-4" aria-hidden="true" />
                         </button>
@@ -132,7 +388,6 @@ const ConsultaShow = () => {
                                     Data e hora
                                 </h3>
                             </div>
-
                             <p className="text-sm text-gray-600 flex items-center">
                                 <Clock className="h-4 w-4 text-gray-400 mr-1" />
                                 {getHora(consulta.data_hora)} -{" "}
@@ -183,7 +438,7 @@ const ConsultaShow = () => {
                             </p>
                         </div>
                     </div>
-                    {console.log(consulta.observacao)}
+
                     {consulta.observacao && (
                         <div className="mt-6">
                             <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -197,43 +452,1317 @@ const ConsultaShow = () => {
                         </div>
                     )}
 
-                    {consulta.status === "agendada" && (
+                    {consulta.status === "agendada" && !isReadOnly && (
                         <div className="mt-6 border-t border-gray-200 pt-6">
                             <h3 className="text-lg font-medium text-gray-900 mb-3">
                                 Atualizar Status
                             </h3>
                             <div className="flex flex-wrap gap-3">
                                 <button
-                                    onClick={() =>
-                                        handleStatusChange("completed")
-                                    }
-                                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                    onClick={() => setIsAtendimento(true)}
+                                    disabled={isUpdating}
+                                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
                                 >
                                     <CheckCircle className="-ml-1 mr-2 h-4 w-4" />
-                                    Finalizar consulta
+                                    {isUpdating
+                                        ? "Carregando..."
+                                        : "Atender consulta"}
                                 </button>
                                 <button
                                     onClick={() =>
-                                        handleStatusChange("cancelled")
+                                        handleStatusChange("cancelada")
                                     }
-                                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    disabled={isUpdating}
+                                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
                                 >
                                     <XCircle className="-ml-1 mr-2 h-4 w-4" />
-                                    Cancelar consulta
+                                    {isUpdating
+                                        ? "Carregando..."
+                                        : "Cancelar consulta"}
                                 </button>
                             </div>
                         </div>
                     )}
+                    {/* View Mode - Readonly Consultation Data */}
+                    {isReadOnly && consulta.status === "finalizada" && (
+                        <div className="mt-6 border-t border-gray-200 pt-6">
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-lg font-medium text-gray-900">
+                                    Informações da Consulta Finalizada
+                                </h3>
+                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    Consulta Finalizada
+                                </span>
+                            </div>
 
+                            <div className="border-b border-gray-200 mb-6">
+                                <nav className="flex -mb-px">
+                                    <button
+                                        onClick={() =>
+                                            setAtendimentoTab("atendimento")
+                                        }
+                                        className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer ${
+                                            atendimentoTab === "atendimento"
+                                                ? "border-blue-500 text-blue-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        }`}
+                                    >
+                                        Consulta
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            setAtendimentoTab("saude_medica")
+                                        }
+                                        className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer ${
+                                            atendimentoTab === "saude_medica"
+                                                ? "border-blue-500 text-blue-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        }`}
+                                    >
+                                        Saúde Médica
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            setAtendimentoTab("odontologica")
+                                        }
+                                        className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer ${
+                                            atendimentoTab === "odontologica"
+                                                ? "border-blue-500 text-blue-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        }`}
+                                    >
+                                        Saúde Bucal
+                                    </button>
+                                </nav>
+                            </div>
+                            {/* READ ONLY : TODO: componente*/}
+                            <div className="bg-gray-50 p-6 rounded-lg space-y-6">
+                                {atendimentoTab === "atendimento" && (
+                                    <div className="space-y-6">
+                                        {formData.atendimento
+                                            .pressao_arterial ||
+                                        formData.atendimento
+                                            .frequencia_cardiaca ||
+                                        formData.atendimento.temperatura ||
+                                        formData.atendimento.peso ||
+                                        formData.atendimento.altura ||
+                                        formData.atendimento.queixa_principal ||
+                                        formData.atendimento.diagnostico ||
+                                        formData.atendimento.prescricao ||
+                                        formData.atendimento.observacao ? (
+                                            <div>
+                                                <h4 className="text-md font-medium text-gray-900 mb-4">
+                                                    Sinais Vitais
+                                                </h4>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                                    {formData.atendimento
+                                                        .pressao_arterial && (
+                                                        <div className="bg-white p-3 rounded-md">
+                                                            <p className="text-xs font-medium text-gray-500 uppercase">
+                                                                Pressão Arterial
+                                                            </p>
+                                                            <p className="mt-2 text-sm font-medium text-gray-900">
+                                                                {
+                                                                    formData
+                                                                        .atendimento
+                                                                        .pressao_arterial
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                    {formData.atendimento
+                                                        .frequencia_cardiaca && (
+                                                        <div className="bg-white p-3 rounded-md">
+                                                            <p className="text-xs font-medium text-gray-500 uppercase">
+                                                                Frequência
+                                                                Cardíaca
+                                                            </p>
+                                                            <p className="mt-2 text-sm font-medium text-gray-900">
+                                                                {
+                                                                    formData
+                                                                        .atendimento
+                                                                        .frequencia_cardiaca
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                    {formData.atendimento
+                                                        .temperatura && (
+                                                        <div className="bg-white p-3 rounded-md">
+                                                            <p className="text-xs font-medium text-gray-500 uppercase">
+                                                                Temperatura
+                                                            </p>
+                                                            <p className="mt-2 text-sm font-medium text-gray-900">
+                                                                {
+                                                                    formData
+                                                                        .atendimento
+                                                                        .temperatura
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                    {formData.atendimento
+                                                        .peso && (
+                                                        <div className="bg-white p-3 rounded-md">
+                                                            <p className="text-xs font-medium text-gray-500 uppercase">
+                                                                Peso
+                                                            </p>
+                                                            <p className="mt-2 text-sm font-medium text-gray-900">
+                                                                {
+                                                                    formData
+                                                                        .atendimento
+                                                                        .peso
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ) : null}
+
+                                        {formData.atendimento
+                                            .queixa_principal && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Queixa Principal
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData.atendimento
+                                                                .queixa_principal
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {formData.atendimento.diagnostico && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Diagnóstico
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData.atendimento
+                                                                .diagnostico
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {formData.atendimento.prescricao && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Prescrição Médica
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData.atendimento
+                                                                .prescricao
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {formData.atendimento.observacao && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Observações Adicionais
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData.atendimento
+                                                                .observacao
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* MEDICAL HEALTH TAB - READONLY */}
+                                {atendimentoTab === "saude_medica" && (
+                                    <div className="space-y-6">
+                                        {formData.saude_medica.alergias && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Alergias
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .alergias
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.ulcera && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Ulcera
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .ulcera
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.cirurgias && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Cirurgias anteriores
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .cirurgias
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica
+                                            .tonturas_convulsoes_desmaios && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Tonturas / Convulsões ou
+                                                    Desmaios
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .tonturas_convulsoes_desmaios
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.medicacao && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Medicação Atual
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .medicacao
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica
+                                            .problema_cardiaco && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Problema cardiaco
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .problema_cardiaco
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica
+                                            .problema_coagulacao && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Problema de coagulação
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .problema_coagulacao
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica
+                                            .febre_reumatica && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Febre reumatica
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .febre_reumatica
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.psicopatias && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Psicopatias
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .psicopatias
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.medico && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Medico
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .medico
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.hepatite && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Hepatite
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .hepatite
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica.diabete && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Diabete
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .diabete
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_medica
+                                            .problemas_respiratorios && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Problemas respiratorios
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_medica
+                                                                .problemas_respiratorios
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* DENTAL HEALTH TAB - READONLY */}
+                                {atendimentoTab === "odontologica" && (
+                                    <div className="space-y-6">
+                                        {formData.saude_odontologica
+                                            .gengivite && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Gengivite
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900">
+                                                        {
+                                                            formData
+                                                                .saude_odontologica
+                                                                .gengivite
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_odontologica
+                                            .outras_patologias && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Outras patologias
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_odontologica
+                                                                .outras_patologias
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_odontologica
+                                            .periodontite && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Periodontite
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_odontologica
+                                                                .periodontite
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_odontologica
+                                            .tratamentos_anteriores && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Tratamentos anteriores
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_odontologica
+                                                                .tratamentos_anteriores
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formData.saude_odontologica
+                                            .proteses_aparelhos && (
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                                                    Proteses ou aparelhos
+                                                </p>
+                                                <div className="bg-white p-4 rounded-md">
+                                                    <p className="text-sm text-gray-900 whitespace-pre-line">
+                                                        {
+                                                            formData
+                                                                .saude_odontologica
+                                                                .proteses_aparelhos
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* {consulta.status !== "agendada" && (
+                        <div className="mt-6 border-t border-gray-200 pt-6">
+                            <button
+                                onClick={() => handleStatusChange("agendada")}
+                                disabled={isUpdating}
+                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                            >
+                                <AlertTriangle className="-ml-1 mr-2 h-4 w-4" />
+                                {isUpdating
+                                    ? "Carregando..."
+                                    : "Reagendar consulta"}
+                            </button>
+                        </div>
+                    )}
                     {consulta.status !== "agendada" && (
                         <div className="mt-6 border-t border-gray-200 pt-6">
                             <button
                                 onClick={() => handleStatusChange("agendada")}
-                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                disabled={isUpdating}
+                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                             >
                                 <AlertTriangle className="-ml-1 mr-2 h-4 w-4" />
-                                Atualizar status
+                                {isUpdating
+                                    ? "Carregando..."
+                                    : "Reagendar consulta"}
                             </button>
+                        </div>
+                    )} */}
+
+                    {isAtendimento && (
+                        <div className="mt-6 border-t border-gray-200 pt-6">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-lg font-medium text-gray-900">
+                                    Atendimento da Consulta
+                                </h3>
+                                <button
+                                    onClick={() => setIsAtendimento(false)}
+                                    disabled={isUpdating}
+                                    className="text-sm text-gray-500 hover:text-gray-700 disabled:opacity-50"
+                                >
+                                    Cancelar atendimento
+                                </button>
+                            </div>
+
+                            <div className="border-b border-gray-200 mb-6">
+                                <nav className="flex -mb-px">
+                                    <button
+                                        onClick={() =>
+                                            setAtendimentoTab("atendimento")
+                                        }
+                                        disabled={isUpdating}
+                                        className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                                            atendimentoTab === "atendimento"
+                                                ? "border-blue-500 text-blue-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        } disabled:opacity-50`}
+                                    >
+                                        Consulta
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            setAtendimentoTab("saude_medica")
+                                        }
+                                        disabled={isUpdating}
+                                        className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                                            atendimentoTab === "saude_medica"
+                                                ? "border-blue-500 text-blue-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        } disabled:opacity-50`}
+                                    >
+                                        Saúde Médica
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            setAtendimentoTab(
+                                                "saude_odontologica"
+                                            )
+                                        }
+                                        disabled={isUpdating}
+                                        className={`mr-8 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                                            atendimentoTab ===
+                                            "saude_odontologica"
+                                                ? "border-blue-500 text-blue-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                        } disabled:opacity-50`}
+                                    >
+                                        Saúde Bucal
+                                    </button>
+                                </nav>
+                            </div>
+
+                            <div className="bg-gray-50 p-6 rounded-lg space-y-6">
+                                {atendimentoTab === "atendimento" && (
+                                    <>
+                                        <div>
+                                            <h4 className="text-md font-medium text-gray-900 mb-4">
+                                                Sinais Vitais
+                                            </h4>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        Pressão Arterial
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="120/80 mmHg"
+                                                        value={
+                                                            formData.atendimento
+                                                                .pressao_arterial
+                                                        }
+                                                        onChange={(e) =>
+                                                            handleInputChange(
+                                                                "pressao_arterial",
+                                                                e.target.value,
+                                                                "atendimento"
+                                                            )
+                                                        }
+                                                        disabled={isUpdating}
+                                                        readOnly={isReadOnly}
+                                                        className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        Frequência Cardíaca
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="75 bpm"
+                                                        value={
+                                                            formData.atendimento
+                                                                .frequencia_cardiaca
+                                                        }
+                                                        onChange={(e) =>
+                                                            handleInputChange(
+                                                                "frequencia_cardiaca",
+                                                                e.target.value,
+                                                                "atendimento"
+                                                            )
+                                                        }
+                                                        disabled={isUpdating}
+                                                        className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        Temperatura
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="36.5°C"
+                                                        value={
+                                                            formData.atendimento
+                                                                .temperatura
+                                                        }
+                                                        onChange={(e) =>
+                                                            handleInputChange(
+                                                                "temperatura",
+                                                                e.target.value,
+                                                                "atendimento"
+                                                            )
+                                                        }
+                                                        disabled={isUpdating}
+                                                        className=" bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        Peso
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="70 kg"
+                                                        value={
+                                                            formData.atendimento
+                                                                .peso
+                                                        }
+                                                        onChange={(e) =>
+                                                            handleInputChange(
+                                                                "peso",
+                                                                e.target.value,
+                                                                "atendimento"
+                                                            )
+                                                        }
+                                                        disabled={isUpdating}
+                                                        className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Sintomas
+                                            </label>
+                                            <textarea
+                                                rows="3"
+                                                placeholder="Descreva os sintomas apresentados pelo paciente..."
+                                                value={
+                                                    formData.atendimento
+                                                        .queixa_principal
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "queixa_principal",
+                                                        e.target.value,
+                                                        "atendimento"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Diagnóstico
+                                            </label>
+                                            <textarea
+                                                rows="3"
+                                                placeholder="Diagnóstico médico..."
+                                                value={
+                                                    formData.atendimento
+                                                        .diagnostico
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "diagnostico",
+                                                        e.target.value,
+                                                        "atendimento"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Prescrição Médica
+                                            </label>
+                                            <textarea
+                                                rows="4"
+                                                placeholder="Medicamentos prescritos, dosagem, duração do tratamento..."
+                                                value={
+                                                    formData.atendimento
+                                                        .prescricao
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "prescricao",
+                                                        e.target.value,
+                                                        "atendimento"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Observações Adicionais
+                                            </label>
+                                            <textarea
+                                                rows="3"
+                                                placeholder="Outras observações sobre a consulta..."
+                                                value={
+                                                    formData.atendimento
+                                                        .observacao
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "observacao",
+                                                        e.target.value,
+                                                        "atendimento"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+
+                                        <div className="flex justify-end gap-3 pt-4">
+                                            <button
+                                                onClick={() =>
+                                                    setIsAtendimento(false)
+                                                }
+                                                disabled={isUpdating}
+                                                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <button
+                                                onClick={
+                                                    handleFinalizarConsulta
+                                                }
+                                                disabled={isUpdating}
+                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+                                            >
+                                                <CheckCircle className="-ml-1 mr-2 h-4 w-4" />
+                                                {isUpdating
+                                                    ? "Finalizando..."
+                                                    : "Finalizar Consulta"}
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
+
+                                {atendimentoTab === "saude_medica" && (
+                                    <div className="space-y-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Alergias
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva alergias conhecidas..."
+                                                value={
+                                                    formData.saude_medica
+                                                        .alergias
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "alergias",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Ulcera
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="ulcera"
+                                                value={
+                                                    formData.saude_medica.ulcera
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "ulcera",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Cirurgias
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder=" Histórico de Cirurgias"
+                                                value={
+                                                    formData.saude_medica
+                                                        .cirurgias
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "cirurgias",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Tonturas / Convulsões ou
+                                                Desmaios
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .tonturas_convulsoes_desmaios
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "tonturas_convulsoes_desmaios",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Medicação Atual
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .medicacao
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "medicacao",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Problema cardiaco
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .problema_cardiaco
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "problema_cardiaco",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Problema de coagulação
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .problema_coagulacao
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "problema_coagulacao",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Febre reumatica
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .febre_reumatica
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "febre_reumatica",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Psicopatias
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .psicopatias
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "psicopatias",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Medico
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica.medico
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "medico",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Hepatite
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .hepatite
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "hepatite",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Diabete
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .diabete
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "diabete",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Problemas respiratorios
+                                            </label>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Descreva as ocorrências"
+                                                value={
+                                                    formData.saude_medica
+                                                        .problemas_respiratorios
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "problemas_respiratorios",
+                                                        e.target.value,
+                                                        "saude_medica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+
+                                        <div className="flex justify-end gap-3 pt-4">
+                                            <button
+                                                onClick={() =>
+                                                    setIsAtendimento(false)
+                                                }
+                                                disabled={isUpdating}
+                                                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <button
+                                                onClick={
+                                                    handleFinalizarConsulta
+                                                }
+                                                disabled={isUpdating}
+                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+                                            >
+                                                <CheckCircle className="-ml-1 mr-2 h-4 w-4" />
+                                                {isUpdating
+                                                    ? "Finalizando..."
+                                                    : "Finalizar Consulta"}
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {atendimentoTab === "saude_odontologica" && (
+                                    <div className="space-y-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Gengivite
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Texto"
+                                                value={
+                                                    formData.saude_odontologica
+                                                        .gengivite
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "gengivite",
+                                                        e.target.value,
+                                                        "saude_odontologica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Outras patologias
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Texto"
+                                                value={
+                                                    formData.saude_odontologica
+                                                        .outras_patologias
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "outras_patologias",
+                                                        e.target.value,
+                                                        "saude_odontologica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Periodontite
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Texto"
+                                                value={
+                                                    formData.saude_odontologica
+                                                        .periodontite
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "periodontite",
+                                                        e.target.value,
+                                                        "saude_odontologica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Tratamentos anteriores
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Texto"
+                                                value={
+                                                    formData.saude_odontologica
+                                                        .tratamentos_anteriores
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "tratamentos_anteriores",
+                                                        e.target.value,
+                                                        "saude_odontologica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Proteses ou aparelhos
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Texto"
+                                                value={
+                                                    formData.saude_odontologica
+                                                        .proteses_aparelhos
+                                                }
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        "proteses_aparelhos",
+                                                        e.target.value,
+                                                        "saude_odontologica"
+                                                    )
+                                                }
+                                                disabled={isUpdating}
+                                                className="bg-white w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                                            />
+                                        </div>
+
+                                        <div className="flex justify-end gap-3 pt-4">
+                                            <button
+                                                onClick={() =>
+                                                    setIsAtendimento(false)
+                                                }
+                                                disabled={isUpdating}
+                                                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <button
+                                                onClick={
+                                                    handleFinalizarConsulta
+                                                }
+                                                disabled={isUpdating}
+                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+                                            >
+                                                <CheckCircle className="-ml-1 mr-2 h-4 w-4" />
+                                                {isUpdating
+                                                    ? "Finalizando..."
+                                                    : "Finalizar Consulta"}
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>
@@ -250,10 +1779,10 @@ const ConsultaShow = () => {
             {/* Delete Confirmation Dialog */}
             {isDeleteDialogOpen && (
                 <ConfirmDialog
-                    title="Delete Appointment"
-                    message={`Are you sure you want to delete this consulta? This action cannot be undone.`}
-                    confirmText="Delete"
-                    cancelText="Cancel"
+                    title="Excluir Consulta"
+                    message={`Tem certeza que deseja excluir esta consulta? Esta ação não pode ser desfeita.`}
+                    confirmText="Excluir"
+                    cancelText="Cancelar"
                     onConfirm={handleDelete}
                     onCancel={() => setIsDeleteDialogOpen(false)}
                 />

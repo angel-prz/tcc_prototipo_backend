@@ -72,4 +72,12 @@ class Consulta extends Model
             'id'
         );
     }
+
+    public function saudeMedica(){
+        return $this->hasOneThrough(SaudeMedica::class, Paciente::class);
+    }
+
+    public function saudeOdontologica() {
+        return $this->hasOneThrough(SaudeOdontologica::class, Paciente::class);
+    }
 }

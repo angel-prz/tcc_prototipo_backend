@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('documentos_atestados', function (Blueprint $table) {
             $table->id();
-            $table->string('tipo_documento');
-            $table->text('texto');
-            $table->string('periodo');
+            $table->string('tipo_documento')->nullable();
+            $table->text('texto')->nullable();
+            $table->string('periodo')->nullable();
+            $table->string('cid')->nullable();
             $table->foreignId(column: 'atendimento_id')->references('id')->on('atendimentos')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });

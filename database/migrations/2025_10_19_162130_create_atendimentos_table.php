@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('atendimentos', function (Blueprint $table) {
             $table->id();
-            $table->string('exame');
-            $table->string('tipo_exame');
-            $table->integer('quantidade');
             $table->foreignId('consulta_id')->references('id')->on('consultas')->onUpdate('cascade')->onDelete('cascade');
+            $table->text('queixa_principal');
+            $table->text('historico_doenca');
+            $table->text('diagnostico');
+            $table->text('observacoes')->nullable();
             $table->timestamps();
         });
     }
