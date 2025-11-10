@@ -20,7 +20,7 @@ class ConsultaSeeder extends Seeder
         $pacientes = Paciente::all();
 
         // Cria 50 consultas aleatórias
-        foreach (range(1, 100) as $i) {
+        foreach (range(1, 300) as $i) {
             Consulta::factory()->create([
                 'profissional_id' => $profissionais->where('tipo_profissional', '!=', 'bolsista')->random()->id,
                 'paciente_id' => $pacientes->random()->id,
